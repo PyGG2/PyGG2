@@ -11,11 +11,12 @@ import weapon
 import mask
 
 class Character(entity.MovingObject):
-    base_acceleration = 765
+    # base acceleration amount in pixels per second
+    base_acceleration = 0.85*30
     # friction factor per second of null movement;calculated directly from Gang Garrison 2
-    friction = 9.7138714992377222758124853299492e-15
-    # overridden in each class
-    run_power = 1;
+    friction = 0.01510305449388463132584804061124
+    # acceleration factor, overridden in each class
+    run_power = 1.4;
 
     def __init__(self, game, state, player_id):
         super(Character, self).__init__(game, state)
@@ -77,18 +78,20 @@ class Character(entity.MovingObject):
 
         print(self.hspeed, self.base_acceleration * self.run_power * frametime)
 
+                                                    # accelerate left
         if self.desired_direction == -1:
-            # accelerate left
-            if self.hspeed > 0:
-                self.hspeed *= self.friction  ** frametime
             self.hspeed -= self.base_acceleration * self.run_power * frametime
+            if self.hspeed > 0:
+                self.hspeed *= self.friction*self.run_power ** frametime
+                                                    # accelerate right
         if self.desired_direction ==  1:
-            # accelerate right
-            if self.hspeed < 0:
-                self.hspeed *= self.friction  ** frametime
             self.hspeed += self.base_acceleration * self.run_power * frametime
-
-        if abs(self.hspeed) < 10:
+            if self.hspeed < 0:
+                self.hspeed *= self.friction*self.run_power ** frametime
+            
+        #self.hspeed *= self.friction*self.run_power ** frametime
+        
+        if abs(self.hspeed) < 10 and abs(old_hspeed) > abs(self.hspeed):
             self.hspeed = 0
 
         if player.up and not player.old_up:
@@ -104,7 +107,7 @@ class Character(entity.MovingObject):
         # Please consider resistance that's amplified at higher speeds & a threshold.
 
         # hspeed limit
-        self.hspeed = min(self.max_speed, max(-self.max_speed, self.hspeed))
+        # self.hspeed = min(self.max_speed, max(-self.max_speed, self.hspeed))
 
         self.hp+=self.hp_offset # test health change
         if self.hp < 0:
