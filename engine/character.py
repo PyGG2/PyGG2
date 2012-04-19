@@ -168,6 +168,8 @@ class Character(entity.MovingObject):
         else: refobj = prev_obj
 
         self.flip = refobj.flip
+        
+        self.hp =  prev_obj.hp + (next_obj.hp - prev_obj.hp) * alpha
 
     def jump(self, game, state):
         player = self.get_player(game, state)
