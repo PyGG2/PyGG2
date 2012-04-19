@@ -12,8 +12,8 @@ import mask
 
 class Character(entity.MovingObject):
     # base acceleration amount in pixels per second
-    base_acceleration = 0.85*30*40
-    # friction factor per second of null movement;calculated directly from Gang Garrison 2
+    base_acceleration = 0.85*30*30
+    # friction factor per second of null movement; calculated directly from Gang Garrison 2
     friction = 0.01510305449388463132584804061124
     # acceleration factor, overridden in each class
     run_power = 1.4;
@@ -195,7 +195,7 @@ class Character(entity.MovingObject):
 
     def serialize(self, state):
         packetstr = ""
-        packetstr += struct.pack(">IIii", self.x, self.y, self.hspeed, self.vspeed)
+        packetstr += struct.pack(">IIii", self.x, self.y, round(self.hspeed*10), self.vspeed)
 
         # Serialize intel, doublejump, etc... in one byte. Should we merge this with the input serialization in Player? Move the input ser. here?
         byte = 0
@@ -210,6 +210,7 @@ class Character(entity.MovingObject):
 
     def deserialize(self, state, packetstr):
         self.x, self.y, self.hspeed, self.vspeed = struct.unpack_from(">IIii", packetstr)
+        self.hspeed /= 10;
         packetstr = packetstr[16:]
         byte = struct.unpack_from(">B", packetstr)[0]
         packetstr = packetstr[1:]
