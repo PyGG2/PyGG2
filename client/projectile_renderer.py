@@ -63,6 +63,7 @@ class RocketRenderer(object):
         sprite.position = renderer.get_screen_coords(rocket.x, rocket.y)
 
         renderer.world_sprites.append(sprite)
+
 class NeedleRenderer(object):
     def __init__(self):
         self.depth = 1
@@ -76,5 +77,18 @@ class NeedleRenderer(object):
             sprite.alpha = (needle.max_flight_time - needle.flight_time) / needle.fade_time
 
         sprite.position = renderer.get_screen_coords(needle.x, needle.y)
+
+        renderer.world_sprites.append(sprite)
+
+class BladeRenderer(object):
+    def __init__(self):
+        self.depth = 1
+        self.bladesprite = pygrafix.image.load("projectiles/bladeprojectiles/0.png")
+
+    def render(self, renderer, game, state, blade):
+        sprite = pygrafix.sprite.Sprite(self.bladesprite)
+        sprite.rotation = 360 - blade.direction
+
+        sprite.position = renderer.get_screen_coords(blade.x, blade.y)
 
         renderer.world_sprites.append(sprite)

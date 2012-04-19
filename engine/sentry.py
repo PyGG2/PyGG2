@@ -4,6 +4,9 @@ from __future__ import division, print_function
 
 import entity
 import mask
+import character
+import math
+import function
 
 class Building_Sentry(entity.MovingObject):
     max_hp = 100 # Maximum hitpoints the sentry can ever have
@@ -90,16 +93,36 @@ class Sentry(entity.MovingObject):
         self.y = y
         self.hp = hp
         self.flip = flip
-
+        self.turningframe = 0
+        self.detection_radius = 375
+        
+        self.direction = 0
+        
+        #targetting Queue
+        self.nearest_target = -1
+        self.target_queue = []
+        
     def step(self, game, state, frametime):
         # TODO: Aim at nearest enemy
+        
         if self.hp <= 0:
             self.destroy(state)
-
+        self.target_queue = [] #clear the list
+        for obj in state.entities.values():
+                if isinstance(obj, character.Character) and math.hypot(self.x-obj.x,self.y - obj.y) <= self.detection_radius:
+                    target_tuple = (obj, math.hypot(self.x-obj.x,self.y - obj.y))
+                    self.target_queue.append(target_tuple)
+        if len(self.target_queue) > 0: #TODO: implement point_direction and adjust priorities accordingly
+            self.target_queue.sort(key= lambda distance: distance[1]) #sort by the second item in the tuples; distance
+            self.nearest_target = self.target_queue[0][0] #get the first part of tuple
+            target_character = state.entities[self.nearest_target.id]
+            target_angle = function.point_direction(self.x,self.y,target_character.x,target_character.y)
+            self.direction = target_angle
     def interpolate(self, prev_obj, next_obj, alpha):
         super(Sentry, self).interpolate(prev_obj, next_obj, alpha)
         self.hp = prev_obj.hp + (next_obj.hp - prev_obj.hp) * alpha
-
+        self.direction = prev_obj.direction + (next_obj.direction - prev_obj.direction) * alpha
+        
     def destroy(self, state):
         # TODO: Sentry destruction syncing, bubble
         super(Sentry, self).destroy(state)

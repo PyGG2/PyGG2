@@ -16,9 +16,10 @@ class HudRenderer(object):
         renderer.hud_sprites.append(self.sprite)
 class HealthRenderer(HudRenderer):
 
-    def __init__(self, renderer, game, state, character):
+    def __init__(self, renderer, game, state, character_id):
 
         self.sprite_location = (10, renderer.view_height - 75) # Where is the location on screen of the sprite
+        character = state.entities[character_id]
         my_class_type = type(character)
         my_class_number = str(function.convert_class(my_class_type))
        
@@ -32,11 +33,11 @@ class HealthRenderer(HudRenderer):
         self.health_text.health_size = (36, 36)
         self.debug_text = DebugText(game, character)
         
-    def render(self, renderer, game, state, character):
+    def render(self, renderer, game, state, character_id):
         
         HudRenderer.render(self,renderer)
-
-        character_hp = character.hp
+        character = state.entities[character_id]
+        character_hp = int(character.hp)
         character_maxhp = character.maxhp
         #always have at least 1 percent, can't divide by zero!
         health_percentage = max(0.01,(character_hp / character_maxhp))
