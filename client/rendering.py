@@ -73,7 +73,7 @@ class GameRenderer(object):
 
         self.interpolated_state.interpolate(game.previous_state, game.current_state, alpha)
         focus_object_id = game.current_state.players[client.our_player_id].character_id
-
+        
         if focus_object_id != None:
             client.spectator.x = self.interpolated_state.entities[focus_object_id].x
             client.spectator.y = self.interpolated_state.entities[focus_object_id].y
@@ -82,7 +82,6 @@ class GameRenderer(object):
                 self.healthhud = hud_renderer.HealthRenderer(self, game, self.interpolated_state, game.current_state.entities[focus_object_id])
                 game.current_state.entities[focus_object_id].just_spawned = False
             self.healthhud.render(self, game, self.interpolated_state, game.current_state.entities[focus_object_id])
-
         else:
             if self.healthhud != None:
                 self.healthhud = None
