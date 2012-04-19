@@ -178,3 +178,12 @@ class Revolver(Weapon):
 
     def fire_secondary(self, game, state):
         state.entities[self.owner].cloaking = not state.entities[self.owner].cloaking# Any ideas how to add a good gradient?
+
+class Blade(Weapon):
+    maxammo = 4
+    refiretime = 1
+    reloadtime = 5/6
+
+    def fire_primary(self, game, state):
+        projectile.Blade(game, state, self.id)
+        self.refirealarm = self.refiretime

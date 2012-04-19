@@ -347,3 +347,25 @@ class Sniper(Character):
 
         self.hp = self.maxhp
         self.weapon = weapon.Minigun(game, state, self.id).id
+
+class Quote(Character):
+    # width, height of scout - rectangle collision
+    collision_mask = mask.Mask(12, 33, True)
+    max_speed = 252
+    maxhp = 100
+    run_power = 1.4;
+
+    def __init__(self, game, state, player_id):
+        Character.__init__(self, game, state, player_id)
+
+        self.hp = self.maxhp
+        self.weapon = weapon.Blade(game, state, self.id).id
+        self.can_doublejump = True
+
+    def jump(self, game, state):
+        if self.onground(game, state):
+            self.vspeed = -300
+            self.can_doublejump = True
+        elif self.can_doublejump:
+            self.vspeed = -300
+            self.can_doublejump = False

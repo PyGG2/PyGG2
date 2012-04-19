@@ -99,3 +99,11 @@ class SpyRenderer(ClassRenderer):
         if not character.cloaking:
             ClassRenderer.render(self, renderer, game, state, character)
             # FIXME: Why is the character still getting drawn on the screen if cloaked?
+
+class QuoteRenderer(ClassRenderer):
+    def __init__(self):
+        self.depth = 0
+        self.sprites = [pygrafix.image.load("characters/quotereds/%s.png" % i) for i in range(4)]
+
+        self.spriteoffset = (16, -1)
+        self.spriteoffset_flipped = (16, -1)
