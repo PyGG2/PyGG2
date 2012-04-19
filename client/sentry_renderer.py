@@ -42,10 +42,10 @@ class SentryRenderer(object):
         
     def render(self, renderer, game, state, sentry):
         basesprite_position_offset = (-8, -20)
-        basesprite_position_offset_flipped = (-13, -20)
+        basesprite_position_offset_flipped = (-12, -20)
         
         turretsprite_position_offset = (-4,-4)
-        turretsprite_position_flipped_offset = (-14,-4)
+        turretsprite_position_flipped_offset = (-13,-4)
         
         basesprite = self.base
         basesprite = pygrafix.sprite.Sprite(basesprite)
@@ -61,7 +61,7 @@ class SentryRenderer(object):
         else:
             basesprite.flip_x = False
             turretsprite.flip_x = False
-            basesprite.position = renderer.get_screen_coords(sentry.x + turretsprite_position_offset[0], sentry.y + turretsprite_position_offset[1])
+            basesprite.position = renderer.get_screen_coords(sentry.x + basesprite_position_offset[0], sentry.y + basesprite_position_offset[1])
             turretsprite.position = renderer.get_screen_coords(sentry.x + turretsprite_position_offset[0],sentry.y + turretsprite_position_offset[1])
         
         renderer.world_sprites.append(turretsprite)

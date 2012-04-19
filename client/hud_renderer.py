@@ -32,7 +32,6 @@ class HealthRenderer(HudRenderer):
 
     def render(self, renderer, game, state, character):
         HudRenderer.render(self,renderer)
-
         character_hp = character.hp
         character_maxhp = character.maxhp
         #always have at least 1 percent, can't divide by zero!
