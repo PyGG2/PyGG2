@@ -37,7 +37,7 @@ class Character(entity.MovingObject):
         self.issynced = True
 
     def step(self, game, state, frametime):
-        print(frametime)
+        #print(frametime)
         player = self.get_player(game, state)
 
         # this is quite important, if hspeed / 20 drops below 1 self.animoffset will rapidly change and cause very fast moving legs (while we are moving very slow)
@@ -76,7 +76,7 @@ class Character(entity.MovingObject):
             else:
                 self.desired_direction = 0
 
-        print(self.hspeed, self.base_acceleration * self.run_power * frametime)
+        #print(self.hspeed, self.base_acceleration * self.run_power * frametime)
 
                                                     # accelerate left
         if self.desired_direction == -1:
@@ -93,7 +93,7 @@ class Character(entity.MovingObject):
         
         if abs(self.hspeed) < 10 and abs(old_hspeed) > abs(self.hspeed):
             self.hspeed = 0
-            print("broken")
+            #print("broken")
 
         if player.up and not player.old_up:
             self.jump(game, state)
