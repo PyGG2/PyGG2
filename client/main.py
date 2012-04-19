@@ -125,6 +125,9 @@ class GameClientHandler(Handler):
                 elif self.window.is_key_pressed(key._8):
                     event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_SPY)
                     self.networker.events.append((self.networker.sequence, event))
+                elif self.window.is_key_pressed(key.Q):
+                    event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_QUOTE)
+                    self.networker.events.append((self.networker.sequence, event))
 
 
                 #This for loop detects to see if a key has been pressed. Currently useful for precision offsets
