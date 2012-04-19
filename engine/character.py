@@ -12,7 +12,7 @@ import mask
 
 class Character(entity.MovingObject):
     # base acceleration amount in pixels per second
-    base_acceleration = 0.85*30
+    base_acceleration = 0.85*30*40
     # friction factor per second of null movement;calculated directly from Gang Garrison 2
     friction = 0.01510305449388463132584804061124
     # acceleration factor, overridden in each class
@@ -37,7 +37,7 @@ class Character(entity.MovingObject):
         self.issynced = True
 
     def step(self, game, state, frametime):
-
+        print(frametime)
         player = self.get_player(game, state)
 
         # this is quite important, if hspeed / 20 drops below 1 self.animoffset will rapidly change and cause very fast moving legs (while we are moving very slow)
@@ -82,17 +82,18 @@ class Character(entity.MovingObject):
         if self.desired_direction == -1:
             self.hspeed -= self.base_acceleration * self.run_power * frametime
             if self.hspeed > 0:
-                self.hspeed *= self.friction*self.run_power ** frametime
+                self.hspeed *= self.friction ** frametime
                                                     # accelerate right
         if self.desired_direction ==  1:
             self.hspeed += self.base_acceleration * self.run_power * frametime
             if self.hspeed < 0:
-                self.hspeed *= self.friction*self.run_power ** frametime
+                self.hspeed *= self.friction ** frametime
             
-        #self.hspeed *= self.friction*self.run_power ** frametime
+        self.hspeed *= self.friction ** frametime
         
         if abs(self.hspeed) < 10 and abs(old_hspeed) > abs(self.hspeed):
             self.hspeed = 0
+            print("broken")
 
         if player.up and not player.old_up:
             self.jump(game, state)
@@ -116,7 +117,7 @@ class Character(entity.MovingObject):
             self.hp_offset = -1
 
     def endstep(self, game, state, frametime):
-
+        
         player = self.get_player(game, state)
         # check if we are on the ground before moving (for walking over 1 unit walls)
         onground = True
