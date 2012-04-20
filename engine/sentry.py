@@ -93,16 +93,24 @@ class Sentry(entity.MovingObject):
         self.y = y
         self.hp = hp
         self.flip = flip
-        self.turningframe = 0
         self.detection_radius = 375
         
-        self.direction = 0
+        
+        self.rotating = False
+        self.turret_flip = flip
+        
+        self.rotatestart = 0
+        self.rotateend = 4
+        self.rotateindex = self.rotatestart;
+        self.default_direction = 180 * self.flip
+        self.direction = self.default_direction
         
         #targetting Queue
         self.nearest_target = -1
         self.target_queue = []
         
     def step(self, game, state, frametime):
+        
         # TODO: Aim at nearest enemy
         
         if self.hp <= 0:
@@ -118,11 +126,30 @@ class Sentry(entity.MovingObject):
             target_character = state.entities[self.nearest_target.id]
             target_angle = function.point_direction(self.x,self.y,target_character.x,target_character.y)
             self.direction = target_angle
+            if target_character.x > self.x and self.turret_flip == True:
+                self.rotating = True
+            elif target_character.x < self.x and self.turret_flip == False:
+                self.rotating = True
+        else:
+            self.nearest_target = -1
+            
+        if self.nearest_target == -1 and self.flip != self.turret_flip: #reset to old position
+            self.rotating = True
+            self.direction = self.default_direction
+            
+        if self.rotating == True:
+            self.rotateindex += 0.15
+            if (self.rotateindex >= self.rotateend):
+                self.rotating = False
+                self.turret_flip = not self.turret_flip
+                self.rotateindex = self.rotatestart
     def interpolate(self, prev_obj, next_obj, alpha):
         super(Sentry, self).interpolate(prev_obj, next_obj, alpha)
         self.hp = prev_obj.hp + (next_obj.hp - prev_obj.hp) * alpha
         self.direction = prev_obj.direction + (next_obj.direction - prev_obj.direction) * alpha
-        
+        self.rotating = next_obj.rotating
+        self.rotateindex = prev_obj.rotateindex + (next_obj.rotateindex - prev_obj.rotateindex) * alpha
+        self.turret_flip = next_obj.turret_flip
     def destroy(self, state):
         # TODO: Sentry destruction syncing, bubble
         super(Sentry, self).destroy(state)
