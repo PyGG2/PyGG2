@@ -147,9 +147,12 @@ class Sentry(entity.MovingObject):
         super(Sentry, self).interpolate(prev_obj, next_obj, alpha)
         self.hp = prev_obj.hp + (next_obj.hp - prev_obj.hp) * alpha
         self.direction = prev_obj.direction + (next_obj.direction - prev_obj.direction) * alpha
-        self.rotating = next_obj.rotating
+        
         self.rotateindex = prev_obj.rotateindex + (next_obj.rotateindex - prev_obj.rotateindex) * alpha
-        self.turret_flip = next_obj.turret_flip
+        if alpha < 0.5: self.rotating = prev_obj.rotating
+        else: self.rotating = next_obj.rotating
+        if alpha < 0.5: self.turret_flip = prev_obj.turret_flip
+        else: self.turret_flip = next_obj.turret_flip
     def destroy(self, state):
         # TODO: Sentry destruction syncing, bubble
         super(Sentry, self).destroy(state)
