@@ -171,6 +171,7 @@ class GameClientHandler(Handler):
 
                 if self.fpscounter_accumulator > 0.5:
                     self.window.title = "PyGG2 - %d FPS" % self.window.get_fps()
+                    print "%d FPS" % self.window.get_fps()
                     self.fpscounter_accumulator = 0.0
 
                 self.window.flip()

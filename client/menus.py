@@ -63,8 +63,7 @@ class MenuHandler(Handler):
         # draw stuff
         self.draw(hoveritem)
 
-        # troll
-        self.window.title = u"PyGG2 - \u221e FPS".encode('utf8')
+        self.window.title = 'PyGG2 - %s FPS' % self.window.get_fps()
 
         return True
 
