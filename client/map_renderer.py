@@ -10,7 +10,7 @@ class MapRenderer(object):
         self.set_map(mapname)
 
     def set_map(self, mapname):
-        self.sprite = sfml.Sprite(function.load_texture("maps/" + mapname))
+        self.sprite = sfml.Sprite(function.load_texture("maps/" + mapname + ".png"))
         self.sprite.scale(6, 6)
 
     def render(self, renderer, state):

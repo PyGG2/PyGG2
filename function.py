@@ -69,10 +69,9 @@ def load_texture(filename):
     # first try to load the sprite from the sprite folder
     # this allows users to override sprites, and makes testing/developing easier
     try:
-        texture = sfml.Texture.load_from_file("sprites/" + filename + ".png")
+        texture = sfml.Texture.load_from_file("sprites/" + filename)
     except:
-        print ("SPRITE sprites/{}.png NOT FOUND".format(filename))
-        return -1
+        print ("SPRITE sprites/{} NOT FOUND".format(filename))
 
     textures[filename] = texture
 

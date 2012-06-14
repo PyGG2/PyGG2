@@ -1,7 +1,7 @@
 from __future__ import division, print_function
 
 import math
-import pygrafix
+import sfml
 
 import function
 
@@ -18,19 +18,19 @@ class ClassRenderer(object):
         if character.intel:
             anim_frame += 2
 
-        sprite = pygrafix.sprite.Sprite(self.sprites[anim_frame])
+        sprite = self.sprites[anim_frame]
 
-        if character.flip:
-            sprite.flip_x = True
-            sprite.anchor_x = self.spriteoffset_flipped[0]
-            sprite.anchor_y = self.spriteoffset_flipped[1]
-        else:
-            sprite.anchor_x = self.spriteoffset[0]
-            sprite.anchor_y = self.spriteoffset[1]
+        #if character.flip:
+        #    sprite.flip_x = True
+        #    sprite.anchor_x = self.spriteoffset_flipped[0]
+        #    sprite.anchor_y = self.spriteoffset_flipped[1]
+        #else:
+        #    sprite.anchor_x = self.spriteoffset[0]
+        #    sprite.anchor_y = self.spriteoffset[1]
 
         sprite.position = renderer.get_screen_coords(character.x, character.y)
 
-        renderer.world_sprites.append(sprite)
+        renderer.window.draw(sprite)
         #draw mask
         #w, h = character.collision_mask.get_size()
         #location =  renderer.get_screen_coords(character.x, character.y)
@@ -42,7 +42,7 @@ class ClassRenderer(object):
 class ScoutRenderer(ClassRenderer):
     def __init__(self):
         self.depth = 0
-        self.sprites = [pygrafix.image.load("characters/scoutreds/%s.png" % i) for i in range(4)]
+        self.sprites = [sfml.Sprite(function.load_texture(("characters/scoutreds/%i.png" % i))) for i in range(4)]
 
         self.spriteoffset = (24, 30)
         self.spriteoffset_flipped = (28, 30)

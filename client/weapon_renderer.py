@@ -1,7 +1,7 @@
 from __future__ import division, print_function
 
 import math
-import pygrafix
+import sfml
 
 import function
 
@@ -13,23 +13,23 @@ class WeaponRenderer(object):
         owner = state.entities[weapon.owner]
 
         if weapon.refiretime - weapon.refirealarm < 0.02:
-            sprite = pygrafix.sprite.Sprite(self.firingsprite)
+            sprite = self.firingsprite
         else:
-            sprite = pygrafix.sprite.Sprite(self.weaponsprite)
+            sprite = self.weaponsprite
 
-        if owner.flip:
-            sprite.flip_y = True
-            sprite.position = renderer.get_screen_coords(owner.x + self.weaponoffset_flipped[0], owner.y + self.weaponoffset_flipped[1])
-            weapon_rotate = self.weapon_rotate_flipped[0] , self.weapon_rotate_flipped[1]
-        else:
-            sprite.flip_y = False
-            sprite.position = renderer.get_screen_coords(owner.x + self.weaponoffset[0] , owner.y + self.weaponoffset[1] )
-            weapon_rotate = self.weapon_rotate_point[0] , self.weapon_rotate_point[1] 
+        #if owner.flip:
+        #    sprite.flip_y = True
+        #    sprite.position = renderer.get_screen_coords(owner.x + self.weaponoffset_flipped[0], owner.y + self.weaponoffset_flipped[1])
+        #    weapon_rotate = self.weapon_rotate_flipped[0] , self.weapon_rotate_flipped[1]
+        #else:
+        #    sprite.flip_y = False
+        #    sprite.position = renderer.get_screen_coords(owner.x + self.weaponoffset[0] , owner.y + self.weaponoffset[1] )
+        #    weapon_rotate = self.weapon_rotate_point[0] , self.weapon_rotate_point[1]
+        #
+        #sprite.anchor = weapon_rotate
+        #sprite.rotation = 360 - weapon.direction
 
-        sprite.anchor = weapon_rotate
-        sprite.rotation = 360 - weapon.direction
-
-        renderer.world_sprites.append(sprite)
+        renderer.window.draw(sprite)
 
 class ScattergunRenderer(WeaponRenderer):
     weapon_rotate_point = (5, 6) # where is the handle of the gun, where to rotate around
@@ -39,8 +39,8 @@ class ScattergunRenderer(WeaponRenderer):
 
     def __init__(self):
         self.depth = 1
-        self.weaponsprite = pygrafix.image.load("weapons/scatterguns/0.png")
-        self.firingsprite = pygrafix.image.load("weapons/scatterguns/2.png")
+        self.weaponsprite = sfml.Sprite(function.load_texture("weapons/scatterguns/0.png"))
+        self.firingsprite = sfml.Sprite(function.load_texture("weapons/scatterguns/2.png"))
 
 class FlamethrowerRenderer(WeaponRenderer):
     weapon_rotate_point = (8, 2) #Where is the handle of the gun, where to rotate around
@@ -74,7 +74,7 @@ class MinigunRenderer(WeaponRenderer):
         self.depth = 1
         self.weaponsprite = pygrafix.image.load("weapons/miniguns/0.png")
         self.firingsprite = pygrafix.image.load("weapons/miniguns/2.png")
-        
+
 class MedigunRenderer(WeaponRenderer):
     #TODO: fix these to actually align correctly
     weapon_rotate_point = (7, 3) # where is the handle of the gun, where to rotate around
