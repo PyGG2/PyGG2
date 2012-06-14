@@ -75,10 +75,8 @@ class GameClientHandler(Handler):
         while True:
             self.networker.recieve(self.game, self)
             if self.networker.has_connected:
-                self.window.poll_events()
-
                 # check if user exited the game
-                if not self.window.is_open() or sfml.Keyboard.is_key_pressed(sfml.Keyboard.ESCAPE):
+                if not self.window.open or sfml.Keyboard.is_key_pressed(sfml.Keyboard.ESCAPE):
                     event = networking.event_serialize.ClientEventDisconnect()
                     self.networker.sendbuffer.append(event)
                     break
@@ -90,7 +88,7 @@ class GameClientHandler(Handler):
                 middlemouse = sfml.Mouse.is_button_pressed(sfml.Mouse.MIDDLE)
                 rightmouse = sfml.Mouse.is_button_pressed(sfml.Mouse.RIGHT)
 
-                mouse_x, mouse_y = self.window.get_position()
+                mouse_x, mouse_y = sfml.Mouse.get_position(self.window)
                 our_player = self.game.current_state.players[self.our_player_id]
                 our_player.up = self.keys["up"]
                 our_player.down = self.keys["down"]
@@ -101,28 +99,28 @@ class GameClientHandler(Handler):
                 our_player.rightmouse = rightmouse
                 our_player.aimdirection = function.point_direction(self.window.width / 2, self.window.height / 2, mouse_x, mouse_y)
 
-                if self.window.is_key_pressed(key._1):
+                if sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM1):
                     event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_SCOUT)
                     self.networker.events.append((self.networker.sequence, event))
-                elif self.window.is_key_pressed(key._2):
+                elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM2):
                     event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_PYRO)
                     self.networker.events.append((self.networker.sequence, event))
-                elif self.window.is_key_pressed(key._3):
+                elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM3):
                     event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_SOLDIER)
                     self.networker.events.append((self.networker.sequence, event))
-                elif self.window.is_key_pressed(key._4):
+                elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM4):
                     event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_HEAVY)
                     self.networker.events.append((self.networker.sequence, event))
-                elif self.window.is_key_pressed(key._6):
+                elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM6):
                     event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_MEDIC)
                     self.networker.events.append((self.networker.sequence, event))
-                elif self.window.is_key_pressed(key._7):
+                elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM7):
                     event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_ENGINEER)
                     self.networker.events.append((self.networker.sequence, event))
-                elif self.window.is_key_pressed(key._8):
+                elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM8):
                     event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_SPY)
                     self.networker.events.append((self.networker.sequence, event))
-                elif self.window.is_key_pressed(key.Q):
+                elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.Q):
                     event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_QUOTE)
                     self.networker.events.append((self.networker.sequence, event))
 
@@ -154,11 +152,11 @@ class GameClientHandler(Handler):
                 frame_time = self.clock.tick()
                 frame_time = min(0.25, frame_time) # a limit of 0.25 seconds to prevent complete breakdown
 
-                self.fpscounter_accumulator += frame_time
+                #self.fpscounter_accumulator += frame_time
 
                 self.networker.recieve(self.game, self)
                 self.game.update(self.networker, frame_time)
-                #self.renderer.render(self, self.game, frame_time)
+                self.renderer.render(self, self.game, frame_time)
 
                 if self.network_update_timer >= constants.INPUT_SEND_FPS:
                     self.networker.update(self)
@@ -166,10 +164,10 @@ class GameClientHandler(Handler):
                 else:
                     self.network_update_timer += frame_time
 
-                if self.fpscounter_accumulator > 0.5:
-                    self.window.title = "PyGG2 - %d FPS" % self.window.get_fps()
-                    print "%d FPS" % self.window.get_fps()
-                    self.fpscounter_accumulator = 0.0
+                #if self.fpscounter_accumulator > 0.5:
+                #    self.window.title = "PyGG2 - %d FPS" % self.window.get_fps()
+                #    print "%d FPS" % self.window.get_fps()
+                #    self.fpscounter_accumulator = 0.0
 
                 self.window.display()
         self.cleanup()
