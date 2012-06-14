@@ -115,3 +115,14 @@ class RevolverRenderer(WeaponRenderer):
             WeaponRenderer.render(self, renderer, game, state, weapon)
         else:
             pass# TODO: Transparent drawing
+
+class BladeRenderer(WeaponRenderer):
+    weapon_rotate_point = (3, 5) # where is the handle of the gun, where to rotate around
+    weapon_rotate_flipped = (3, 5)
+    weaponoffset = (3, 22) # where the character should carry it's gun
+    weaponoffset_flipped = (-3, 22)
+
+    def __init__(self):
+        self.depth = 1
+        self.weaponsprite = pygrafix.image.load("weapons/blades/0.png")
+        self.firingsprite = pygrafix.image.load("weapons/blades/2.png")

@@ -16,9 +16,10 @@ class HudRenderer(object):
         renderer.hud_sprites.append(self.sprite)
 class HealthRenderer(HudRenderer):
 
-    def __init__(self, renderer, game, state, character):
+    def __init__(self, renderer, game, state, character_id):
 
         self.sprite_location = (10, renderer.view_height - 75) # Where is the location on screen of the sprite
+        character = state.entities[character_id]
         my_class_type = type(character)
         my_class_number = str(function.convert_class(my_class_type))
        
@@ -30,13 +31,12 @@ class HealthRenderer(HudRenderer):
         self.health_text = HealthText()
         self.health_text.health_location = (56, renderer.view_height - 52)
         self.health_text.health_size = (36, 36)
-        self.debug_text = DebugText(game, character)
         
-    def render(self, renderer, game, state, character):
+    def render(self, renderer, game, state, character_id):
         
         HudRenderer.render(self,renderer)
-
-        character_hp = character.hp
+        character = state.entities[character_id]
+        character_hp = int(character.hp)
         character_maxhp = character.maxhp
         #always have at least 1 percent, can't divide by zero!
         health_percentage = max(0.01,(character_hp / character_maxhp))
@@ -63,7 +63,6 @@ class HealthRenderer(HudRenderer):
             self.health_box.health_color = (1, (2*health_percentage)**exponent, 0, 1)
         renderer.hud_overlay.append(self.health_box)
         renderer.hud_overlay.append(self.health_text)
-        renderer.hud_overlay.append(self.debug_text)
 
 class HealthBar(object):
     def render(self):
@@ -78,11 +77,4 @@ class HealthText(object):
         tx = self.health_location[0] + (self.health_size[0] - tw)/2
         ty = self.health_location[1] + (self.health_size[1] - th)/2
         self.font.renderString(self.text, tx, ty)
-        
-class DebugText(object):
-    def __init__(self, game, character):
-        self.font = spritefont.SpriteFont(bold=True)
-        self.player = game.current_state.players[character.player_id]
 
-    def render(self):
-        self.font.renderString("{0}, {1}, {2}, {3}".format(self.player.left, self.player.last_left, self.player.right, self.player.last_right), 10, 10)

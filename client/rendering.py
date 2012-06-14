@@ -77,11 +77,13 @@ class GameRenderer(object):
         if focus_object_id != None:
             client.spectator.x = self.interpolated_state.entities[focus_object_id].x
             client.spectator.y = self.interpolated_state.entities[focus_object_id].y
+
             #if game.current_state.entities[focus_object_id].just_spawned:
             #    self.healthhud = None
             #    self.healthhud = hud_renderer.HealthRenderer(self, game, self.interpolated_state, game.current_state.entities[focus_object_id])
             #    game.current_state.entities[focus_object_id].just_spawned = False
             #self.healthhud.render(self, game, self.interpolated_state, game.current_state.entities[focus_object_id])
+
         else:
             if self.healthhud != None:
                 self.healthhud = None

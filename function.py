@@ -94,6 +94,8 @@ def convert_class(class_object):
             return constants.CLASS_ENGINEER
         elif class_object == engine.character.Spy:
             return constants.CLASS_SPY
+        elif class_object == engine.character.Quote:
+            return constants.CLASS_QUOTE
 
         # Didn't work, try converting the constant to it's class
         if class_object == constants.CLASS_SCOUT:
@@ -110,6 +112,8 @@ def convert_class(class_object):
             return engine.character.Engineer
         elif class_object == constants.CLASS_SPY:
             return engine.character.Spy
+        elif class_object == constants.CLASS_QUOTE:
+            return engine.character.Quote
         else:
             print("ERROR: UNKNOWN CLASS ARGUMENT IN Functions.get_class().", class_object)
             return constants.CLASS_SCOUT

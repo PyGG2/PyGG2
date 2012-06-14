@@ -11,11 +11,12 @@ import weapon
 import mask
 
 class Character(entity.MovingObject):
-    base_acceleration = 765
-    # friction factor per second of null movement;calculated directly from Gang Garrison 2
-    friction = 9.7138714992377222758124853299492e-15
-    # overridden in each class
-    run_power = 1;
+    # base acceleration amount in pixels per second
+    base_acceleration = 0.85*30*30
+    # friction factor per second of null movement; calculated directly from Gang Garrison 2
+    friction = 0.01510305449388463132584804061124
+    # acceleration factor, overridden in each class
+    run_power = 1.4;
 
     def __init__(self, game, state, player_id):
         super(Character, self).__init__(game, state)
@@ -36,7 +37,6 @@ class Character(entity.MovingObject):
         self.issynced = True
 
     def step(self, game, state, frametime):
-
         player = self.get_player(game, state)
 
         # this is quite important, if hspeed / 20 drops below 1 self.animoffset will rapidly change and cause very fast moving legs (while we are moving very slow)
@@ -75,21 +75,22 @@ class Character(entity.MovingObject):
             else:
                 self.desired_direction = 0
 
-        print(self.hspeed, self.base_acceleration * self.run_power * frametime)
-
+                                                    # accelerate left
         if self.desired_direction == -1:
-            # accelerate left
-            if self.hspeed > 0:
-                self.hspeed *= self.friction  ** frametime
             self.hspeed -= self.base_acceleration * self.run_power * frametime
+            if self.hspeed > 0:
+                self.hspeed *= self.friction ** frametime
+                                                    # accelerate right
         if self.desired_direction ==  1:
-            # accelerate right
-            if self.hspeed < 0:
-                self.hspeed *= self.friction  ** frametime
             self.hspeed += self.base_acceleration * self.run_power * frametime
-
-        if abs(self.hspeed) < 10:
+            if self.hspeed < 0:
+                self.hspeed *= self.friction ** frametime
+            
+        self.hspeed *= self.friction ** frametime
+        
+        if abs(self.hspeed) < 10 and abs(old_hspeed) > abs(self.hspeed):
             self.hspeed = 0
+            #print("broken")
 
         if player.up and not player.old_up:
             self.jump(game, state)
@@ -104,7 +105,7 @@ class Character(entity.MovingObject):
         # Please consider resistance that's amplified at higher speeds & a threshold.
 
         # hspeed limit
-        self.hspeed = min(self.max_speed, max(-self.max_speed, self.hspeed))
+        # self.hspeed = min(self.max_speed, max(-self.max_speed, self.hspeed))
 
         self.hp+=self.hp_offset # test health change
         if self.hp < 0:
@@ -113,7 +114,7 @@ class Character(entity.MovingObject):
             self.hp_offset = -1
 
     def endstep(self, game, state, frametime):
-
+        
         player = self.get_player(game, state)
         # check if we are on the ground before moving (for walking over 1 unit walls)
         onground = True
@@ -140,6 +141,16 @@ class Character(entity.MovingObject):
                     self.x -= function.sign(self.hspeed)
 
                 self.hspeed = 0
+            
+            
+        #downward stairscript with hspeed checks
+        if onground and not game.map.collision_mask.overlap(self.collision_mask, (int(self.x), int(self.y + 6))):
+            if game.map.collision_mask.overlap(self.collision_mask, (int(self.x), int(self.y + 7))):
+                self.y += 6
+            elif game.map.collision_mask.overlap(self.collision_mask, (int(self.x), int(self.y + 13))):
+                if (self.hspeed !=0):
+                    if game.map.collision_mask.overlap(self.collision_mask, (int(self.x + function.sign(self.hspeed)*-6), int(self.y + 7))) and not game.map.collision_mask.overlap(self.collision_mask, (int(self.x + 6), int(self.y + 1))):
+                        self.y += 12
 
         # same stuff, but now vertically
         self.y += self.vspeed * frametime
@@ -168,6 +179,8 @@ class Character(entity.MovingObject):
         else: refobj = prev_obj
 
         self.flip = refobj.flip
+        
+        self.hp =  prev_obj.hp + (next_obj.hp - prev_obj.hp) * alpha
 
     def jump(self, game, state):
         player = self.get_player(game, state)
@@ -191,7 +204,7 @@ class Character(entity.MovingObject):
 
     def serialize(self, state):
         packetstr = ""
-        packetstr += struct.pack(">IIii", self.x, self.y, self.hspeed, self.vspeed)
+        packetstr += struct.pack(">IIii", self.x, self.y, round(self.hspeed*10), self.vspeed)
 
         # Serialize intel, doublejump, etc... in one byte. Should we merge this with the input serialization in Player? Move the input ser. here?
         byte = 0
@@ -206,6 +219,7 @@ class Character(entity.MovingObject):
 
     def deserialize(self, state, packetstr):
         self.x, self.y, self.hspeed, self.vspeed = struct.unpack_from(">IIii", packetstr)
+        self.hspeed /= 10;
         packetstr = packetstr[16:]
         byte = struct.unpack_from(">B", packetstr)[0]
         packetstr = packetstr[1:]
@@ -347,3 +361,25 @@ class Sniper(Character):
 
         self.hp = self.maxhp
         self.weapon = weapon.Minigun(game, state, self.id).id
+
+class Quote(Character):
+    # width, height of scout - rectangle collision
+    collision_mask = mask.Mask(12, 33, True)
+    max_speed = 252
+    maxhp = 100
+    run_power = 1.4;
+
+    def __init__(self, game, state, player_id):
+        Character.__init__(self, game, state, player_id)
+
+        self.hp = self.maxhp
+        self.weapon = weapon.Blade(game, state, self.id).id
+        self.can_doublejump = True
+
+    def jump(self, game, state):
+        if self.onground(game, state):
+            self.vspeed = -300
+            self.can_doublejump = True
+        elif self.can_doublejump:
+            self.vspeed = -300
+            self.can_doublejump = False
