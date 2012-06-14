@@ -18,15 +18,13 @@ class ClassRenderer(object):
         if character.intel:
             anim_frame += 2
 
-        sprite = self.sprites[anim_frame]
+        sprite = self.sprites[anim_frame].copy()
 
-        #if character.flip:
-        #    sprite.flip_x = True
-        #    sprite.anchor_x = self.spriteoffset_flipped[0]
-        #    sprite.anchor_y = self.spriteoffset_flipped[1]
-        #else:
-        #    sprite.anchor_x = self.spriteoffset[0]
-        #    sprite.anchor_y = self.spriteoffset[1]
+        if character.flip:
+            sprite.scale = (-1, 1)
+            sprite.origin = self.spriteoffset_flipped
+        else:
+            sprite.origin = self.spriteoffset
 
         sprite.position = renderer.get_screen_coords(character.x, character.y)
 
