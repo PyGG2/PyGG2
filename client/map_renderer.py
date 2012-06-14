@@ -2,7 +2,7 @@
 
 from __future__ import division, print_function
 
-import pygrafix
+import sfml
 import function
 
 class MapRenderer(object):

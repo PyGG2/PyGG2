@@ -1,4 +1,4 @@
-import pygrafix
+import sfml
 import json
 import os.path
 
@@ -6,7 +6,7 @@ import os.path
 class ClientManager(object):
     def __init__(self, handler):
         # set display mode
-        self.window = pygrafix.window.Window(800, 600, title = "PyGG2 - 0 FPS", fullscreen = False, vsync = False)
+        self.window = sfml.RenderWindow(sfml.VideoMode(800, 600), title = "PyGG2 - 0 FPS")
 
         self.load_config()
 

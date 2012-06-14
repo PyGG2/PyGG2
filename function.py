@@ -4,6 +4,7 @@ from __future__ import division, print_function
 
 import math
 import mask
+import sfml
 import engine.character
 import constants
 
@@ -60,6 +61,22 @@ def load_mask(filename, give_orig=False):
 
     if give_orig: return bitmask
     else: return bitmask.copy()
+
+textures = {}
+def load_texture(filename):
+    if filename in testures:
+        return images[filename]
+    # first try to load the sprite from the sprite folder
+    # this allows users to override sprites, and makes testing/developing easier
+    try:
+        texture = sfml.Texture.load_from_file("sprites/" + filename + ".png")
+    except:
+        print ("SPRITE {} NOT FOUND".format(filename))
+        return -1
+
+    textures[filename] = texture
+
+    return texture
 
 def convert_class(class_object):
         # Try converting the class to it's constant first

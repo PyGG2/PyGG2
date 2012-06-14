@@ -1,5 +1,5 @@
 import precision_timer
-from pygrafix.window import key, mouse
+import sfml
 
 from .handler import Handler
 from . import networker, rendering, spectator
@@ -10,11 +10,10 @@ import networking
 
 def get_input(window):
     return {
-        "up": window.is_key_pressed(key.W),
-        "down": window.is_key_pressed(key.S),
-        "left": window.is_key_pressed(key.A),
-        "right": window.is_key_pressed(key.D),
-        "space": window.is_key_pressed(key.SPACE)
+        "up": sfml.Keyboard.is_key_pressed(sfml.Keyboard.W),
+        "down": sfml.Keyboard.is_key_pressed(sfml.Keyboard.S),
+        "left": sfml.Keyboard.is_key_pressed(sfml.Keyboard.A),
+        "right": sfml.Keyboard.is_key_pressed(sfml.Keyboard.D)
     }
 
 # handler for when client is in game
@@ -40,11 +39,9 @@ class GameClientHandler(Handler):
         #(don't forget to remember to add the handle to the step loop below!)
         #DEBUGTOOL
         self.pressed_list = [
-            key.DOWN,
-            key.UP,
-            key.LEFT,
-            key.RIGHT,
-            key.LEFT_SHIFT,
+            sfml.Keyboard.UP,
+            sfml.Keyboard.LEFT,
+            sfml.Keyboard.RIGHT,
             ]
         #Generate Dictionary
         self.pressed_dict = {}
@@ -81,7 +78,7 @@ class GameClientHandler(Handler):
                 self.window.poll_events()
 
                 # check if user exited the game
-                if not self.window.is_open() or self.window.is_key_pressed(key.ESCAPE):
+                if not self.window.is_open() or sfml.Keyboard.is_key_pressed(sfml.Keyboard.ESCAPE):
                     event = networking.event_serialize.ClientEventDisconnect()
                     self.networker.sendbuffer.append(event)
                     break
@@ -89,11 +86,11 @@ class GameClientHandler(Handler):
                 # handle input
                 self.oldkeys = self.keys
                 self.keys = get_input(self.window)
-                leftmouse = self.window.is_mouse_button_pressed(mouse.LEFT)
-                middlemouse = self.window.is_mouse_button_pressed(mouse.MIDDLE)
-                rightmouse = self.window.is_mouse_button_pressed(mouse.RIGHT)
+                leftmouse = sfml.Mouse.is_button_pressed(sfml.Mouse.LEFT)
+                middlemouse = sfml.Mouse.is_button_pressed(sfml.Mouse.MIDDLE)
+                rightmouse = sfml.Mouse.is_button_pressed(sfml.Mouse.RIGHT)
 
-                mouse_x, mouse_y = self.window.get_mouse_position()
+                mouse_x, mouse_y = self.window.get_position()
                 our_player = self.game.current_state.players[self.our_player_id]
                 our_player.up = self.keys["up"]
                 our_player.down = self.keys["down"]
@@ -129,25 +126,25 @@ class GameClientHandler(Handler):
 
                 #This for loop detects to see if a key has been pressed. Currently useful for precision offsets
                 #DEBUGTOOL
-                for keypress in self.pressed_list:
-                    if self.window.is_key_pressed(keypress) == True and self.pressed_dict[keypress] == False:
-                        self.pressed_dict[keypress] = True
-                        if keypress == key.LEFT:
-                            self.game.horizontal -= 1
-                        if keypress == key.RIGHT:
-                            self.game.horizontal += 1
-                            self.pressed_right = True
-                        if keypress == key.UP:
-                            self.game.vertical -= 1
-                        if keypress == key.DOWN:
-                            self.game.vertical += 1
-                        if keypress == key.LEFT_SHIFT:
-                            print("HORIZONTAL OFFSET = " + str(self.game.horizontal))
-                            print("VERTICAL OFFSET = " + str(self.game.vertical))
-                    elif self.window.is_key_pressed(keypress) == False:
-                            self.pressed_dict[keypress] = False
+                #for keypress in self.pressed_list:
+                #    if self.window.is_key_pressed(keypress) == True and self.pressed_dict[keypress] == False:
+                #        self.pressed_dict[keypress] = True
+                #        if keypress == key.LEFT:
+                #            self.game.horizontal -= 1
+                #        if keypress == key.RIGHT:
+                #            self.game.horizontal += 1
+                #            self.pressed_right = True
+                #        if keypress == key.UP:
+                #            self.game.vertical -= 1
+                #        if keypress == key.DOWN:
+                #            self.game.vertical += 1
+                #        if keypress == key.LEFT_SHIFT:
+                #            print("HORIZONTAL OFFSET = " + str(self.game.horizontal))
+                #            print("VERTICAL OFFSET = " + str(self.game.vertical))
+                #    elif self.window.is_key_pressed(keypress) == False:
+                #            self.pressed_dict[keypress] = False
                 # did we just release the F11 button? if yes, go fullscreen
-                if self.window.is_key_pressed(key.F11):
+                if sfml.Keyboard.is_key_pressed(sfml.Keyboard.F11):
                     self.window.fullscreen = not self.window.fullscreen
 
                 # update the game and render
@@ -158,7 +155,7 @@ class GameClientHandler(Handler):
 
                 self.networker.recieve(self.game, self)
                 self.game.update(self.networker, frame_time)
-                self.renderer.render(self, self.game, frame_time)
+                #self.renderer.render(self, self.game, frame_time)
 
                 if self.network_update_timer >= constants.INPUT_SEND_FPS:
                     self.networker.update(self)
@@ -170,7 +167,7 @@ class GameClientHandler(Handler):
                     self.window.title = "PyGG2 - %d FPS" % self.window.get_fps()
                     self.fpscounter_accumulator = 0.0
 
-                self.window.flip()
+                self.window.display()
         self.cleanup()
 
     def cleanup(self):

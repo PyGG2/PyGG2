@@ -1,6 +1,6 @@
 from __future__ import division, print_function
 
-import pygrafix
+import sfml
 
 import engine.gamestate
 import constants
@@ -8,16 +8,16 @@ import constants
 import function
 
 import map_renderer
-import character_renderer
-import weapon_renderer
-import projectile_renderer
-import sentry_renderer
-import spectator
-import engine.character
-import engine.weapon
-import engine.projectile
-import engine.sentry
-import hud_renderer
+#import character_renderer
+#import weapon_renderer
+#import projectile_renderer
+#import sentry_renderer
+#import spectator
+#import engine.character
+#import engine.weapon
+#import engine.projectile
+#import engine.sentry
+#import hud_renderer
 
 class GameRenderer(object):
     def __init__(self, client):
@@ -34,28 +34,28 @@ class GameRenderer(object):
         self.healthhud = None
         self.overlayblits = []
 
-        self.renderers = {
-            engine.character.Scout: character_renderer.ScoutRenderer(),
-            engine.character.Pyro: character_renderer.PyroRenderer(),
-            engine.character.Soldier: character_renderer.SoldierRenderer(),
-            engine.character.Heavy: character_renderer.HeavyRenderer(),
-            engine.character.Medic: character_renderer.MedicRenderer(),
-            engine.character.Engineer: character_renderer.EngineerRenderer(),
-            engine.character.Spy: character_renderer.SpyRenderer(),
-            engine.weapon.Scattergun: weapon_renderer.ScattergunRenderer(),
-            engine.weapon.Flamethrower: weapon_renderer.FlamethrowerRenderer(),
-            engine.weapon.Rocketlauncher: weapon_renderer.RocketlauncherRenderer(),
-            engine.weapon.Minigun: weapon_renderer.MinigunRenderer(),
-            engine.weapon.Medigun : weapon_renderer.MedigunRenderer(),
-            engine.weapon.Shotgun: weapon_renderer.ShotgunRenderer(),
-            engine.weapon.Revolver: weapon_renderer.RevolverRenderer(),
-            engine.projectile.Shot: projectile_renderer.ShotRenderer(),
-            engine.projectile.Flame: projectile_renderer.FlameRenderer(),
-            engine.projectile.Rocket: projectile_renderer.RocketRenderer(),
-            engine.projectile.Needle : projectile_renderer.NeedleRenderer(),
-            engine.sentry.Building_Sentry: sentry_renderer.BuildingSentryRenderer(),
-            engine.sentry.Sentry: sentry_renderer.SentryRenderer(),
-        }
+        #self.renderers = {
+        #    engine.character.Scout: character_renderer.ScoutRenderer(),
+        #    engine.character.Pyro: character_renderer.PyroRenderer(),
+        #    engine.character.Soldier: character_renderer.SoldierRenderer(),
+        #    engine.character.Heavy: character_renderer.HeavyRenderer(),
+        #    engine.character.Medic: character_renderer.MedicRenderer(),
+        #    engine.character.Engineer: character_renderer.EngineerRenderer(),
+        #    engine.character.Spy: character_renderer.SpyRenderer(),
+        #    engine.weapon.Scattergun: weapon_renderer.ScattergunRenderer(),
+        #    engine.weapon.Flamethrower: weapon_renderer.FlamethrowerRenderer(),
+        #    engine.weapon.Rocketlauncher: weapon_renderer.RocketlauncherRenderer(),
+        #    engine.weapon.Minigun: weapon_renderer.MinigunRenderer(),
+        #    engine.weapon.Medigun : weapon_renderer.MedigunRenderer(),
+        #    engine.weapon.Shotgun: weapon_renderer.ShotgunRenderer(),
+        #    engine.weapon.Revolver: weapon_renderer.RevolverRenderer(),
+        #    engine.projectile.Shot: projectile_renderer.ShotRenderer(),
+        #    engine.projectile.Flame: projectile_renderer.FlameRenderer(),
+        #    engine.projectile.Rocket: projectile_renderer.RocketRenderer(),
+        #    engine.projectile.Needle : projectile_renderer.NeedleRenderer(),
+        #    engine.sentry.Building_Sentry: sentry_renderer.BuildingSentryRenderer(),
+        #    engine.sentry.Sentry: sentry_renderer.SentryRenderer(),
+        #}
 
         self.world_sprites = []
         self.hud_overlay = []
@@ -73,15 +73,15 @@ class GameRenderer(object):
 
         self.interpolated_state.interpolate(game.previous_state, game.current_state, alpha)
         focus_object_id = game.current_state.players[client.our_player_id].character_id
-        
+
         if focus_object_id != None:
             client.spectator.x = self.interpolated_state.entities[focus_object_id].x
             client.spectator.y = self.interpolated_state.entities[focus_object_id].y
-            if game.current_state.entities[focus_object_id].just_spawned:
-                self.healthhud = None
-                self.healthhud = hud_renderer.HealthRenderer(self, game, self.interpolated_state, game.current_state.entities[focus_object_id])
-                game.current_state.entities[focus_object_id].just_spawned = False
-            self.healthhud.render(self, game, self.interpolated_state, game.current_state.entities[focus_object_id])
+            #if game.current_state.entities[focus_object_id].just_spawned:
+            #    self.healthhud = None
+            #    self.healthhud = hud_renderer.HealthRenderer(self, game, self.interpolated_state, game.current_state.entities[focus_object_id])
+            #    game.current_state.entities[focus_object_id].just_spawned = False
+            #self.healthhud.render(self, game, self.interpolated_state, game.current_state.entities[focus_object_id])
         else:
             if self.healthhud != None:
                 self.healthhud = None
@@ -104,22 +104,22 @@ class GameRenderer(object):
 
         # draw background
         self.maprenderer.render(self, self.interpolated_state)
-        # draw entities
-        self.rendering_stack = []
-        for entity in self.interpolated_state.entities.values():
-            self.rendering_stack.append(entity)
-
-        self.rendering_stack.sort(key=lambda entityobject: self.renderers[type(entityobject)].depth) # Reorder by depth attribute
-        for entity in self.rendering_stack:
-            self.renderers[type(entity)].render(self, game, self.interpolated_state, entity)
-        # draw world sprites
-        pygrafix.sprite.draw_batch(self.world_sprites, preserve_order = True, scale_smoothing = False)
-        # draw health bars
-        for self.overlay in self.hud_overlay: #Call the render of all the objects
-            self.overlay.render()
-        self.hud_overlay = [] #clear list
+        ## draw entities
+        #self.rendering_stack = []
+        #for entity in self.interpolated_state.entities.values():
+        #    self.rendering_stack.append(entity)
+        #
+        #self.rendering_stack.sort(key=lambda entityobject: self.renderers[type(entityobject)].depth) # Reorder by depth attribute
+        #for entity in self.rendering_stack:
+        #    self.renderers[type(entity)].render(self, game, self.interpolated_state, entity)
+        ## draw world sprites
+        #pygrafix.sprite.draw_batch(self.world_sprites, preserve_order = True, scale_smoothing = False)
+        ## draw health bars
+        #for self.overlay in self.hud_overlay: #Call the render of all the objects
+        #    self.overlay.render()
+        #self.hud_overlay = [] #clear list
         # draw hud sprites
-        pygrafix.sprite.draw_batch(self.hud_sprites, scale_smoothing = False)
+        #pygrafix.sprite.draw_batch(self.hud_sprites, scale_smoothing = False)
 
     def get_screen_coords(self, x, y):
         # calculate drawing position
