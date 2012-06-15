@@ -12,7 +12,7 @@ class ShotRenderer(object):
         self.shotsprite = sfml.Sprite(function.load_texture("projectiles/shots/0.png"))
 
     def render(self, renderer, game, state, shot):
-        sprite = self.shotsprite.copy()
+        sprite = self.shotsprite
         sprite.rotation = 360 - shot.direction
 
         if shot.max_flight_time - shot.flight_time < shot.fade_time:
@@ -39,7 +39,7 @@ class FlameRenderer(object):
             else:
                 self.currentindex += 1
 
-        sprite = self.flamesprite[self.currentindex].copy()
+        sprite = self.flamesprite[self.currentindex]
 
         sprite.position = renderer.get_screen_coords(flame.x,flame.y)
 
@@ -51,7 +51,7 @@ class RocketRenderer(object):
         self.rocketsprite = sfml.Sprite(function.load_texture("projectiles/rockets/0.png"))
 
     def render(self, renderer, game, state, rocket):
-        sprite = self.rocketsprite.copy()
+        sprite = self.rocketsprite
         sprite.rotation = 360 - rocket.direction
 
         sprite.color.a = min((rocket.max_flight_time - rocket.flight_time) / rocket.fade_time, 1)
@@ -66,7 +66,7 @@ class NeedleRenderer(object):
         self.needlesprite = sfml.Sprite(function.load_texture("projectiles/needles/0.png"))
 
     def render(self, renderer, game, state, needle):
-        sprite = self.needlesprite.copy()
+        sprite = self.needlesprite
         sprite.rotation = 360 - needle.direction
 
         if needle.max_flight_time - needle.flight_time < needle.fade_time:
@@ -82,7 +82,7 @@ class BladeRenderer(object):
         self.bladesprite = sfml.Sprite(function.load_texture("projectiles/bladeprojectiles/0.png"))
 
     def render(self, renderer, game, state, blade):
-        sprite = self.bladesprite.copy()
+        sprite = self.bladesprite
         sprite.rotation = 360 - blade.direction
 
         sprite.position = renderer.get_screen_coords(blade.x, blade.y)
