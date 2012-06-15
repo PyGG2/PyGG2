@@ -1,7 +1,7 @@
 from __future__ import division, print_function
 
 import math
-import pygrafix
+import sfml
 import random
 
 import function
@@ -9,29 +9,25 @@ import function
 class ShotRenderer(object):
     def __init__(self):
         self.depth = 1
-        self.shotsprite = pygrafix.image.load("projectiles/shots/0.png")
-        
+        self.shotsprite = sfml.Sprite(function.load_texture("projectiles/shots/0.png"))
+
     def render(self, renderer, game, state, shot):
-        sprite = pygrafix.sprite.Sprite(self.shotsprite)
+        sprite = self.shotsprite.copy()
         sprite.rotation = 360 - shot.direction
 
         if shot.max_flight_time - shot.flight_time < shot.fade_time:
-            sprite.alpha = (shot.max_flight_time - shot.flight_time) / shot.fade_time
+            sprite.color.a = 255*(shot.max_flight_time - shot.flight_time) / shot.fade_time
 
         sprite.position = renderer.get_screen_coords(shot.x, shot.y)
 
-        renderer.world_sprites.append(sprite)
+        renderer.window.draw(sprite)
 
 
 class FlameRenderer(object):
     def __init__(self):
         self.depth = 1
         self.currentindex = -1
-        self.flamesprite = [0,1,2]
-
-        self.flamesprite[0] = pygrafix.image.load("projectiles/flames/0.png")
-        self.flamesprite[1] = pygrafix.image.load("projectiles/flames/1.png")
-        self.flamesprite[2] = pygrafix.image.load("projectiles/flames/2.png")
+        self.flamesprite = [sfml.Sprite(function.load_texture("projectiles/flames/{}.png".format(i))) for i in range(2)]
 
     def render(self, renderer, game, state, flame):
         #sprite animation
@@ -43,52 +39,52 @@ class FlameRenderer(object):
             else:
                 self.currentindex += 1
 
-        sprite = pygrafix.sprite.Sprite(self.flamesprite[self.currentindex])
+        sprite = self.flamesprite[self.currentindex].copy()
 
         sprite.position = renderer.get_screen_coords(flame.x,flame.y)
 
-        renderer.world_sprites.append(sprite)
+        renderer.window.draw(sprite)
 
 class RocketRenderer(object):
     def __init__(self):
         self.depth = 1
-        self.rocketsprite = pygrafix.image.load("projectiles/rockets/0.png")
+        self.rocketsprite = sfml.Sprite(function.load_texture("projectiles/rockets/0.png"))
 
     def render(self, renderer, game, state, rocket):
-        sprite = pygrafix.sprite.Sprite(self.rocketsprite)
+        sprite = self.rocketsprite.copy()
         sprite.rotation = 360 - rocket.direction
 
-        sprite.alpha = min((rocket.max_flight_time - rocket.flight_time) / rocket.fade_time, 1)
+        sprite.color.a = min((rocket.max_flight_time - rocket.flight_time) / rocket.fade_time, 1)
 
         sprite.position = renderer.get_screen_coords(rocket.x, rocket.y)
 
-        renderer.world_sprites.append(sprite)
+        renderer.window.draw(sprite)
 
 class NeedleRenderer(object):
     def __init__(self):
         self.depth = 1
-        self.needlesprite = pygrafix.image.load("projectiles/needles/0.png")
+        self.needlesprite = sfml.Sprite(function.load_texture("projectiles/needles/0.png"))
 
     def render(self, renderer, game, state, needle):
-        sprite = pygrafix.sprite.Sprite(self.needlesprite)
+        sprite = self.needlesprite.copy()
         sprite.rotation = 360 - needle.direction
 
         if needle.max_flight_time - needle.flight_time < needle.fade_time:
-            sprite.alpha = (needle.max_flight_time - needle.flight_time) / needle.fade_time
+            sprite.color.a = (needle.max_flight_time - needle.flight_time) / needle.fade_time
 
         sprite.position = renderer.get_screen_coords(needle.x, needle.y)
 
-        renderer.world_sprites.append(sprite)
+        renderer.window.draw(sprite)
 
 class BladeRenderer(object):
     def __init__(self):
         self.depth = 1
-        self.bladesprite = pygrafix.image.load("projectiles/bladeprojectiles/0.png")
+        self.bladesprite = sfml.Sprite(function.load_texture("projectiles/bladeprojectiles/0.png"))
 
     def render(self, renderer, game, state, blade):
-        sprite = pygrafix.sprite.Sprite(self.bladesprite)
+        sprite = self.bladesprite.copy()
         sprite.rotation = 360 - blade.direction
 
         sprite.position = renderer.get_screen_coords(blade.x, blade.y)
 
-        renderer.world_sprites.append(sprite)
+        renderer.window.draw(sprite)
