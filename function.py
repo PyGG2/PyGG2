@@ -65,7 +65,7 @@ def load_mask(filename, give_orig=False):
 textures = {}
 def load_texture(filename):
     if filename in textures:
-        return images[filename]
+        return textures[filename]
     # first try to load the sprite from the sprite folder
     # this allows users to override sprites, and makes testing/developing easier
     try:

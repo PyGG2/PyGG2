@@ -85,9 +85,9 @@ class Character(entity.MovingObject):
             self.hspeed += self.base_acceleration * self.run_power * frametime
             if self.hspeed < 0:
                 self.hspeed *= self.friction ** frametime
-            
+
         self.hspeed *= self.friction ** frametime
-        
+
         if abs(self.hspeed) < 10 and abs(old_hspeed) > abs(self.hspeed):
             self.hspeed = 0
             #print("broken")
@@ -114,7 +114,7 @@ class Character(entity.MovingObject):
             self.hp_offset = -1
 
     def endstep(self, game, state, frametime):
-        
+
         player = self.get_player(game, state)
         # check if we are on the ground before moving (for walking over 1 unit walls)
         onground = True
@@ -141,8 +141,8 @@ class Character(entity.MovingObject):
                     self.x -= function.sign(self.hspeed)
 
                 self.hspeed = 0
-            
-            
+
+
         #downward stairscript with hspeed checks
         if onground and not game.map.collision_mask.overlap(self.collision_mask, (int(self.x), int(self.y + 6))):
             if game.map.collision_mask.overlap(self.collision_mask, (int(self.x), int(self.y + 7))):
@@ -179,7 +179,7 @@ class Character(entity.MovingObject):
         else: refobj = prev_obj
 
         self.flip = refobj.flip
-        
+
         self.hp =  prev_obj.hp + (next_obj.hp - prev_obj.hp) * alpha
 
     def jump(self, game, state):
@@ -219,7 +219,7 @@ class Character(entity.MovingObject):
 
     def deserialize(self, state, packetstr):
         self.x, self.y, self.hspeed, self.vspeed = struct.unpack_from(">IIii", packetstr)
-        self.hspeed /= 10;
+        self.hspeed /= 10
         packetstr = packetstr[16:]
         byte = struct.unpack_from(">B", packetstr)[0]
         packetstr = packetstr[1:]
@@ -235,7 +235,7 @@ class Scout(Character):
     collision_mask = mask.Mask(12, 33, True)
     max_speed = 252
     maxhp = 100
-    run_power = 1.4;
+    run_power = 1.4
 
     def __init__(self, game, state, player_id):
         Character.__init__(self, game, state, player_id)
@@ -367,7 +367,7 @@ class Quote(Character):
     collision_mask = mask.Mask(12, 33, True)
     max_speed = 252
     maxhp = 100
-    run_power = 1.4;
+    run_power = 1.4
 
     def __init__(self, game, state, player_id):
         Character.__init__(self, game, state, player_id)
