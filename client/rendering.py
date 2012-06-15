@@ -10,7 +10,7 @@ import function
 import map_renderer
 import character_renderer
 import weapon_renderer
-#import projectile_renderer
+import projectile_renderer
 #import sentry_renderer
 #import spectator
 #import engine.character
@@ -36,25 +36,25 @@ class GameRenderer(object):
 
         self.renderers = {
             engine.character.Scout: character_renderer.ScoutRenderer(),
-        #    engine.character.Pyro: character_renderer.PyroRenderer(),
-        #    engine.character.Soldier: character_renderer.SoldierRenderer(),
-        #    engine.character.Heavy: character_renderer.HeavyRenderer(),
-        #    engine.character.Medic: character_renderer.MedicRenderer(),
-        #    engine.character.Engineer: character_renderer.EngineerRenderer(),
-        #    engine.character.Spy: character_renderer.SpyRenderer(),
-            engine.weapon.Scattergun: weapon_renderer.ScattergunRenderer()#,
-        #    engine.weapon.Flamethrower: weapon_renderer.FlamethrowerRenderer(),
-        #    engine.weapon.Rocketlauncher: weapon_renderer.RocketlauncherRenderer(),
-        #    engine.weapon.Minigun: weapon_renderer.MinigunRenderer(),
-        #    engine.weapon.Medigun : weapon_renderer.MedigunRenderer(),
-        #    engine.weapon.Shotgun: weapon_renderer.ShotgunRenderer(),
-        #    engine.weapon.Revolver: weapon_renderer.RevolverRenderer(),
-        #    engine.projectile.Shot: projectile_renderer.ShotRenderer(),
-        #    engine.projectile.Flame: projectile_renderer.FlameRenderer(),
-        #    engine.projectile.Rocket: projectile_renderer.RocketRenderer(),
-        #    engine.projectile.Needle : projectile_renderer.NeedleRenderer(),
-        #    engine.sentry.Building_Sentry: sentry_renderer.BuildingSentryRenderer(),
-        #    engine.sentry.Sentry: sentry_renderer.SentryRenderer(),
+            engine.character.Pyro: character_renderer.PyroRenderer(),
+            engine.character.Soldier: character_renderer.SoldierRenderer(),
+            engine.character.Heavy: character_renderer.HeavyRenderer(),
+            engine.character.Medic: character_renderer.MedicRenderer(),
+            engine.character.Engineer: character_renderer.EngineerRenderer(),
+            engine.character.Spy: character_renderer.SpyRenderer(),
+            engine.weapon.Scattergun: weapon_renderer.ScattergunRenderer(),
+            engine.weapon.Flamethrower: weapon_renderer.FlamethrowerRenderer(),
+            engine.weapon.Rocketlauncher: weapon_renderer.RocketlauncherRenderer(),
+            engine.weapon.Minigun: weapon_renderer.MinigunRenderer(),
+            engine.weapon.Medigun : weapon_renderer.MedigunRenderer(),
+            engine.weapon.Shotgun: weapon_renderer.ShotgunRenderer(),
+            engine.weapon.Revolver: weapon_renderer.RevolverRenderer(),
+            engine.projectile.Shot: projectile_renderer.ShotRenderer(),
+            engine.projectile.Flame: projectile_renderer.FlameRenderer(),
+            engine.projectile.Rocket: projectile_renderer.RocketRenderer(),
+            engine.projectile.Needle : projectile_renderer.NeedleRenderer(),
+            #engine.sentry.Building_Sentry: sentry_renderer.BuildingSentryRenderer(),
+            #engine.sentry.Sentry: sentry_renderer.SentryRenderer(),
         }
 
         self.world_sprites = []
