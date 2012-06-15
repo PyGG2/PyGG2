@@ -2,7 +2,6 @@ from __future__ import division, print_function
 
 import math
 import sfml
-
 import function
 
 class ClassRenderer(object):
@@ -18,12 +17,13 @@ class ClassRenderer(object):
         if character.intel:
             anim_frame += 2
 
-        sprite = self.sprites[anim_frame].copy()
+        sprite = self.sprites[anim_frame]
 
         if character.flip:
             sprite.scale = (-1, 1)
             sprite.origin = self.spriteoffset_flipped
         else:
+            sprite.scale = (1, 1)
             sprite.origin = self.spriteoffset
 
         sprite.position = renderer.get_screen_coords(character.x, character.y)
