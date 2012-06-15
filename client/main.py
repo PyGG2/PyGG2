@@ -7,7 +7,7 @@ import function
 import engine.game, engine.player
 import constants
 import networking
-
+import random
 def get_input(window):
     return {
         "up": sfml.Keyboard.is_key_pressed(sfml.Keyboard.W),
@@ -80,7 +80,10 @@ class GameClientHandler(Handler):
                     event = networking.event_serialize.ClientEventDisconnect()
                     self.networker.sendbuffer.append(event)
                     break
-
+                
+                
+                while self.window.poll_event():
+                    pass # we're supposed to be handling input here
                 # handle input
                 self.oldkeys = self.keys
                 self.keys = get_input(self.window)
