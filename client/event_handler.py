@@ -41,7 +41,7 @@ def Server_Event_Spawn(client, networker, game, event):
 
 def Server_Snapshot_Update(client, networker, game, event):
     # Copy the current game state, and replace it with everything the server knows
-    time = struct.unpack_from(">I", event.bytestr)[0]
+    time = struct.unpack_from(">f", event.bytestr)[0]
     event.bytestr= event.bytestr[4:]
 
     if len(game.old_states) > 0:
