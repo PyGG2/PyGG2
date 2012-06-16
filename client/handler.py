@@ -9,7 +9,7 @@ class ClientManager(object):
         self.window = sfml.RenderWindow(sfml.VideoMode(800, 600), title = "PyGG2 - 0 FPS")
        
         self.load_config()
-        self.window.framerate_limit = self.config.setdefault('framerate_limit', 120) #prevent 100% cpu usage
+        #self.window.framerate_limit = self.config.setdefault('framerate_limit', 120) #prevent 100% cpu usage
         self.quitting = False
         self.newhandler = None
 
