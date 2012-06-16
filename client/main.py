@@ -178,6 +178,7 @@ class GameClientHandler(Handler):
         #clear buffer, send disconnect, and kiss and fly
         event = networking.event_serialize.ClientEventDisconnect()
         self.networker.sendbuffer.append(event)
+        self.destroy = True #set flag to networker.update that we are destroying
         self.networker.update(self)
-        self.destroy = True
+        
         
