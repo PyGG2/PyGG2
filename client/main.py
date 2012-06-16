@@ -39,7 +39,7 @@ class GameClientHandler(Handler):
         self.pressed_dict = {}
 
         #Whether or not the window is focused
-        self.window_focused = True 
+        self.window_focused = True
 
 
     def start_game(self, player_id):
@@ -62,7 +62,7 @@ class GameClientHandler(Handler):
         self.inputsender_accumulator = 0.0 # this counter will accumulate time to send input at a constant rate
         self.fpscounter_accumulator = 0.0 # this counter will tell us when to update the fps info in the title
         self.fpscounter_frames = 0 # this counter will count the number of frames there are before updating the fps info
-        
+
     def step(self):
         #game loop
         running = True
@@ -96,7 +96,7 @@ class GameClientHandler(Handler):
                         elif event.code == sfml.Keyboard.L_SHIFT:
                             print("HORIZONTAL OFFSET = " + str(self.game.horizontal))
                             print("VERTICAL OFFSET = " + str(self.game.vertical))
-                    
+
                 # handle input if window is focused
                 self.oldkeys = self.keys
                 self.keys = get_input(self.window)
@@ -104,7 +104,7 @@ class GameClientHandler(Handler):
                     leftmouse = sfml.Mouse.is_button_pressed(sfml.Mouse.LEFT)
                     middlemouse = sfml.Mouse.is_button_pressed(sfml.Mouse.MIDDLE)
                     rightmouse = sfml.Mouse.is_button_pressed(sfml.Mouse.RIGHT)
-    
+
                     mouse_x, mouse_y = sfml.Mouse.get_position(self.window)
                     our_player = self.game.current_state.players[self.our_player_id]
                     our_player.up = self.keys["up"]
@@ -115,7 +115,7 @@ class GameClientHandler(Handler):
                     our_player.middlemouse = middlemouse
                     our_player.rightmouse = rightmouse
                     our_player.aimdirection = function.point_direction(self.window.width / 2, self.window.height / 2, mouse_x, mouse_y)
-    
+
                     if sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM1):
                         event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_SCOUT)
                         self.networker.events.append((self.networker.sequence, event))
@@ -140,7 +140,7 @@ class GameClientHandler(Handler):
                     elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.Q):
                         event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_QUOTE)
                         self.networker.events.append((self.networker.sequence, event))
-    
+
                     # did we just release the F11 button? if yes, go fullscreen
                     #if sfml.Keyboard.is_key_pressed(sfml.Keyboard.F11):
                     #    self.window.fullscreen = not self.window.fullscreen
@@ -150,7 +150,7 @@ class GameClientHandler(Handler):
                 frame_time = min(0.25, frame_time) # a limit of 0.25 seconds to prevent complete breakdown
 
                 self.fpscounter_accumulator += frame_time
-                
+
                 self.networker.recieve(self.game, self)
                 self.game.update(self.networker, frame_time)
                 self.renderer.render(self, self.game, frame_time)
@@ -163,7 +163,6 @@ class GameClientHandler(Handler):
 
                 if self.fpscounter_accumulator > 1.0:
                     self.window.title = "PyGG2 - %d FPS" % (self.fpscounter_frames / self.fpscounter_accumulator)
-                    print "%d FPS" % (self.fpscounter_frames / self.fpscounter_accumulator)
                     self.fpscounter_accumulator = 0.0
                     self.fpscounter_frames = 0
 
@@ -177,5 +176,3 @@ class GameClientHandler(Handler):
         self.networker.sendbuffer.append(event)
         self.destroy = True #set flag to networker.update that we are destroying
         self.networker.update(self)
-        
-        

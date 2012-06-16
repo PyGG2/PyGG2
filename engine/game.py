@@ -15,6 +15,7 @@ class Game:
         self.maxplayers = 8
         self.servername = ""
         self.isserver = False
+        #DEBUGTOOL
         self.lag_comp = False
         self.old_states = {}
 

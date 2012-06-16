@@ -93,13 +93,13 @@ def Server_Snapshot_Update(client, networker, game, event):
     if game.lag_comp:
         # Update this state with all the input information that appeared in the meantime
         for time, old_state in game.old_states.items():
-            state.update_all_objects(game, state, constants.PHYSICS_TIMESTEP)
+            state.update_all_objects(game, constants.PHYSICS_TIMESTEP)
 
             old_player = old_state.players[client.our_player_id]
-            input = old_player.serialize()
+            input = old_player.serialize_input()
 
             player = state.players[client.our_player_id]
-            player.deserialize(input)
+            player.deserialize_input(input)
 
 
 def Server_Full_Update(client, networker, game, event):

@@ -38,9 +38,8 @@ class Networker(object):
         self.sendbuffer = []
 
 
-    def generate_snapshot_update(self, game):
+    def generate_snapshot_update(self, state):
         packetstr = ""
-        state = game.current_state
 
         packetstr += struct.pack(">I", state.time)
 
