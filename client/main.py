@@ -77,13 +77,12 @@ class GameClientHandler(Handler):
             if self.networker.has_connected:
                 # check if user exited the game
                 if not self.window.open or sfml.Keyboard.is_key_pressed(sfml.Keyboard.ESCAPE):
-                    event = networking.event_serialize.ClientEventDisconnect()
-                    self.networker.sendbuffer.append(event)
                     break
-                
-                
-                while self.window.poll_event():
-                    pass # we're supposed to be handling input here
+                #main input handling loop
+                for event in self.window.iter_events():
+                    if event.type == sfml.Event.CLOSED: #Press the 'x' button
+                        self.window.close()
+                        break;
                 # handle input
                 self.oldkeys = self.keys
                 self.keys = get_input(self.window)
@@ -177,5 +176,8 @@ class GameClientHandler(Handler):
 
     def cleanup(self):
         #clear buffer, send disconnect, and kiss and fly
-        self.destroy = True
+        event = networking.event_serialize.ClientEventDisconnect()
+        self.networker.sendbuffer.append(event)
         self.networker.update(self)
+        self.destroy = True
+        

@@ -7,7 +7,6 @@ class ClientManager(object):
     def __init__(self, handler):
         # set display mode
         self.window = sfml.RenderWindow(sfml.VideoMode(800, 600), title = "PyGG2 - 0 FPS")
-
         self.load_config()
 
         self.quitting = False
