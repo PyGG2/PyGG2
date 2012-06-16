@@ -7,8 +7,9 @@ class ClientManager(object):
     def __init__(self, handler):
         # set display mode
         self.window = sfml.RenderWindow(sfml.VideoMode(800, 600), title = "PyGG2 - 0 FPS")
+       
         self.load_config()
-
+        self.window.framerate_limit = self.config.setdefault('framerate_limit', 60) #prevent 100% cpu usage
         self.quitting = False
         self.newhandler = None
 
@@ -33,14 +34,16 @@ class ClientManager(object):
                 self.newhandler = None
         self.clearup()
 
+        
     def switch_handler(self, handler):
         self.newhandler = handler
 
     def quit(self):
         self.quitting = True
 
+
     def clearup(self):
-        self.window.close()
+        self.window.close() 
         self.save_config()
 
 # handler base class, implements dummy handler
