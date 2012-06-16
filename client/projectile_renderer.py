@@ -27,7 +27,7 @@ class FlameRenderer(object):
     def __init__(self):
         self.depth = 1
         self.currentindex = -1
-        self.flamesprite = [sfml.Sprite(function.load_texture("projectiles/flames/{}.png".format(i))) for i in range(2)]
+        self.flamesprite = [sfml.Sprite(function.load_texture("projectiles/flames/{}.png".format(i))) for i in range(3)]
 
     def render(self, renderer, game, state, flame):
         #sprite animation
