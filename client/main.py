@@ -61,7 +61,8 @@ class GameClientHandler(Handler):
         self.clock = precision_timer.Clock()
         self.inputsender_accumulator = 0.0 # this counter will accumulate time to send input at a constant rate
         self.fpscounter_accumulator = 0.0 # this counter will tell us when to update the fps info in the title
-
+        self.fpscounter_frames = 0 # this counter will count the number of frames there are before updating the fps info
+        
     def step(self):
         #game loop
         running = True
@@ -148,8 +149,8 @@ class GameClientHandler(Handler):
                 frame_time = self.clock.tick()
                 frame_time = min(0.25, frame_time) # a limit of 0.25 seconds to prevent complete breakdown
 
-                #self.fpscounter_accumulator += frame_time
-
+                self.fpscounter_accumulator += frame_time
+                
                 self.networker.recieve(self.game, self)
                 self.game.update(self.networker, frame_time)
                 self.renderer.render(self, self.game, frame_time)
@@ -160,12 +161,14 @@ class GameClientHandler(Handler):
                 else:
                     self.network_update_timer += frame_time
 
-                #if self.fpscounter_accumulator > 0.5:
-                #    self.window.title = "PyGG2 - %d FPS" % self.window.get_fps()
-                #    print "%d FPS" % self.window.get_fps()
-                #    self.fpscounter_accumulator = 0.0
+                if self.fpscounter_accumulator > 1.0:
+                    self.window.title = "PyGG2 - %d FPS" % (self.fpscounter_frames / self.fpscounter_accumulator)
+                    print "%d FPS" % (self.fpscounter_frames / self.fpscounter_accumulator)
+                    self.fpscounter_accumulator = 0.0
+                    self.fpscounter_frames = 0
 
                 self.window.display()
+                self.fpscounter_frames += 1
         self.cleanup()
 
     def cleanup(self):
