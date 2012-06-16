@@ -48,6 +48,9 @@ class GameClientHandler(Handler):
 
         for pressedlistkey in self.pressed_list:
             self.pressed_dict[pressedlistkey] = False
+            
+        #Whether or not the window is focused
+        self.window_focused = True 
 
 
     def start_game(self, player_id):
@@ -72,83 +75,94 @@ class GameClientHandler(Handler):
 
     def step(self):
         #game loop
+        running = True
         while True:
             self.networker.recieve(self.game, self)
             if self.networker.has_connected:
                 # check if user exited the game
-                if not self.window.open or sfml.Keyboard.is_key_pressed(sfml.Keyboard.ESCAPE):
+                if not self.window.open or running == False:
+                    self.window.close()
                     break
+                leftmouse = False
                 #main input handling loop
                 for event in self.window.iter_events():
                     if event.type == sfml.Event.CLOSED: #Press the 'x' button
-                        self.window.close()
-                        break;
-                # handle input
+                        running = False
+                    elif event.type == sfml.Event.LOST_FOCUS:
+                        self.window_focused = False
+                    elif event.type == sfml.Event.GAINED_FOCUS:
+                        self.window_focused = True
+                    elif event.type == sfml.Event.KEY_PRESSED: #Key handler
+                        if event.code == sfml.Keyboard.ESCAPE:
+                            running = False
+                    
+                # handle input if window is focused
                 self.oldkeys = self.keys
                 self.keys = get_input(self.window)
-                leftmouse = sfml.Mouse.is_button_pressed(sfml.Mouse.LEFT)
-                middlemouse = sfml.Mouse.is_button_pressed(sfml.Mouse.MIDDLE)
-                rightmouse = sfml.Mouse.is_button_pressed(sfml.Mouse.RIGHT)
-
-                mouse_x, mouse_y = sfml.Mouse.get_position(self.window)
-                our_player = self.game.current_state.players[self.our_player_id]
-                our_player.up = self.keys["up"]
-                our_player.down = self.keys["down"]
-                our_player.left = self.keys["left"]
-                our_player.right = self.keys["right"]
-                our_player.leftmouse = leftmouse
-                our_player.middlemouse = middlemouse
-                our_player.rightmouse = rightmouse
-                our_player.aimdirection = function.point_direction(self.window.width / 2, self.window.height / 2, mouse_x, mouse_y)
-
-                if sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM1):
-                    event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_SCOUT)
-                    self.networker.events.append((self.networker.sequence, event))
-                elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM2):
-                    event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_PYRO)
-                    self.networker.events.append((self.networker.sequence, event))
-                elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM3):
-                    event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_SOLDIER)
-                    self.networker.events.append((self.networker.sequence, event))
-                elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM4):
-                    event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_HEAVY)
-                    self.networker.events.append((self.networker.sequence, event))
-                elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM6):
-                    event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_MEDIC)
-                    self.networker.events.append((self.networker.sequence, event))
-                elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM7):
-                    event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_ENGINEER)
-                    self.networker.events.append((self.networker.sequence, event))
-                elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM8):
-                    event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_SPY)
-                    self.networker.events.append((self.networker.sequence, event))
-                elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.Q):
-                    event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_QUOTE)
-                    self.networker.events.append((self.networker.sequence, event))
-
-
-                #This for loop detects to see if a key has been pressed. Currently useful for precision offsets
-                #DEBUGTOOL
-                #for keypress in self.pressed_list:
-                #    if self.window.is_key_pressed(keypress) == True and self.pressed_dict[keypress] == False:
-                #        self.pressed_dict[keypress] = True
-                #        if keypress == key.LEFT:
-                #            self.game.horizontal -= 1
-                #        if keypress == key.RIGHT:
-                #            self.game.horizontal += 1
-                #            self.pressed_right = True
-                #        if keypress == key.UP:
-                #            self.game.vertical -= 1
-                #        if keypress == key.DOWN:
-                #            self.game.vertical += 1
-                #        if keypress == key.LEFT_SHIFT:
-                #            print("HORIZONTAL OFFSET = " + str(self.game.horizontal))
-                #            print("VERTICAL OFFSET = " + str(self.game.vertical))
-                #    elif self.window.is_key_pressed(keypress) == False:
-                #            self.pressed_dict[keypress] = False
-                # did we just release the F11 button? if yes, go fullscreen
-                if sfml.Keyboard.is_key_pressed(sfml.Keyboard.F11):
-                    self.window.fullscreen = not self.window.fullscreen
+                if self.window_focused:
+                    leftmouse = sfml.Mouse.is_button_pressed(sfml.Mouse.LEFT)
+                    middlemouse = sfml.Mouse.is_button_pressed(sfml.Mouse.MIDDLE)
+                    rightmouse = sfml.Mouse.is_button_pressed(sfml.Mouse.RIGHT)
+    
+                    mouse_x, mouse_y = sfml.Mouse.get_position(self.window)
+                    our_player = self.game.current_state.players[self.our_player_id]
+                    our_player.up = self.keys["up"]
+                    our_player.down = self.keys["down"]
+                    our_player.left = self.keys["left"]
+                    our_player.right = self.keys["right"]
+                    our_player.leftmouse = leftmouse
+                    our_player.middlemouse = middlemouse
+                    our_player.rightmouse = rightmouse
+                    our_player.aimdirection = function.point_direction(self.window.width / 2, self.window.height / 2, mouse_x, mouse_y)
+    
+                    if sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM1):
+                        event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_SCOUT)
+                        self.networker.events.append((self.networker.sequence, event))
+                    elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM2):
+                        event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_PYRO)
+                        self.networker.events.append((self.networker.sequence, event))
+                    elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM3):
+                        event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_SOLDIER)
+                        self.networker.events.append((self.networker.sequence, event))
+                    elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM4):
+                        event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_HEAVY)
+                        self.networker.events.append((self.networker.sequence, event))
+                    elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM6):
+                        event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_MEDIC)
+                        self.networker.events.append((self.networker.sequence, event))
+                    elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM7):
+                        event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_ENGINEER)
+                        self.networker.events.append((self.networker.sequence, event))
+                    elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM8):
+                        event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_SPY)
+                        self.networker.events.append((self.networker.sequence, event))
+                    elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.Q):
+                        event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_QUOTE)
+                        self.networker.events.append((self.networker.sequence, event))
+    
+    
+                    #This for loop detects to see if a key has been pressed. Currently useful for precision offsets
+                    #DEBUGTOOL
+                    #for keypress in self.pressed_list:
+                    #    if self.window.is_key_pressed(keypress) == True and self.pressed_dict[keypress] == False:
+                    #        self.pressed_dict[keypress] = True
+                    #        if keypress == key.LEFT:
+                    #            self.game.horizontal -= 1
+                    #        if keypress == key.RIGHT:
+                    #            self.game.horizontal += 1
+                    #            self.pressed_right = True
+                    #        if keypress == key.UP:
+                    #            self.game.vertical -= 1
+                    #        if keypress == key.DOWN:
+                    #            self.game.vertical += 1
+                    #        if keypress == key.LEFT_SHIFT:
+                    #            print("HORIZONTAL OFFSET = " + str(self.game.horizontal))
+                    #            print("VERTICAL OFFSET = " + str(self.game.vertical))
+                    #    elif self.window.is_key_pressed(keypress) == False:
+                    #            self.pressed_dict[keypress] = False
+                    # did we just release the F11 button? if yes, go fullscreen
+                    if sfml.Keyboard.is_key_pressed(sfml.Keyboard.F11):
+                        self.window.fullscreen = not self.window.fullscreen
 
                 # update the game and render
                 frame_time = self.clock.tick()
