@@ -35,20 +35,9 @@ class GameClientHandler(Handler):
         # Gets set to true when we're disconnecting, for the networker
         self.destroy = False
 
-        #These are used for when we want to detect when certain keys are pressed; append to this list which keys you want tracked
-        #(don't forget to remember to add the handle to the step loop below!)
-        #DEBUGTOOL
-        self.pressed_list = [
-            sfml.Keyboard.UP,
-            sfml.Keyboard.LEFT,
-            sfml.Keyboard.RIGHT,
-            ]
         #Generate Dictionary
         self.pressed_dict = {}
 
-        for pressedlistkey in self.pressed_list:
-            self.pressed_dict[pressedlistkey] = False
-            
         #Whether or not the window is focused
         self.window_focused = True 
 
@@ -95,6 +84,17 @@ class GameClientHandler(Handler):
                     elif event.type == sfml.Event.KEY_PRESSED: #Key handler
                         if event.code == sfml.Keyboard.ESCAPE:
                             running = False
+                        elif event.code == sfml.Keyboard.LEFT:
+                                self.game.horizontal -= 1
+                        elif event.code == sfml.Keyboard.RIGHT:
+                            self.game.horizontal += 1
+                        elif event.code == sfml.Keyboard.UP:
+                            self.game.vertical -= 1
+                        elif event.code == sfml.Keyboard.DOWN:
+                            self.game.vertical += 1
+                        elif event.code == sfml.Keyboard.L_SHIFT:
+                            print("HORIZONTAL OFFSET = " + str(self.game.horizontal))
+                            print("VERTICAL OFFSET = " + str(self.game.vertical))
                     
                 # handle input if window is focused
                 self.oldkeys = self.keys
@@ -140,29 +140,9 @@ class GameClientHandler(Handler):
                         event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_QUOTE)
                         self.networker.events.append((self.networker.sequence, event))
     
-    
-                    #This for loop detects to see if a key has been pressed. Currently useful for precision offsets
-                    #DEBUGTOOL
-                    #for keypress in self.pressed_list:
-                    #    if self.window.is_key_pressed(keypress) == True and self.pressed_dict[keypress] == False:
-                    #        self.pressed_dict[keypress] = True
-                    #        if keypress == key.LEFT:
-                    #            self.game.horizontal -= 1
-                    #        if keypress == key.RIGHT:
-                    #            self.game.horizontal += 1
-                    #            self.pressed_right = True
-                    #        if keypress == key.UP:
-                    #            self.game.vertical -= 1
-                    #        if keypress == key.DOWN:
-                    #            self.game.vertical += 1
-                    #        if keypress == key.LEFT_SHIFT:
-                    #            print("HORIZONTAL OFFSET = " + str(self.game.horizontal))
-                    #            print("VERTICAL OFFSET = " + str(self.game.vertical))
-                    #    elif self.window.is_key_pressed(keypress) == False:
-                    #            self.pressed_dict[keypress] = False
                     # did we just release the F11 button? if yes, go fullscreen
-                    if sfml.Keyboard.is_key_pressed(sfml.Keyboard.F11):
-                        self.window.fullscreen = not self.window.fullscreen
+                    #if sfml.Keyboard.is_key_pressed(sfml.Keyboard.F11):
+                    #    self.window.fullscreen = not self.window.fullscreen
 
                 # update the game and render
                 frame_time = self.clock.tick()
