@@ -137,6 +137,9 @@ class Shotgun(Weapon):
             projectile.Shot(game, state, self.id, self.shotdamage, direction, speed)
 
         self.refirealarm = self.refiretime
+
+    def fire_secondary(self, game, state):
+        owner = state.entities[self.owner]
         sentry.Building_Sentry(game, state, state.players[owner.player_id])
 
 class Medigun(Weapon):

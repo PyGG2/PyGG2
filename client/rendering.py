@@ -11,12 +11,12 @@ import map_renderer
 import character_renderer
 import weapon_renderer
 import projectile_renderer
-#import sentry_renderer
+import sentry_renderer
 #import spectator
-#import engine.character
-#import engine.weapon
-#import engine.projectile
-#import engine.sentry
+import engine.character
+import engine.weapon
+import engine.projectile
+import engine.sentry
 #import hud_renderer
 
 class GameRenderer(object):
@@ -53,8 +53,8 @@ class GameRenderer(object):
             engine.projectile.Flame: projectile_renderer.FlameRenderer(),
             engine.projectile.Rocket: projectile_renderer.RocketRenderer(),
             engine.projectile.Needle : projectile_renderer.NeedleRenderer(),
-            #engine.sentry.Building_Sentry: sentry_renderer.BuildingSentryRenderer(),
-            #engine.sentry.Sentry: sentry_renderer.SentryRenderer(),
+            engine.sentry.Building_Sentry: sentry_renderer.BuildingSentryRenderer(),
+            engine.sentry.Sentry: sentry_renderer.SentryRenderer(),
         }
 
         self.world_sprites = []
