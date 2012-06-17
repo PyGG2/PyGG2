@@ -91,25 +91,24 @@ class Sentry(entity.MovingObject):
         self.hp = hp
         self.flip = flip
         self.detection_radius = 375
-        
-        
+
         self.rotating = False
         self.turret_flip = flip
-        
+
         self.rotatestart = 0
         self.rotateend = 4
         self.rotateindex = self.rotatestart;
         self.default_direction = 180 * self.flip
         self.direction = self.default_direction
-        
+
         #targetting Queue
         self.nearest_target = -1
         self.target_queue = []
-        
+
     def step(self, game, state, frametime):
-        
         # TODO: Aim at nearest enemy
-        
+        # TODO: Clean up
+
         if self.hp <= 0:
             self.destroy(state)
         self.target_queue = [] #clear the list

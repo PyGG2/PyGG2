@@ -24,9 +24,12 @@ class Character(entity.MovingObject):
 
         self.player_id = player_id
 
-        self.flip = False # are we flipped around?
-        self.intel = False # has intel (for drawing purposes)
-        self.just_spawned = False # have we just spawned?
+        # are we flipped around?
+        self.flip = False
+        # has intel (for drawing purposes)
+        self.intel = False
+        # have we just spawned?
+        self.just_spawned = False
         # time tracker for the moving of the character's legs
         self.animoffset = 0.0
         self.hp_offset = -1 # FIXME: REMOVE; THIS ONLY EXISTS FOR HEALTH HUD TESTING
