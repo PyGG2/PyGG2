@@ -16,7 +16,7 @@ class Game:
         self.servername = ""
         self.isserver = False
         #DEBUGTOOL
-        self.lag_comp = False
+        self.lag_comp = True
         self.old_states = {}
 
         # map data

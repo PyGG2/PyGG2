@@ -56,13 +56,10 @@ def Server_Snapshot_Update(client, networker, game, event):
                 key1 = times[0]
                 key2 = keys[keys.index(key1) + (key1<time)]
 
-                if key1 == key2:
-                    state = game.old_states[key1]
-                else:
-                    state_1 = game.old_states[key1]
-                    state_2 = game.old_states[key2]
-                    state = state_1.copy()
-                    state.interpolate(state_1, state_2, (time-key1)/(key2-key1))
+                state_1 = game.old_states[key1]
+                state_2 = game.old_states[key2]
+                state = state_1.copy()
+                state.interpolate(state_1, state_2, (time-key1)/(key2-key1))
 
         else:
             state = game.current_state
