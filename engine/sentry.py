@@ -25,11 +25,10 @@ class Building_Sentry(entity.MovingObject):
         self.building_time = 0
 
         self.owner_id = owner.id
-        character = state.entities[owner.character_id]
-        self.x = character.x
-        self.y = character.y
-        
-        if character.flip == True:
+        self.x = owner.x
+        self.y = owner.y
+
+        if owner.flip == True:
             self.flip = True
         else:
             self.flip = False
@@ -60,7 +59,7 @@ class Building_Sentry(entity.MovingObject):
                 if self.hp >= self.max_hp:
                     self.hp = self.max_hp
                 # Create a finished sentry, and destroy the building sentry object
-                owner = state.players[self.owner_id]
+                owner = state.entities[self.owner_id]
                 owner.sentry = Sentry(game, state, self.owner_id, self.x, self.y, self.hp, self.flip)
                 self.destroy(state)
             else:
@@ -78,8 +77,6 @@ class Building_Sentry(entity.MovingObject):
     def destroy(self, state):
         # TODO: Sentry destruction syncing, bubble
         super(Building_Sentry, self).destroy(state)
-        owner = state.players[self.owner_id]
-        owner.sentry = None
 
 
 class Sentry(entity.MovingObject):
@@ -132,29 +129,31 @@ class Sentry(entity.MovingObject):
                 self.rotating = True
         else:
             self.nearest_target = -1
-            
+
         if self.nearest_target == -1 and self.flip != self.turret_flip: #reset to old position
             self.rotating = True
             self.direction = self.default_direction
-            
+
         if self.rotating == True:
             self.rotateindex += 0.15
             if (self.rotateindex >= self.rotateend):
                 self.rotating = False
                 self.turret_flip = not self.turret_flip
                 self.rotateindex = self.rotatestart
+
     def interpolate(self, prev_obj, next_obj, alpha):
         super(Sentry, self).interpolate(prev_obj, next_obj, alpha)
         self.hp = prev_obj.hp + (next_obj.hp - prev_obj.hp) * alpha
         self.direction = prev_obj.direction + (next_obj.direction - prev_obj.direction) * alpha
-        
+
         self.rotateindex = prev_obj.rotateindex + (next_obj.rotateindex - prev_obj.rotateindex) * alpha
         if alpha < 0.5: self.rotating = prev_obj.rotating
         else: self.rotating = next_obj.rotating
         if alpha < 0.5: self.turret_flip = prev_obj.turret_flip
         else: self.turret_flip = next_obj.turret_flip
+
     def destroy(self, state):
         # TODO: Sentry destruction syncing, bubble
         super(Sentry, self).destroy(state)
-        owner = state.players[self.owner_id]
+        owner = state.entities[self.owner_id]
         owner.sentry = None

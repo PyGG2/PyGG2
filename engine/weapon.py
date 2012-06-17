@@ -140,7 +140,9 @@ class Shotgun(Weapon):
 
     def fire_secondary(self, game, state):
         owner = state.entities[self.owner]
-        sentry.Building_Sentry(game, state, state.players[owner.player_id])
+        if owner.sentry != None:
+            owner.sentry.destroy(state)
+        owner.sentry = sentry.Building_Sentry(game, state, owner)
 
 class Medigun(Weapon):
     maxammo = 40

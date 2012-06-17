@@ -33,6 +33,7 @@ class Character(entity.MovingObject):
 
         self.can_doublejump = False
         self.desired_direction = 0
+        self.sentry = None
 
         self.issynced = True
 
