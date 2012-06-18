@@ -12,22 +12,22 @@ import sentry
 
 # abstract class, don't directly instantiate
 class Weapon(entity.Entity):
-    def __init__(self, game, state, owner):
+    def __init__(self, game, state, owner_id):
         super(Weapon, self).__init__(game, state)
 
-        self.owner = owner
+        self.owner_id = owner_id
         self.refirealarm = 0.0
         self.ammo = self.maxammo
-        self.direction = state.entities[self.owner].get_player(game, state).aimdirection
+        self.direction = state.entities[self.owner_id].get_player(game, state).aimdirection
 
         self.issynced = True
 
     def beginstep(self, game, state, frametime):
-        owner = state.entities[self.owner]
+        owner = state.entities[self.owner_id]
         self.direction = owner.get_player(game, state).aimdirection
 
     def step(self, game, state, frametime):
-        owner = state.entities[self.owner]
+        owner = state.entities[self.owner_id]
 
         if self.refirealarm <= 0:
             self.refirealarm = 0.0
@@ -65,7 +65,7 @@ class Scattergun(Weapon):
     shotdamage = 8
 
     def fire_primary(self, game, state):
-        owner = state.entities[self.owner]
+        owner = state.entities[self.owner_id]
         random.seed(str(owner.get_player(game, state).id) + ";" + str(state.time))
 
         for i in range(10):
@@ -106,7 +106,7 @@ class Minigun(Weapon):
     shotdamage = 8
 
     def fire_primary(self, game, state):
-        owner = state.entities[self.owner]
+        owner = state.entities[self.owner_id]
         random.seed(str(owner.get_player(game, state).id) + ";" + str(state.time))
 
         direction = owner.get_player(game, state).aimdirection + (7 - random.randint(0, 14))
@@ -123,7 +123,7 @@ class Shotgun(Weapon):
     shotdamage = 7
 
     def fire_primary(self, game, state):
-        owner = state.entities[self.owner]
+        owner = state.entities[self.owner_id]
         random.seed(str(owner.get_player(game, state).id) + ";" + str(state.time))
         for i in range(5):
             direction = owner.get_player(game, state).aimdirection + (5 - random.randint(0, 11))
@@ -139,7 +139,7 @@ class Shotgun(Weapon):
         self.refirealarm = self.refiretime
 
     def fire_secondary(self, game, state):
-        owner = state.entities[self.owner]
+        owner = state.entities[self.owner_id]
         if owner.sentry != None:
             owner.sentry.destroy(state)
         owner.sentry = sentry.Building_Sentry(game, state, owner)
@@ -151,7 +151,7 @@ class Medigun(Weapon):
     shotdamage = 4
 
     def fire_primary(self, game, state):
-        owner = state.entities[self.owner]
+        owner = state.entities[self.owner_id]
         random.seed(str(owner.get_player(game, state).id) + ";" + str(state.time))
 
         direction = owner.get_player(game, state).aimdirection + (5 - random.randint(0, 11))
@@ -172,7 +172,7 @@ class Revolver(Weapon):
     reloadtime = .5
 
     def fire_primary(self, game, state):
-        owner = state.entities[self.owner]
+        owner = state.entities[self.owner_id]
         print("Cloaking: ", owner.cloaking, "| is very unresponsive; print statement in line 89 of weapon.py")
         if not owner.cloaking:
             random.seed(str(owner.player_id) + ";" + str(state.time))

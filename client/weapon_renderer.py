@@ -10,7 +10,7 @@ class WeaponRenderer(object):
         pass
 
     def render(self, renderer, game, state, weapon):
-        owner = state.entities[weapon.owner]
+        owner = state.entities[weapon.owner_id]
 
         if weapon.refiretime - weapon.refirealarm < 0.02:
             sprite = self.firingsprite
@@ -25,7 +25,7 @@ class WeaponRenderer(object):
             sprite.scale = (1, 1)
             sprite.position = renderer.get_screen_coords(owner.x + self.weaponoffset[0] , owner.y + self.weaponoffset[1] )
             weapon_rotate = self.weapon_rotate_point[0] , self.weapon_rotate_point[1]
-            
+
         sprite.origin = weapon_rotate
         sprite.rotation = 360 - weapon.direction
 
