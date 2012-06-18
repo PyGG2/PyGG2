@@ -111,7 +111,7 @@ class RevolverRenderer(WeaponRenderer):
         self.firingsprite = sfml.Sprite(function.load_texture("weapons/revolver2s/2.png"))
 
     def render(self, renderer, game, state, weapon):
-        if not state.entities[weapon.owner].cloaking:#FIXME: or player.team == out team
+        if not state.entities[weapon.owner_id].cloaking:#FIXME: or player.team == out team
             WeaponRenderer.render(self, renderer, game, state, weapon)
         else:
             pass# TODO: Transparent drawing
