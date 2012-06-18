@@ -37,6 +37,7 @@ class Character(entity.MovingObject):
         self.can_doublejump = False
         self.desired_direction = 0
         self.sentry = None
+        self.team = state.players[self.player_id].team
 
         self.issynced = True
 

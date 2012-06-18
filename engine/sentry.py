@@ -27,6 +27,7 @@ class Building_Sentry(entity.MovingObject):
         self.owner_id = owner.id
         self.x = owner.x
         self.y = owner.y
+        self.team = owner.team
 
         if owner.flip == True:
             self.flip = True
@@ -60,7 +61,7 @@ class Building_Sentry(entity.MovingObject):
                     self.hp = self.max_hp
                 # Create a finished sentry, and destroy the building sentry object
                 owner = state.entities[self.owner_id]
-                owner.sentry = Sentry(game, state, self.owner_id, self.x, self.y, self.hp, self.flip)
+                owner.sentry = Sentry(game, state, self.owner_id, self.x, self.y, self.hp, self.flip, self.team)
                 self.destroy(state)
             else:
                 # Continue building
@@ -82,7 +83,7 @@ class Building_Sentry(entity.MovingObject):
 class Sentry(entity.MovingObject):
     collision_mask = mask.Mask(26, 19, True)
 
-    def __init__(self, game, state, owner_id, x, y, hp, flip):
+    def __init__(self, game, state, owner_id, x, y, hp, flip, team):
         super(Sentry, self).__init__(game, state)
         self.owner_id = owner_id
         self.aiming_direction = 0
@@ -91,6 +92,7 @@ class Sentry(entity.MovingObject):
         self.hp = hp
         self.flip = flip
         self.detection_radius = 375
+        self.team = team
 
         self.rotating = False
         self.turret_flip = flip

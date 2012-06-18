@@ -23,6 +23,7 @@ class Shot(entity.MovingObject):
         self.flight_time = 0.0
         self.sourceweapon_id = sourceweapon_id
         self.damage = damage
+        self.team = state.entities[self.sourceweapon_id].team
 
         srcwep = state.entities[sourceweapon_id]
         srcchar = state.entities[srcwep.owner_id]
@@ -88,6 +89,7 @@ class Needle(entity.MovingObject):
         self.flight_time = 0.0
         self.sourceweapon_id = sourceweapon_id
         self.damage = damage
+        self.team = state.entities[self.sourceweapon_id].team
 
         srcwep = state.entities[sourceweapon_id]
         srcchar = state.entities[srcwep.owner_id]
@@ -155,6 +157,7 @@ class Rocket(entity.MovingObject):
         self.direction = 0.0
         self.flight_time = 0.0
         self.sourceweapon_id = sourceweapon_id
+        self.team = state.entities[self.sourceweapon_id].team
 
         srcwep = state.entities[sourceweapon_id]
         srcchar = state.entities[srcwep.owner_id]
@@ -247,6 +250,7 @@ class Flame(entity.MovingObject):
         self.direction = 0.0
         self.flight_time = 0.0
         self.sourceweapon_id = sourceweapon_id
+        self.team = state.entities[self.sourceweapon_id].team
 
         srcwep = state.entities[sourceweapon_id]
         srcchar = state.entities[srcwep.owner_id]
@@ -302,6 +306,7 @@ class Blade(entity.MovingObject):
         self.direction = 0.0
         self.flight_time = 0.0
         self.sourceweapon_id = sourceweapon_id
+        self.team = state.entities[self.sourceweapon_id].team
 
         srcwep = state.entities[sourceweapon_id]
         srcchar = state.entities[srcwep.owner_id]

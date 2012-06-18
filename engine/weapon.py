@@ -19,6 +19,7 @@ class Weapon(entity.Entity):
         self.refirealarm = 0.0
         self.ammo = self.maxammo
         self.direction = state.entities[self.owner_id].get_player(game, state).aimdirection
+        self.team = state.entities[self.owner_id].team
 
         self.issynced = True
 
