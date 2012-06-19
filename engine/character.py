@@ -16,7 +16,7 @@ class Character(entity.MovingObject):
     # friction factor per second of null movement; calculated directly from Gang Garrison 2
     friction = 0.01510305449388463132584804061124
     # acceleration factor, overridden in each class
-    run_power = 1.0
+    run_power = 1.4;
 
     def __init__(self, game, state, player_id):
         super(Character, self).__init__(game, state)
@@ -58,7 +58,7 @@ class Character(entity.MovingObject):
         # unlike the null movement in Source or the "preferred direction" that's
         # present in a lot of indie games (aigh)
         # rewrite acceptable if it makes it less shitload of code :[
-        old_hspeed = self.hspeed
+        old_hspeed = self.hspeed;
                                                     # left movement
         if player.left and not player.last_left:
             self.desired_direction = -1
@@ -117,69 +117,27 @@ class Character(entity.MovingObject):
             self.hp_offset = 1
         if self.hp > self.maxhp:
             self.hp_offset = -1
-            
-    def in_wall(self, x, y): #syntactical sugar function
-        return game.map.collision_mask.overlap(self.collision_mask, (int(self.x + x), int(self.y + y)))
-    
-    def ministep(self, x, y, dir):
-        x_d = math.cos(dir) #deltas
-        y_d = math.sin(dir)
-        
-        #try to use a slope to solve any potential collision
-        for i in range(1,7):
-            if self.in_wall(x+x_d, y-i+1) and not self.in_wall(x+x_d, y-i):
-                y = int(y-i)
-                y_d = min(y_d, 0)#kill vertical inertia because we should be on a floor (this gets returned)
-                break
-            elif self.in_wall(x+x_d, y+i+1) and not self.in_wall(x+x_d, y+i)
-                y = int(y+i)
-                y_d = min(y_d, 0)
-                break
-            #we failed to do so and we do in fact have a collision to deal with
-            elif i == 6 and self.in_wall(x+x_d, y-i):
-                
-        #so far, so good
-        if not self.in_wall(x+x_d, y+y_d):
-            x += x_d
-            y += y_d
-            return 0
-        else:
-            #we're hitting a wall, let's fix that
-            if 
-                        
-    
+
     def endstep(self, game, state, frametime):
 
         player = self.get_player(game, state)
         # check if we are on the ground before moving (for walking over 1 unit walls)
-        onground = (not self.in_wall(0, 0)) and self.in_wall(0, 1)
+        onground = True
 
-        player.last_left = player.left
-        player.last_right = player.right
-
-    def void(self)
         # first we move, ignoring walls
         self.x += self.hspeed * frametime
         # if we are in a wall now, we must move back
-        
-        if in_wall(0, 0):
+
+        if game.map.collision_mask.overlap(self.collision_mask, (int(self.x), int(self.y))):
             # but if we just walked onto a one-unit wall it's ok
             # but we had to be on the ground
-            if not in_wall(0, -6):
-                while in_wall(0, 0):
+            if onground and not game.map.collision_mask.overlap(self.collision_mask, (int(self.x), int(self.y - 6))):
+                while game.map.collision_mask.overlap(self.collision_mask, (int(self.x), int(self.y))):
                     self.y -= 1
             # but sometimes we are so fast we will need to take two stairs at the same time
-            elif not in_wall(0, -12) and in_wall(function.sign(self.hspeed) * -6, 0):
-                while in_wall(0, 0):
+            elif onground and not game.map.collision_mask.overlap(self.collision_mask, (int(self.x), int(self.y - 12))) and game.map.collision_mask.overlap(self.collision_mask, (int(self.x - 6 * function.sign(self.hspeed)), int(self.y))):
+                while game.map.collision_mask.overlap(self.collision_mask, (int(self.x), int(self.y))):
                     self.y -= 1
-            #downward stairscript with hspeed checks
-            elif onground and not in_wall(0, 6):
-                if in_wall(0, 7):
-                    self.y += 6
-            elif onground and game.map.collision_mask.overlap(self.collision_mask, (int(self.x), int(self.y + 13))):
-                if (self.hspeed !=0):
-                    if game.map.collision_mask.overlap(self.collision_mask, (int(self.x - function.sign(self.hspeed)*6), int(self.y + 7))) and not game.map.collision_mask.overlap(self.collision_mask, (int(self.x + function.sign(self.hspeed)*6), int(self.y + 1))):
-                        self.y += 12
             else:
                 self.x = math.floor(self.x) # move back to a whole pixel - TODO math.floor/math.ceil depending on direction
 
@@ -199,6 +157,9 @@ class Character(entity.MovingObject):
                 self.y -= function.sign(self.vspeed)
 
             self.vspeed = 0
+
+        player.last_left = player.left;
+        player.last_right = player.right;
 
     def onground(self, game, state):
         # are we on the ground? About one third of an unit from the ground is enough to qualify for this
@@ -253,7 +214,7 @@ class Character(entity.MovingObject):
 
     def deserialize(self, state, packetstr):
         self.x, self.y, self.hspeed, self.vspeed = struct.unpack_from(">IIii", packetstr)
-        self.hspeed /= 10
+        self.hspeed /= 10;
         packetstr = packetstr[16:]
         byte = struct.unpack_from(">B", packetstr)[0]
         packetstr = packetstr[1:]
@@ -269,7 +230,7 @@ class Scout(Character):
     collision_mask = mask.Mask(12, 33, True)
     max_speed = 252
     maxhp = 100
-    run_power = 1.4
+    run_power = 1.4;
 
     def __init__(self, game, state, player_id):
         Character.__init__(self, game, state, player_id)
@@ -401,7 +362,7 @@ class Quote(Character):
     collision_mask = mask.Mask(12, 33, True)
     max_speed = 252
     maxhp = 100
-    run_power = 1.4
+    run_power = 1.4;
 
     def __init__(self, game, state, player_id):
         Character.__init__(self, game, state, player_id)
