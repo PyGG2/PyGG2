@@ -151,7 +151,7 @@ class Medigun(Weapon):
     reloadtime = 1
     shotdamage = 4
 
-    def fire_primary(self, game, state):
+    def fire_secondary(self, game, state):
         owner = state.entities[self.owner_id]
         random.seed(str(owner.get_player(game, state).id) + ";" + str(state.time))
 
@@ -174,7 +174,6 @@ class Revolver(Weapon):
 
     def fire_primary(self, game, state):
         owner = state.entities[self.owner_id]
-        print("Cloaking: ", owner.cloaking, "| is very unresponsive; print statement in line 89 of weapon.py")
         if not owner.cloaking:
             random.seed(str(owner.player_id) + ";" + str(state.time))
             direction = owner.get_player(game, state).aimdirection + (1 - random.randint(0, 2))
@@ -184,6 +183,7 @@ class Revolver(Weapon):
 
     def fire_secondary(self, game, state):
         state.entities[self.owner].cloaking = not state.entities[self.owner].cloaking# Any ideas how to add a good gradient?
+        print("Cloaking: ", owner.cloaking, "| is very unresponsive; print statement in weapon.py")
 
 class Blade(Weapon):
     maxammo = 4
