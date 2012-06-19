@@ -116,43 +116,43 @@ class Character(entity.MovingObject):
     def in_wall(self, x, y): #syntactical sugar function
         return game.map.collision_mask.overlap(self.collision_mask, (int(self.x + x), int(self.y + y)))
     
-    def ministep(self, x, y, dir):
+    def ministep(self, x, y, dir):#steps one pixel distance along dir; returns x, y, status, x/y deltas
         x_d = math.cos(dir) #deltas
         y_d = math.sin(dir)
+        status = 0 # 0 = none; -1 = sloped up; 1 = sloped down; 2 = in wall but no slope; 3 = in air but no downslope
         
         #try to use a slope to solve any potential collision
         for i in range(1,7):
             if self.in_wall(x+x_d, y-i+1) and not self.in_wall(x+x_d, y-i):
-                y = int(y-i)
+                y = math.floor(y-i)
                 y_d = min(y_d, 0)#kill vertical inertia because we should be on a floor (this gets returned)
+                status = -1
                 break
             elif self.in_wall(x+x_d, y+i+1) and not self.in_wall(x+x_d, y+i)
-                y = int(y+i)
+                y = math.floor(y+i)
                 y_d = min(y_d, 0)
+                status = 1
                 break
-            #we failed to do so and we do in fact have a collision to deal with
-            elif i == 6 and self.in_wall(x+x_d, y-i):
+            #we failed to do so and we do in fact have a collision to deal with (this is the hard part)
+            elif i == 6 and self.in_wall(x+x_d, y-i) and status = 0:
                 
-        #so far, so good
-        if not self.in_wall(x+x_d, y+y_d):
-            x += x_d
-            y += y_d
-            return 0
-        else:
-            #we're hitting a wall, let's fix that
-            if 
-                        
+            #we couldn't slope but we're in the air so it's no problem
+            elif i == 6 and self.in_wall(x+x_d, y-i) and status = 0:
+                x += x_d
+                y += y_d
+                status = 
+                return 0
     
-    def endstep(self, game, state, frametime):
+    def endstep(self, game, state, frametime): #TODO: tracing implementation w/ ministep
         
         player = self.get_player(game, state)
         # check if we are on the ground before moving (for walking over 1 unit walls)
         onground = (not self.in_wall(0, 0)) and self.in_wall(0, 1)
-
+        
         player.last_left = player.left
         player.last_right = player.right
-
-    def void(self)
+    
+    def void(self) #old end step
         # first we move, ignoring walls
         self.x += self.hspeed * frametime
         # if we are in a wall now, we must move back
