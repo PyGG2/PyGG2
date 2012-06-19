@@ -149,13 +149,13 @@ class Character(entity.MovingObject):
 
 
         #downward stairscript with hspeed checks
-        if onground and not game.map.collision_mask.overlap(self.collision_mask, (int(self.x), int(self.y + 6))):
-            if game.map.collision_mask.overlap(self.collision_mask, (int(self.x), int(self.y + 7))):
-                self.y += 6
-            elif game.map.collision_mask.overlap(self.collision_mask, (int(self.x), int(self.y + 13))):
-                if (self.hspeed !=0):
-                    if game.map.collision_mask.overlap(self.collision_mask, (int(self.x + function.sign(self.hspeed)*-6), int(self.y + 7))) and not game.map.collision_mask.overlap(self.collision_mask, (int(self.x + 6), int(self.y + 1))):
-                        self.y += 12
+        #if onground and not game.map.collision_mask.overlap(self.collision_mask, (int(self.x), int(self.y + 6))):
+        #    if game.map.collision_mask.overlap(self.collision_mask, (int(self.x), int(self.y + 7))):
+        #        self.y += 6
+        #    elif game.map.collision_mask.overlap(self.collision_mask, (int(self.x), int(self.y + 13))):
+        #        if (self.hspeed !=0):
+        #            if game.map.collision_mask.overlap(self.collision_mask, (int(self.x + function.sign(self.hspeed)*-6), int(self.y + 7))) and not game.map.collision_mask.overlap(self.collision_mask, (int(self.x + 6), int(self.y + 1))):
+        #                self.y += 12
 
         # same stuff, but now vertically
         self.y += self.vspeed * frametime
