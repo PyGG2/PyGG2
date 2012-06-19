@@ -32,6 +32,13 @@ def point_direction(x1, y1, x2, y2):
     if angle < 0: angle += 360
     return angle
 
+def get_cartesian(angle, length):
+    angle *= 180/math.pi
+    return (cos(angle)*length, sin(angle)*length)
+
+def get_polar(x, y):
+    return (math.atan2(y/x), math.hypot(x, y))
+
 # from http://www.nanobit.net/doxy/quake3/q__math_8c-source.html LerpAngle
 def interpolate_angle(a, b, alpha):
     a, b = a % 360, b % 360
