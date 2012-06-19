@@ -34,7 +34,7 @@ def point_direction(x1, y1, x2, y2):
 
 def get_cartesian(angle, length):
     angle *= 180/math.pi
-    return (cos(angle)*length, sin(angle)*length)
+    return (math.cos(angle)*length, math.sin(angle)*length)
 
 def get_polar(x, y):
     return (math.atan2(y/x), math.hypot(x, y))
