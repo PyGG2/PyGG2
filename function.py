@@ -37,7 +37,7 @@ def get_cartesian(angle, length):
     return (math.cos(angle)*length, math.sin(angle)*length)
 
 def get_polar(x, y):
-    return (math.atan2(y/x), math.hypot(x, y))
+    return (math.atan2(y/x)*math.pi/180, math.hypot(x, y))
 
 # from http://www.nanobit.net/doxy/quake3/q__math_8c-source.html LerpAngle
 def interpolate_angle(a, b, alpha):
