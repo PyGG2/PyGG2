@@ -12,27 +12,36 @@ import sentry
 
 # abstract class, don't directly instantiate
 class Weapon(entity.Entity):
-    def __init__(self, game, state, owner):
+    def __init__(self, game, state, owner_id):
         super(Weapon, self).__init__(game, state)
 
-        self.owner = owner
+        self.owner_id = owner_id
         self.refirealarm = 0.0
+        self.reloadalarm = 0.0
         self.ammo = self.maxammo
-        self.direction = state.entities[self.owner].get_player(game, state).aimdirection
+        self.direction = state.entities[self.owner_id].get_player(game, state).aimdirection
+        self.team = state.entities[self.owner_id].team
 
         self.issynced = True
 
     def beginstep(self, game, state, frametime):
-        owner = state.entities[self.owner]
+        owner = state.entities[self.owner_id]
         self.direction = owner.get_player(game, state).aimdirection
 
     def step(self, game, state, frametime):
-        owner = state.entities[self.owner]
+        owner = state.entities[self.owner_id]
 
         if self.refirealarm <= 0:
             self.refirealarm = 0.0
         else:
             self.refirealarm -= frametime
+
+        if self.reloadalarm <= 0:
+            self.ammo = min(self.maxammo, self.ammo+1)
+            if self.ammo < self.maxammo:
+                self.reloadalarm = self.reloadtime
+        else:
+            self.reloadalarm -= frametime
 
         if owner.get_player(game, state).leftmouse and self.refirealarm == 0:
             self.fire_primary(game, state)
@@ -60,26 +69,29 @@ class Weapon(entity.Entity):
 
 class Scattergun(Weapon):
     maxammo = 6
-    refiretime = .05
+    refiretime = .5
     reloadtime = 1
     shotdamage = 8
 
     def fire_primary(self, game, state):
-        owner = state.entities[self.owner]
-        random.seed(str(owner.get_player(game, state).id) + ";" + str(state.time))
+        if self.ammo > 0:
+            owner = state.entities[self.owner_id]
+            random.seed(str(owner.get_player(game, state).id) + ";" + str(state.time))
 
-        for i in range(10):
-            direction = owner.get_player(game, state).aimdirection + (7 - random.randint(0, 15))
+            for i in range(10):
+                direction = owner.get_player(game, state).aimdirection + (7 - random.randint(0, 15))
 
-            # add user speed to bullet speed but don't change direction of the bullet
-            playerdir = math.degrees(math.atan2(-owner.vspeed, owner.hspeed))
-            diffdir = direction - playerdir
-            playerspeed = math.hypot(owner.hspeed, owner.vspeed)
-            speed = 330 + random.randint(0, 4)*30 + math.cos(math.radians(diffdir)) * playerspeed
+                # add user speed to bullet speed but don't change direction of the bullet
+                playerdir = math.degrees(math.atan2(-owner.vspeed, owner.hspeed))
+                diffdir = direction - playerdir
+                playerspeed = math.hypot(owner.hspeed, owner.vspeed)
+                speed = 330 + random.randint(0, 4)*30 + math.cos(math.radians(diffdir)) * playerspeed
 
-            projectile.Shot(game, state, self.id, self.shotdamage, direction, speed)
+                projectile.Shot(game, state, self.id, self.shotdamage, direction, speed)
 
-        self.refirealarm = self.refiretime
+            self.refirealarm = self.refiretime
+            self.reloadalarm = self.reloadtime
+            self.ammo = max(0, self.ammo-1)
 
 class Flamethrower(Weapon):
     maxammo = 200
@@ -96,8 +108,11 @@ class Rocketlauncher(Weapon):
     reloadtime = 5/6
 
     def fire_primary(self, game, state):
-        projectile.Rocket(game, state, self.id)
-        self.refirealarm = self.refiretime
+        if self.ammo > 0:
+            projectile.Rocket(game, state, self.id)
+            self.refirealarm = self.refiretime
+            self.reloadalarm = self.reloadtime
+            self.ammo = max(0, self.ammo-1)
 
 class Minigun(Weapon):
     maxammo = 200
@@ -106,15 +121,16 @@ class Minigun(Weapon):
     shotdamage = 8
 
     def fire_primary(self, game, state):
-        owner = state.entities[self.owner]
-        random.seed(str(owner.get_player(game, state).id) + ";" + str(state.time))
+        if self.ammo > 0:
+            owner = state.entities[self.owner_id]
+            random.seed(str(owner.get_player(game, state).id) + ";" + str(state.time))
 
-        direction = owner.get_player(game, state).aimdirection + (7 - random.randint(0, 14))
-        speed = 360 + random.randint(0, 1)*30
+            direction = owner.get_player(game, state).aimdirection + (7 - random.randint(0, 14))
+            speed = 360 + random.randint(0, 1)*30
 
-        projectile.Shot(game, state, self.id, self.shotdamage, direction, speed)
+            projectile.Shot(game, state, self.id, self.shotdamage, direction, speed)
 
-        self.refirealarm = self.refiretime
+            self.refirealarm = self.refiretime
 
 class Shotgun(Weapon):
     maxammo = 4
@@ -123,43 +139,54 @@ class Shotgun(Weapon):
     shotdamage = 7
 
     def fire_primary(self, game, state):
-        owner = state.entities[self.owner]
-        random.seed(str(owner.get_player(game, state).id) + ";" + str(state.time))
-        for i in range(5):
-            direction = owner.get_player(game, state).aimdirection + (5 - random.randint(0, 11))
+        if self.ammo > 0:
+            owner = state.entities[self.owner_id]
+            random.seed(str(owner.get_player(game, state).id) + ";" + str(state.time))
+            for i in range(5):
+                direction = owner.get_player(game, state).aimdirection + (5 - random.randint(0, 11))
 
-            # add user speed to bullet speed but don't change direction of the bullet
-            playerdir = math.degrees(math.atan2(-owner.vspeed, owner.hspeed))
-            diffdir = direction - playerdir
-            playerspeed = math.hypot(owner.hspeed, owner.vspeed)
-            speed = 330 + random.randint(0, 4)*30 + math.cos(math.radians(diffdir)) * playerspeed
+                # add user speed to bullet speed but don't change direction of the bullet
+                playerdir = math.degrees(math.atan2(-owner.vspeed, owner.hspeed))
+                diffdir = direction - playerdir
+                playerspeed = math.hypot(owner.hspeed, owner.vspeed)
+                speed = 330 + random.randint(0, 4)*30 + math.cos(math.radians(diffdir)) * playerspeed
 
-            projectile.Shot(game, state, self.id, self.shotdamage, direction, speed)
+                projectile.Shot(game, state, self.id, self.shotdamage, direction, speed)
 
-        self.refirealarm = self.refiretime
-        sentry.Building_Sentry(game, state, state.players[owner.player_id])
-        
+            self.refirealarm = self.refiretime
+            self.reloadalarm = self.reloadtime
+            self.ammo = max(0, self.ammo-1)
+
+    def fire_secondary(self, game, state):
+        owner = state.entities[self.owner_id]
+        if owner.sentry != None:
+            owner.sentry.destroy(state)
+        owner.sentry = sentry.Building_Sentry(game, state, owner)
+
 class Medigun(Weapon):
     maxammo = 40
     refiretime = 0.05
     reloadtime = 1
     shotdamage = 4
 
-    def fire_primary(self, game, state):
-        owner = state.entities[self.owner]
-        random.seed(str(owner.get_player(game, state).id) + ";" + str(state.time))
-        
-        direction = owner.get_player(game, state).aimdirection + (5 - random.randint(0, 11))
+    def fire_secondary(self, game, state):
+        if self.ammo > 0:
+            owner = state.entities[self.owner_id]
+            random.seed(str(owner.get_player(game, state).id) + ";" + str(state.time))
 
-        # add user speed to needle speed but don't change direction of the bullet
-        playerdir = math.degrees(math.atan2(-owner.vspeed, owner.hspeed))
-        diffdir = direction - playerdir
-        playerspeed = math.hypot(owner.hspeed, owner.vspeed)
-        speed = 330 + random.randint(0, 4)*30 + math.cos(math.radians(diffdir)) * playerspeed
+            direction = owner.get_player(game, state).aimdirection + (5 - random.randint(0, 11))
 
-        projectile.Needle(game, state, self.id, self.shotdamage, direction, speed)
+            # add user speed to needle speed but don't change direction of the bullet
+            playerdir = math.degrees(math.atan2(-owner.vspeed, owner.hspeed))
+            diffdir = direction - playerdir
+            playerspeed = math.hypot(owner.hspeed, owner.vspeed)
+            speed = 330 + random.randint(0, 4)*30 + math.cos(math.radians(diffdir)) * playerspeed
 
-        self.refirealarm = self.refiretime
+            projectile.Needle(game, state, self.id, self.shotdamage, direction, speed)
+
+            self.refirealarm = self.refiretime
+            self.reloadalarm = self.reloadtime
+            self.ammo = max(0, self.ammo-1)
 
 class Revolver(Weapon):
     maxammo = 6
@@ -167,17 +194,20 @@ class Revolver(Weapon):
     reloadtime = .5
 
     def fire_primary(self, game, state):
-        owner = state.entities[self.owner]
-        print("Cloaking: ", owner.cloaking, "| is very unresponsive; print statement in line 89 of weapon.py")
-        if not owner.cloaking:
-            random.seed(str(owner.player_id) + ";" + str(state.time))
-            direction = owner.get_player(game, state).aimdirection + (1 - random.randint(0, 2))
-            projectile.Shot(game, state, self.id, damage=28, direction=direction, speed=630)
-            self.refirealarm = self.refiretime
-        #else: Stab
+        if self.ammo > 0:
+            owner = state.entities[self.owner_id]
+            if not owner.cloaking:
+                random.seed(str(owner.player_id) + ";" + str(state.time))
+                direction = owner.get_player(game, state).aimdirection + (1 - random.randint(0, 2))
+                projectile.Shot(game, state, self.id, damage=28, direction=direction, speed=630)
+                self.refirealarm = self.refiretime
+                self.reloadalarm = self.reloadtime
+                self.ammo = max(0, self.ammo-1)
+            #else: Stab
 
     def fire_secondary(self, game, state):
         state.entities[self.owner].cloaking = not state.entities[self.owner].cloaking# Any ideas how to add a good gradient?
+        print("Cloaking: ", owner.cloaking, "| is very unresponsive; print statement in weapon.py")
 
 class Blade(Weapon):
     maxammo = 4

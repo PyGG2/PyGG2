@@ -1,8 +1,7 @@
 from __future__ import division, print_function
 
 import math
-import pygrafix
-
+import sfml
 import function
 
 class ClassRenderer(object):
@@ -18,19 +17,18 @@ class ClassRenderer(object):
         if character.intel:
             anim_frame += 2
 
-        sprite = pygrafix.sprite.Sprite(self.sprites[anim_frame])
+        sprite = self.sprites[anim_frame]
 
         if character.flip:
-            sprite.flip_x = True
-            sprite.anchor_x = self.spriteoffset_flipped[0]
-            sprite.anchor_y = self.spriteoffset_flipped[1]
+            sprite.scale = (-1, 1)
+            sprite.origin = self.spriteoffset_flipped
         else:
-            sprite.anchor_x = self.spriteoffset[0]
-            sprite.anchor_y = self.spriteoffset[1]
+            sprite.scale = (1, 1)
+            sprite.origin = self.spriteoffset
 
         sprite.position = renderer.get_screen_coords(character.x, character.y)
 
-        renderer.world_sprites.append(sprite)
+        renderer.window.draw(sprite)
         #draw mask
         #w, h = character.collision_mask.get_size()
         #location =  renderer.get_screen_coords(character.x, character.y)
@@ -42,7 +40,7 @@ class ClassRenderer(object):
 class ScoutRenderer(ClassRenderer):
     def __init__(self):
         self.depth = 0
-        self.sprites = [pygrafix.image.load("characters/scoutreds/%s.png" % i) for i in range(4)]
+        self.sprites = [sfml.Sprite(function.load_texture(("characters/scoutreds/%i.png" % i))) for i in range(4)]
 
         self.spriteoffset = (24, 30)
         self.spriteoffset_flipped = (28, 30)
@@ -50,7 +48,7 @@ class ScoutRenderer(ClassRenderer):
 class PyroRenderer(ClassRenderer):
     def __init__(self):
         self.depth = 0
-        self.sprites = [pygrafix.image.load("characters/pyroreds/%s.png" % i) for i in range(4)]
+        self.sprites = [sfml.Sprite(function.load_texture(("characters/pyroreds/%s.png" % i))) for i in range(4)]
 
         self.spriteoffset = (24, 30)
         self.spriteoffset_flipped = (28, 30)
@@ -58,7 +56,7 @@ class PyroRenderer(ClassRenderer):
 class SoldierRenderer(ClassRenderer):
     def __init__(self):
         self.depth = 0
-        self.sprites = [pygrafix.image.load("characters/soldierreds/%s.png" % i) for i in range(4)]
+        self.sprites = [sfml.Sprite(function.load_texture(("characters/soldierreds/%s.png" % i))) for i in range(4)]
 
         self.spriteoffset = (24, 30)
         self.spriteoffset_flipped = (28, 30)
@@ -66,7 +64,7 @@ class SoldierRenderer(ClassRenderer):
 class HeavyRenderer(ClassRenderer):
     def __init__(self):
         self.depth = 0
-        self.sprites = [pygrafix.image.load("characters/heavyreds/%s.png" % i) for i in range(4)]
+        self.sprites = [sfml.Sprite(function.load_texture(("characters/heavyreds/%s.png" % i))) for i in range(4)]
 
         self.spriteoffset = (14, 30)
         self.spriteoffset_flipped = (36, 30)
@@ -74,7 +72,7 @@ class HeavyRenderer(ClassRenderer):
 class MedicRenderer(ClassRenderer):
     def __init__(self):
         self.depth = 0
-        self.sprites = [pygrafix.image.load("characters/medicreds/%s.png" % i) for i in range(4)]
+        self.sprites = [sfml.Sprite(function.load_texture(("characters/medicreds/%s.png" % i))) for i in range(4)]
 
         self.spriteoffset = (23, 30)
         self.spriteoffset_flipped = (29, 30)
@@ -82,7 +80,7 @@ class MedicRenderer(ClassRenderer):
 class EngineerRenderer(ClassRenderer):
     def __init__(self):
         self.depth = 0
-        self.sprites = [pygrafix.image.load("characters/engineerreds/%s.png" % i) for i in range(4)]
+        self.sprites = [sfml.Sprite(function.load_texture(("characters/engineerreds/%s.png" % i))) for i in range(4)]
 
         self.spriteoffset = (26, 30)
         self.spriteoffset_flipped = (26, 30)
@@ -90,7 +88,7 @@ class EngineerRenderer(ClassRenderer):
 class SpyRenderer(ClassRenderer):
     def __init__(self):
         self.depth = 0
-        self.sprites = [pygrafix.image.load("characters/spyreds/%s.png" % i) for i in range(4)]
+        self.sprites = [sfml.Sprite(function.load_texture(("characters/spyreds/%s.png" % i))) for i in range(4)]
 
         self.spriteoffset = (22, 30)
         self.spriteoffset_flipped = (30, 30)
@@ -103,7 +101,7 @@ class SpyRenderer(ClassRenderer):
 class QuoteRenderer(ClassRenderer):
     def __init__(self):
         self.depth = 0
-        self.sprites = [pygrafix.image.load("characters/quotereds/%s.png" % i) for i in range(4)]
+        self.sprites = [sfml.Sprite(function.load_texture(("characters/quotereds/%s.png" % i))) for i in range(4)]
 
         self.spriteoffset = (16, -1)
         self.spriteoffset_flipped = (16, -1)
