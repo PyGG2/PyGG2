@@ -26,9 +26,10 @@ class GameClientHandler(Handler):
         self.game = engine.game.Game()
 
         self.server_password = ""# FIXME: Remove and replace with something more flexible
-        self.player_name = str(self.manager.config.setdefault('player_name', 'nightcracker'))
+        self.player_name = str(self.manager.config.setdefault('player_name', 'Tenderfoot'))
         self.server_ip = str(self.manager.config.setdefault('server_ip', '127.0.0.1'))
         self.server_port = str(self.manager.config.setdefault('server_port', 8190))
+
         # Create the networking-handler
         self.networker = networker.Networker((self.server_ip, int(self.server_port)), self) # FIXME: Remove these values, and replace with something easier.
         self.network_update_timer = 0
