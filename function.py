@@ -4,15 +4,14 @@ from __future__ import division, print_function
 
 import math
 import mask
-import sfml
 import engine.character
 import constants
 
 # make pygrafix an optional import
-# if we are running the server without pygrafix everything will work fine
-# as long as we don't call functions in the file that use pygame
+# if we are running the server without sfml everything will work fine
+# as long as we don't call functions in the file that use sfml
 try:
-    import pygrafix
+    import sfml
 except: pass
 
 import zipfile
