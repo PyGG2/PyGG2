@@ -7,8 +7,6 @@ import function
 GAME_WIDTH = 800
 GAME_HEIGHT = 600
 
-SERVER_IP = "127.0.0.1"
-
 PHYSICS_TIMESTEP = 1/60 # always update physics in these steps
 
 GAME_VERSION_NUMBER = 25000
