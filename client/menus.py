@@ -1,14 +1,14 @@
-import pygrafix
+#import pygrafix
 import webbrowser
 import socket
 import uuid
 import struct
 import random
-from pygrafix.window import key, mouse
+#from pygrafix.window import key, mouse
 
 import constants
 from .handler import Handler
-from .spritefont import SpriteFont
+#from .spritefont import SpriteFont
 from .main import GameClientHandler
 
 # generic menu handler

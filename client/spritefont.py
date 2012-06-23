@@ -1,6 +1,6 @@
 from __future__ import division
 
-import pygrafix
+#import pygrafix
 
 class SpriteFont(object):
     def __init__(self, bold=False):

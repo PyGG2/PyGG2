@@ -1,10 +1,10 @@
 from __future__ import division, print_function
 
 import math
-import pygrafix
+#import pygrafix
 
 import function
-import spritefont
+#import spritefont
 
 class HudRenderer(object):
     HUD_SCALE=2
