@@ -38,11 +38,6 @@ class ClassRenderer(object):
         #size = (w,h)
         #color = (153,0,153)
         #pygrafix.draw.rectangle(location,size,color)
-        text = "hello_world"
-        
-        tw, th = self.font.stringSize(text)
-        tx, ty = renderer.get_screen_coords(character.x, character.y)
-        self.font.renderString(text, tx, ty, renderer)
 
 class ScoutRenderer(ClassRenderer):
     def __init__(self):
@@ -51,7 +46,6 @@ class ScoutRenderer(ClassRenderer):
 
         self.spriteoffset = (24, 30)
         self.spriteoffset_flipped = (28, 30)
-        self.font = spritefont.SpriteFont(bold=True)
 
 class PyroRenderer(ClassRenderer):
     def __init__(self):
