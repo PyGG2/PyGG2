@@ -24,20 +24,15 @@ class Character(entity.MovingObject):
 
         self.player_id = player_id
 
-        # are we flipped around?
-        self.flip = False
-        # has intel (for drawing purposes)
-        self.intel = False
-        # have we just spawned?
-        self.just_spawned = False
+        self.flip = False # are we flipped around?
+        self.intel = False # has intel (for drawing purposes)
+        self.just_spawned = False # have we just spawned?
         # time tracker for the moving of the character's legs
         self.animoffset = 0.0
         self.hp_offset = -1 # FIXME: REMOVE; THIS ONLY EXISTS FOR HEALTH HUD TESTING
 
         self.can_doublejump = False
         self.desired_direction = 0
-        self.sentry = None
-        self.team = state.players[self.player_id].team
 
         self.issynced = True
 
@@ -90,9 +85,9 @@ class Character(entity.MovingObject):
             self.hspeed += self.base_acceleration * self.run_power * frametime
             if self.hspeed < 0:
                 self.hspeed *= self.friction ** frametime
-
+            
         self.hspeed *= self.friction ** frametime
-
+        
         if abs(self.hspeed) < 10 and abs(old_hspeed) > abs(self.hspeed):
             self.hspeed = 0
             #print("broken")
@@ -119,7 +114,7 @@ class Character(entity.MovingObject):
             self.hp_offset = -1
 
     def endstep(self, game, state, frametime):
-
+        
         player = self.get_player(game, state)
         # check if we are on the ground before moving (for walking over 1 unit walls)
         onground = True
@@ -146,6 +141,16 @@ class Character(entity.MovingObject):
                     self.x -= function.sign(self.hspeed)
 
                 self.hspeed = 0
+            
+            
+        #downward stairscript with hspeed checks
+        if onground and not game.map.collision_mask.overlap(self.collision_mask, (int(self.x), int(self.y + 6))):
+            if game.map.collision_mask.overlap(self.collision_mask, (int(self.x), int(self.y + 7))):
+                self.y += 6
+            elif game.map.collision_mask.overlap(self.collision_mask, (int(self.x), int(self.y + 13))):
+                if (self.hspeed !=0):
+                    if game.map.collision_mask.overlap(self.collision_mask, (int(self.x + function.sign(self.hspeed)*-6), int(self.y + 7))) and not game.map.collision_mask.overlap(self.collision_mask, (int(self.x + 6), int(self.y + 1))):
+                        self.y += 12
 
         # same stuff, but now vertically
         self.y += self.vspeed * frametime
@@ -174,7 +179,7 @@ class Character(entity.MovingObject):
         else: refobj = prev_obj
 
         self.flip = refobj.flip
-
+        
         self.hp =  prev_obj.hp + (next_obj.hp - prev_obj.hp) * alpha
 
     def jump(self, game, state):

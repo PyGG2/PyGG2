@@ -8,10 +8,10 @@ import engine.character
 import constants
 
 # make pygrafix an optional import
-# if we are running the server without sfml everything will work fine
-# as long as we don't call functions in the file that use sfml
+# if we are running the server without pygrafix everything will work fine
+# as long as we don't call functions in the file that use pygame
 try:
-    import sfml
+    import pygrafix
 except: pass
 
 import zipfile
@@ -30,13 +30,6 @@ def point_direction(x1, y1, x2, y2):
     angle = -math.degrees(math.atan2(y2 - y1, x2 - x1))
     if angle < 0: angle += 360
     return angle
-
-def get_cartesian(angle, length):
-    angle *= 180/math.pi
-    return (math.cos(angle)*length, math.sin(angle)*length)
-
-def get_polar(x, y):
-    return (math.atan2(y/x)*math.pi/180, math.hypot(x, y))
 
 # from http://www.nanobit.net/doxy/quake3/q__math_8c-source.html LerpAngle
 def interpolate_angle(a, b, alpha):
@@ -67,21 +60,6 @@ def load_mask(filename, give_orig=False):
 
     if give_orig: return bitmask
     else: return bitmask.copy()
-
-textures = {}
-def load_texture(filename):
-    if filename in textures:
-        return textures[filename]
-    # first try to load the sprite from the sprite folder
-    # this allows users to override sprites, and makes testing/developing easier
-    try:
-        texture = sfml.Texture.load_from_file("sprites/" + filename)
-    except:
-        print ("SPRITE sprites/{} NOT FOUND".format(filename))
-
-    textures[filename] = texture
-
-    return texture
 
 def convert_class(class_object):
         # Try converting the class to it's constant first

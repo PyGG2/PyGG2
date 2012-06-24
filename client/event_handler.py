@@ -41,7 +41,7 @@ def Server_Event_Spawn(client, networker, game, event):
 
 def Server_Snapshot_Update(client, networker, game, event):
     # Copy the current game state, and replace it with everything the server knows
-    time = struct.unpack_from(">f", event.bytestr)[0]
+    time = struct.unpack_from(">I", event.bytestr)[0]
     event.bytestr= event.bytestr[4:]
 
     if len(game.old_states) > 0:
@@ -56,10 +56,13 @@ def Server_Snapshot_Update(client, networker, game, event):
                 key1 = times[0]
                 key2 = keys[keys.index(key1) + (key1<time)]
 
-                state_1 = game.old_states[key1]
-                state_2 = game.old_states[key2]
-                state = state_1.copy()
-                state.interpolate(state_1, state_2, (time-key1)/(key2-key1))
+                if key1 == key2:
+                    state = game.old_states[key1]
+                else:
+                    state_1 = game.old_states[key1]
+                    state_2 = game.old_states[key2]
+                    state = state_1.copy()
+                    state.interpolate(state_1, state_2, (time-key1)/(key2-key1))
 
         else:
             state = game.current_state
@@ -101,7 +104,6 @@ def Server_Snapshot_Update(client, networker, game, event):
         player.deserialize_input(input)
 
     game.current_state = state
-
 
 def Server_Full_Update(client, networker, game, event):
     game.current_state.time, numof_players = struct.unpack_from(">IB", event.bytestr)

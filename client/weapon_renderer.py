@@ -1,7 +1,7 @@
 from __future__ import division, print_function
 
 import math
-import sfml
+import pygrafix
 
 import function
 
@@ -10,26 +10,26 @@ class WeaponRenderer(object):
         pass
 
     def render(self, renderer, game, state, weapon):
-        owner = state.entities[weapon.owner_id]
+        owner = state.entities[weapon.owner]
 
         if weapon.refiretime - weapon.refirealarm < 0.02:
-            sprite = self.firingsprite
+            sprite = pygrafix.sprite.Sprite(self.firingsprite)
         else:
-            sprite = self.weaponsprite
+            sprite = pygrafix.sprite.Sprite(self.weaponsprite)
 
         if owner.flip:
-            sprite.scale = (1, -1)
+            sprite.flip_y = True
             sprite.position = renderer.get_screen_coords(owner.x + self.weaponoffset_flipped[0], owner.y + self.weaponoffset_flipped[1])
             weapon_rotate = self.weapon_rotate_flipped[0] , self.weapon_rotate_flipped[1]
         else:
-            sprite.scale = (1, 1)
+            sprite.flip_y = False
             sprite.position = renderer.get_screen_coords(owner.x + self.weaponoffset[0] , owner.y + self.weaponoffset[1] )
-            weapon_rotate = self.weapon_rotate_point[0] , self.weapon_rotate_point[1]
+            weapon_rotate = self.weapon_rotate_point[0] , self.weapon_rotate_point[1] 
 
-        sprite.origin = weapon_rotate
+        sprite.anchor = weapon_rotate
         sprite.rotation = 360 - weapon.direction
 
-        renderer.window.draw(sprite)
+        renderer.world_sprites.append(sprite)
 
 class ScattergunRenderer(WeaponRenderer):
     weapon_rotate_point = (5, 6) # where is the handle of the gun, where to rotate around
@@ -39,8 +39,8 @@ class ScattergunRenderer(WeaponRenderer):
 
     def __init__(self):
         self.depth = 1
-        self.weaponsprite = sfml.Sprite(function.load_texture("weapons/scatterguns/0.png"))
-        self.firingsprite = sfml.Sprite(function.load_texture("weapons/scatterguns/2.png"))
+        self.weaponsprite = pygrafix.image.load("weapons/scatterguns/0.png")
+        self.firingsprite = pygrafix.image.load("weapons/scatterguns/2.png")
 
 class FlamethrowerRenderer(WeaponRenderer):
     weapon_rotate_point = (8, 2) #Where is the handle of the gun, where to rotate around
@@ -50,8 +50,8 @@ class FlamethrowerRenderer(WeaponRenderer):
 
     def __init__(self):
         self.depth = 1
-        self.weaponsprite = sfml.Sprite(function.load_texture("weapons/flamethrowers/0.png"))
-        self.firingsprite = sfml.Sprite(function.load_texture("weapons/flamethrowers/2.png"))
+        self.weaponsprite = pygrafix.image.load("weapons/flamethrowers/0.png")
+        self.firingsprite = pygrafix.image.load("weapons/flamethrowers/2.png")
 
 class RocketlauncherRenderer(WeaponRenderer):
     weapon_rotate_point = (10, 6) # where is the handle of the gun, where to rotate around
@@ -61,8 +61,8 @@ class RocketlauncherRenderer(WeaponRenderer):
 
     def __init__(self):
         self.depth = 1
-        self.weaponsprite = sfml.Sprite(function.load_texture("weapons/rocketlaunchers/0.png"))
-        self.firingsprite = sfml.Sprite(function.load_texture("weapons/rocketlaunchers/2.png"))
+        self.weaponsprite = pygrafix.image.load("weapons/rocketlaunchers/0.png")
+        self.firingsprite = pygrafix.image.load("weapons/rocketlaunchers/2.png")
 
 class MinigunRenderer(WeaponRenderer):
     weapon_rotate_point = (14, 3) # where is the handle of the gun, where to rotate around
@@ -72,9 +72,9 @@ class MinigunRenderer(WeaponRenderer):
 
     def __init__(self):
         self.depth = 1
-        self.weaponsprite = sfml.Sprite(function.load_texture("weapons/miniguns/0.png"))
-        self.firingsprite = sfml.Sprite(function.load_texture("weapons/miniguns/2.png"))
-
+        self.weaponsprite = pygrafix.image.load("weapons/miniguns/0.png")
+        self.firingsprite = pygrafix.image.load("weapons/miniguns/2.png")
+        
 class MedigunRenderer(WeaponRenderer):
     #TODO: fix these to actually align correctly
     weapon_rotate_point = (7, 3) # where is the handle of the gun, where to rotate around
@@ -84,8 +84,8 @@ class MedigunRenderer(WeaponRenderer):
 
     def __init__(self):
         self.depth = 1
-        self.weaponsprite = sfml.Sprite(function.load_texture("weapons/mediguns/0.png"))
-        self.firingsprite = sfml.Sprite(function.load_texture("weapons/mediguns/0.png"))
+        self.weaponsprite = pygrafix.image.load("weapons/mediguns/0.png")
+        self.firingsprite = pygrafix.image.load("weapons/mediguns/0.png")
 
 
 class ShotgunRenderer(WeaponRenderer):
@@ -96,8 +96,8 @@ class ShotgunRenderer(WeaponRenderer):
 
     def __init__(self):
         self.depth = 1
-        self.weaponsprite = sfml.Sprite(function.load_texture("weapons/shotguns/0.png"))
-        self.firingsprite = sfml.Sprite(function.load_texture("weapons/shotguns/2.png"))
+        self.weaponsprite = pygrafix.image.load("weapons/shotguns/0.png")
+        self.firingsprite = pygrafix.image.load("weapons/shotguns/2.png")
 
 class RevolverRenderer(WeaponRenderer):
     weapon_rotate_point = (-1, 6) # where is the handle of the gun, where to rotate around
@@ -107,11 +107,11 @@ class RevolverRenderer(WeaponRenderer):
 
     def __init__(self):
         self.depth = 1
-        self.weaponsprite = sfml.Sprite(function.load_texture("weapons/revolver2s/0.png"))
-        self.firingsprite = sfml.Sprite(function.load_texture("weapons/revolver2s/2.png"))
+        self.weaponsprite = pygrafix.image.load("weapons/revolver2s/0.png")
+        self.firingsprite = pygrafix.image.load("weapons/revolver2s/2.png")
 
     def render(self, renderer, game, state, weapon):
-        if not state.entities[weapon.owner_id].cloaking:#FIXME: or player.team == out team
+        if not state.entities[weapon.owner].cloaking:#FIXME: or player.team == out team
             WeaponRenderer.render(self, renderer, game, state, weapon)
         else:
             pass# TODO: Transparent drawing
@@ -124,5 +124,5 @@ class BladeRenderer(WeaponRenderer):
 
     def __init__(self):
         self.depth = 1
-        self.weaponsprite = sfml.Sprite(function.load_texture("weapons/blades/0.png"))
-        self.firingsprite = sfml.Sprite(function.load_texture("weapons/blades/2.png"))
+        self.weaponsprite = pygrafix.image.load("weapons/blades/0.png")
+        self.firingsprite = pygrafix.image.load("weapons/blades/2.png")

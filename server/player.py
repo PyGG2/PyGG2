@@ -57,7 +57,7 @@ class Player(object):
             packet.events.append((seq, event))
 
         # Put state data before event data, for better compression
-        snapshot = networker.generate_snapshot_update(game.current_state)
+        snapshot = networker.generate_snapshot_update(game)
         packet.events.insert(0, (self.sequence, snapshot))
 
         data = ""

@@ -38,10 +38,11 @@ class Networker(object):
         self.sendbuffer = []
 
 
-    def generate_snapshot_update(self, state):
+    def generate_snapshot_update(self, game):
         packetstr = ""
+        state = game.current_state
 
-        packetstr += struct.pack(">f", state.time)
+        packetstr += struct.pack(">I", state.time)
 
         for playerid, player_obj in state.players.items():
             packetstr += player_obj.serialize_input()

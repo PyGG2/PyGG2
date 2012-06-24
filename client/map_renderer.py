@@ -2,7 +2,7 @@
 
 from __future__ import division, print_function
 
-import sfml
+import pygrafix
 import function
 
 class MapRenderer(object):
@@ -10,9 +10,10 @@ class MapRenderer(object):
         self.set_map(mapname)
 
     def set_map(self, mapname):
-        self.sprite = sfml.Sprite(function.load_texture("maps/" + mapname + ".png"))
-        self.sprite.scale(6, 6)
+        self.sprite = pygrafix.sprite.Sprite(pygrafix.image.load("maps/" + mapname + ".png"))
+        self.sprite.scale = 6
 
     def render(self, renderer, state):
-        self.sprite.position = (-renderer.xview, -renderer.yview)
-        renderer.window.draw(self.sprite)
+        self.sprite.x = -renderer.xview
+        self.sprite.y = -renderer.yview
+        self.sprite.draw(scale_smoothing = False)

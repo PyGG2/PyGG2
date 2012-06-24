@@ -1,6 +1,5 @@
 from __future__ import division, print_function
 
-import constants
 import character
 import struct
 from networking import event_serialize
@@ -21,9 +20,8 @@ class Player(object):
         self.middlemouse = False
         self.rightmouse = False
         self.aimdirection = 0
-
+        
         self.nextclass = character.Scout
-        self.team = constants.TEAM_RED
         self.character_id = None
         self.respawntimer = 0
         self.name = "Test name"

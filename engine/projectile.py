@@ -16,17 +16,16 @@ class Shot(entity.MovingObject):
     fade_time = 0.8 # seconds of fading when max_flight_time is being reached
     max_flight_time = 1.5
 
-    def __init__(self, game, state, sourceweapon_id, damage, direction, speed):
+    def __init__(self, game, state, sourceweapon, damage, direction, speed):
         super(Shot, self).__init__(game, state)
 
         self.direction = 0.0
         self.flight_time = 0.0
-        self.sourceweapon_id = sourceweapon_id
+        self.sourceweapon = sourceweapon
         self.damage = damage
-        self.team = state.entities[self.sourceweapon_id].team
 
-        srcwep = state.entities[sourceweapon_id]
-        srcchar = state.entities[srcwep.owner_id]
+        srcwep = state.entities[sourceweapon]
+        srcchar = state.entities[srcwep.owner]
 
         self.x = srcchar.x
         self.y = srcchar.y+8
@@ -82,17 +81,16 @@ class Needle(entity.MovingObject):
     fade_time = 0.8 # seconds of fading when max_flight_time is being reached
     max_flight_time = 3
 
-    def __init__(self, game, state, sourceweapon_id, damage, direction, speed):
+    def __init__(self, game, state, sourceweapon, damage, direction, speed):
         super(Needle, self).__init__(game, state)
 
         self.direction = 0.0
         self.flight_time = 0.0
-        self.sourceweapon_id = sourceweapon_id
+        self.sourceweapon = sourceweapon
         self.damage = damage
-        self.team = state.entities[self.sourceweapon_id].team
 
-        srcwep = state.entities[sourceweapon_id]
-        srcchar = state.entities[srcwep.owner_id]
+        srcwep = state.entities[sourceweapon]
+        srcchar = state.entities[srcwep.owner]
 
         self.x = srcchar.x
         self.y = srcchar.y+8
@@ -151,16 +149,15 @@ class Rocket(entity.MovingObject):
     blastradius = 65
     knockback = 240
 
-    def __init__(self, game, state, sourceweapon_id):
+    def __init__(self, game, state, sourceweapon):
         super(Rocket, self).__init__(game, state)
 
         self.direction = 0.0
         self.flight_time = 0.0
-        self.sourceweapon_id = sourceweapon_id
-        self.team = state.entities[self.sourceweapon_id].team
+        self.sourceweapon = sourceweapon
 
-        srcwep = state.entities[sourceweapon_id]
-        srcchar = state.entities[srcwep.owner_id]
+        srcwep = state.entities[sourceweapon]
+        srcchar = state.entities[srcwep.owner]
 
         self.x = srcchar.x
         self.y = srcchar.y
@@ -244,16 +241,15 @@ class Flame(entity.MovingObject):
     max_flight_time = 1/2
     damage = 3.3
 
-    def __init__(self, game, state, sourceweapon_id):
+    def __init__(self, game, state, sourceweapon):
         super(Flame, self).__init__(game, state)
 
         self.direction = 0.0
         self.flight_time = 0.0
-        self.sourceweapon_id = sourceweapon_id
-        self.team = state.entities[self.sourceweapon_id].team
+        self.sourceweapon = sourceweapon
 
-        srcwep = state.entities[sourceweapon_id]
-        srcchar = state.entities[srcwep.owner_id]
+        srcwep = state.entities[sourceweapon]
+        srcchar = state.entities[srcwep.owner]
 
         self.x = srcchar.x
         self.y = srcchar.y
@@ -300,16 +296,15 @@ class Blade(entity.MovingObject):
     blastradius = 65
     knockback = 240
 
-    def __init__(self, game, state, sourceweapon_id):
+    def __init__(self, game, state, sourceweapon):
         super(Blade, self).__init__(game, state)
 
         self.direction = 0.0
         self.flight_time = 0.0
-        self.sourceweapon_id = sourceweapon_id
-        self.team = state.entities[self.sourceweapon_id].team
+        self.sourceweapon = sourceweapon
 
-        srcwep = state.entities[sourceweapon_id]
-        srcchar = state.entities[srcwep.owner_id]
+        srcwep = state.entities[sourceweapon]
+        srcchar = state.entities[srcwep.owner]
 
         self.x = srcchar.x
         self.y = srcchar.y+8
