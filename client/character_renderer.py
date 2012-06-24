@@ -18,9 +18,9 @@ class ClassRenderer(object):
 
         if character.intel:
             anim_frame += 2
-
+        
         sprite = self.sprites[anim_frame]
-
+        
         if character.flip:
             sprite.scale = (-1, 1)
             sprite.origin = self.spriteoffset_flipped

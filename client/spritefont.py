@@ -21,6 +21,7 @@ class SpriteFont(object):
         sprite = sfml.Sprite(self.texture)
         for char in range(256):
             #Create a sfml sprite object for each letter
+            #sprite.texture_rect = sfml.IntRect((char % 16) * self.cw, (char // 16) * self.ch, self.cw, self.ch)
             sprite.texture_rect = sfml.IntRect((char % 16) * self.cw, (char // 16) * self.ch, self.cw, self.ch)
             self.chars.append(sprite)
 
