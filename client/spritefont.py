@@ -22,8 +22,8 @@ class SpriteFont(object):
         for char in range(256):
             #Create a sfml sprite object for each letter
             #sprite.texture_rect = sfml.IntRect((char % 16) * self.cw, (char // 16) * self.ch, self.cw, self.ch)
-            sprite.texture_rect = sfml.IntRect((char % 16) * self.cw, (char // 16) * self.ch, self.cw, self.ch)
-            self.chars.append(sprite)
+            sprite.set_texture_rect(sfml.IntRect((char % 16) * self.cw, (char // 16) * self.ch, self.cw, self.ch))
+            self.chars.append(sprite.copy())
 
     def stringSize(self, string):
         return (len(string) * self.cw, self.ch)
