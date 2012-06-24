@@ -8,7 +8,7 @@ import random
 
 import constants
 from .handler import Handler
-#from .spritefont import SpriteFont
+from .spritefont import SpriteFont
 from .main import GameClientHandler
 
 # generic menu handler
@@ -31,7 +31,7 @@ class MenuHandler(Handler):
         for item in self.menuitems:
             if item is hoveritem:
                 width, height = self.font.stringSize(item[0])
-                pygrafix.draw.rectangle((x, y), (width, height), (1, 0.5, 0))
+                #pygrafix.draw.rectangle((x, y), (width, height), (1, 0.5, 0))
             self.font.renderString(item[0], x, y)
             y += self.spacing
 
@@ -40,11 +40,11 @@ class MenuHandler(Handler):
     def step(self):
         self.window.poll_events()
 
-        # check if user exited the game
+         #check if user exited the game
         if not self.window.is_open() or self.window.is_key_pressed(key.ESCAPE):
             return False
 
-        # handle input
+         #handle input
         leftmouse = self.window.is_mouse_button_pressed(mouse.LEFT)
         mouse_x, mouse_y = self.window.get_mouse_position()
         x = self.offsetx
@@ -59,10 +59,10 @@ class MenuHandler(Handler):
                     item[1](self)
             y += self.spacing
         self.prevleft = leftmouse
-
+        
         # draw stuff
         self.draw(hoveritem)
-
+        
         self.window.title = 'PyGG2 - %s FPS' % self.window.get_fps()
 
         return True
@@ -95,17 +95,17 @@ class MainMenuHandler(MenuHandler):
     def __init__(self, window, manager):
         super(MainMenuHandler, self).__init__(window, manager)
 
-        self.menubg = pygrafix.sprite.Sprite(
-            pygrafix.image.load(
-                "sprites/gameelements/menubackgrounds/%s.png" % random.randint(0,2)
-            )
-        )
-        self.menubg.x = 200
-        self.color = tuple(self.manager.config.setdefault('menu_color', [0.7, 0.25, 0]))
+        #self.menubg = pygrafix.sprite.Sprite(
+        #    pygrafix.image.load(
+        #        "sprites/gameelements/menubackgrounds/%s.png" % random.randint(0,2)
+        #    )
+        #)
+        #self.menubg.x = 200
+        #self.color = tuple(self.manager.config.setdefault('menu_color', [0.7, 0.25, 0]))
 
     def draw(self, hoveritem):
         self.menubg.draw(scale_smoothing = False)
-        pygrafix.draw.rectangle((0, 0), (200, 600), self.color)
+        #pygrafix.draw.rectangle((0, 0), (200, 600), self.color)
 
         super(MainMenuHandler, self).draw(hoveritem)
 

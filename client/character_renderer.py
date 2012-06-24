@@ -3,9 +3,11 @@ from __future__ import division, print_function
 import math
 import sfml
 import function
+import spritefont
 
 class ClassRenderer(object):
     def __init__(self):
+        
         pass
 
     def render(self, renderer, game, state, character):
@@ -29,13 +31,18 @@ class ClassRenderer(object):
         sprite.position = renderer.get_screen_coords(character.x, character.y)
 
         renderer.window.draw(sprite)
+        
         #draw mask
         #w, h = character.collision_mask.get_size()
         #location =  renderer.get_screen_coords(character.x, character.y)
         #size = (w,h)
         #color = (153,0,153)
         #pygrafix.draw.rectangle(location,size,color)
-
+        text = "hello_world"
+        
+        tw, th = self.font.stringSize(text)
+        tx, ty = renderer.get_screen_coords(character.x, character.y)
+        self.font.renderString(text, tx, ty, renderer)
 
 class ScoutRenderer(ClassRenderer):
     def __init__(self):
@@ -44,6 +51,7 @@ class ScoutRenderer(ClassRenderer):
 
         self.spriteoffset = (24, 30)
         self.spriteoffset_flipped = (28, 30)
+        self.font = spritefont.SpriteFont(bold=True)
 
 class PyroRenderer(ClassRenderer):
     def __init__(self):

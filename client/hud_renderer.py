@@ -4,7 +4,7 @@ import math
 #import pygrafix
 
 import function
-#import spritefont
+import spritefont
 
 class HudRenderer(object):
     HUD_SCALE=2
