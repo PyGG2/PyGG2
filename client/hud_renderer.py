@@ -8,11 +8,11 @@ import sfml
 
 class HudRenderer(object):
     
-    def render(self, renderer):
+    def render(self, renderer, game, state):
 
         self.hudsprite.position = self.sprite_location
         self.hudsprite.scale = (2,2)
-        #renderer.hud_sprites.append(self.hudsprite)
+        renderer.hud_sprites.append (self.hudsprite)
         
 class HealthRenderer(HudRenderer):
 
@@ -34,7 +34,7 @@ class HealthRenderer(HudRenderer):
         
     def render(self, renderer, game, state, character_id):
         
-        HudRenderer.render(self,renderer)
+        HudRenderer.render(self,renderer, game, state)
         character = state.entities[character_id]
         character_hp = int(character.hp)
         

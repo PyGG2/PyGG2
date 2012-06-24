@@ -120,7 +120,8 @@ class GameRenderer(object):
         for self.overlay in self.hud_overlay: #Call the render of all the objects
             self.overlay.render(self, game, self.interpolated_state)
         # draw hud sprites
-        #pygrafix.sprite.draw_batch(self.hud_sprites, scale_smoothing = False)
+        for hud_sprite in self.hud_sprites:
+            self.window.draw(hud_sprite)
 
     def get_screen_coords(self, x, y):
         # calculate drawing position
