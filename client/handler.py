@@ -6,7 +6,7 @@ import os.path
 class ClientManager(object):
     def __init__(self, handler):
         # set display mode
-        self.window = sfml.RenderWindow(sfml.VideoMode(800, 600), title = "PyGG2 - 0 FPS")
+        self.window = sfml.RenderWindow(sfml.VideoMode(800, 600), title = "PyGG2 - Not Connected")
        
         self.load_config()
         self.window.framerate_limit = self.config.setdefault('framerate_limit', 80) #prevent 100% cpu usage

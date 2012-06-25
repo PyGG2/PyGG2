@@ -17,7 +17,7 @@ import engine.character
 import engine.weapon
 import engine.projectile
 import engine.sentry
-#import hud_renderer
+import hud_renderer
 
 class GameRenderer(object):
     def __init__(self, client):
@@ -67,6 +67,7 @@ class GameRenderer(object):
         # reset spritegroups
         self.world_sprites = []
         self.hud_sprites = []
+        self.hud_overlay = []
 
         self.window = client.window
         alpha = game.accumulator / constants.PHYSICS_TIMESTEP
@@ -78,11 +79,11 @@ class GameRenderer(object):
             client.spectator.x = self.interpolated_state.entities[focus_object_id].x
             client.spectator.y = self.interpolated_state.entities[focus_object_id].y
 
-            #if game.current_state.entities[focus_object_id].just_spawned:
-            #    self.healthhud = None
-            #    self.healthhud = hud_renderer.HealthRenderer(self, game, self.interpolated_state, game.current_state.entities[focus_object_id])
-            #    game.current_state.entities[focus_object_id].just_spawned = False
-            #self.healthhud.render(self, game, self.interpolated_state, game.current_state.entities[focus_object_id])
+            if game.current_state.entities[focus_object_id].just_spawned:
+                self.healthhud = None
+                self.healthhud = hud_renderer.HealthRenderer(self, game, self.interpolated_state, focus_object_id)
+                game.current_state.entities[focus_object_id].just_spawned = False
+            self.healthhud.render(self, game, self.interpolated_state, focus_object_id)
 
         else:
             if self.healthhud != None:
@@ -115,12 +116,12 @@ class GameRenderer(object):
         for entity in self.rendering_stack:
             self.renderers[type(entity)].render(self, game, self.interpolated_state, entity)
 
-        ## draw health bars
-        #for self.overlay in self.hud_overlay: #Call the render of all the objects
-        #    self.overlay.render()
-        #self.hud_overlay = [] #clear list
+        # draw health bars
+        for self.overlay in self.hud_overlay: #Call the render of all the objects
+            self.overlay.render(self, game, self.interpolated_state)
         # draw hud sprites
-        #pygrafix.sprite.draw_batch(self.hud_sprites, scale_smoothing = False)
+        for hud_sprite in self.hud_sprites:
+            self.window.draw(hud_sprite)
 
     def get_screen_coords(self, x, y):
         # calculate drawing position

@@ -7,7 +7,7 @@ import function
 import engine.game, engine.player
 import constants
 import networking
-import random
+import time
 def get_input(window):
     return {
         "up": sfml.Keyboard.is_key_pressed(sfml.Keyboard.W),
@@ -27,9 +27,13 @@ class GameClientHandler(Handler):
 
         self.server_password = ""# FIXME: Remove and replace with something more flexible
         self.player_name = str(self.manager.config.setdefault('player_name', 'Tenderfoot'))
+        
+        self.server_ip = str(self.manager.config.setdefault('server_ip', '127.0.0.1'))
+        self.server_port = str(self.manager.config.setdefault('server_port', 8190))
+        print("Trying to connect to " + str(self.server_ip) + " at port: " + str(self.server_port))
 
         # Create the networking-handler
-        self.networker = networker.Networker((constants.SERVER_IP, 8190), self) # FIXME: Remove these values, and replace with something easier.
+        self.networker = networker.Networker((self.server_ip, int(self.server_port)), self) # FIXME: Remove these values, and replace with something easier.
         self.network_update_timer = 0
 
         # Gets set to true when we're disconnecting, for the networker
@@ -40,8 +44,11 @@ class GameClientHandler(Handler):
 
         #Whether or not the window is focused
         self.window_focused = True
-
-
+        
+        #precision time tracker
+        self.clock = precision_timer.Clock()
+        
+        self.timeout_accumulator = 0.0
     def start_game(self, player_id):
         # Only start the game once the networker has confirmed a connection with the server
 
@@ -57,8 +64,7 @@ class GameClientHandler(Handler):
         # create renderer object
         self.renderer = rendering.GameRenderer(self)
 
-        # pygame time tracking
-        self.clock = precision_timer.Clock()
+        # Time tracking
         self.inputsender_accumulator = 0.0 # this counter will accumulate time to send input at a constant rate
         self.fpscounter_accumulator = 0.0 # this counter will tell us when to update the fps info in the title
         self.fpscounter_frames = 0 # this counter will count the number of frames there are before updating the fps info
@@ -86,7 +92,7 @@ class GameClientHandler(Handler):
                         if event.code == sfml.Keyboard.ESCAPE:
                             running = False
                         elif event.code == sfml.Keyboard.LEFT:
-                                self.game.horizontal -= 1
+                            self.game.horizontal -= 1
                         elif event.code == sfml.Keyboard.RIGHT:
                             self.game.horizontal += 1
                         elif event.code == sfml.Keyboard.UP:
@@ -168,6 +174,27 @@ class GameClientHandler(Handler):
 
                 self.window.display()
                 self.fpscounter_frames += 1
+            else:
+                frame_time = self.clock.tick()
+                frame_time = min(0.25, frame_time)
+                self.timeout_accumulator += frame_time
+                if not self.window.open:
+                    self.window.close()
+                    return (False)
+                # We still need to poll the window to keep it responding
+                for event in self.window.iter_events():
+                    if event.type == sfml.Event.CLOSED: #Press the 'x' button
+                        return (False)
+                    elif event.type == sfml.Event.KEY_PRESSED: #Key handler
+                        if event.code == sfml.Keyboard.ESCAPE:
+                            return (False)
+                self.window.title = "PyGG2 - Not Connected %dsecs" % (self.timeout_accumulator)
+                #Finally, if the server is not reachable, end everything.
+                if self.timeout_accumulator > constants.CONNECTION_TIMEOUT:
+                    print("Unable to connect to " + str(self.server_ip) + " at port: " + str(self.server_port))
+                    return (False) #exit
+                time.sleep(max(frame_time, 0.25)) # Slow down the execution rate
+                
         self.cleanup()
 
     def cleanup(self):
