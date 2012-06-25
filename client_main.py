@@ -4,18 +4,12 @@ from client.handler import ClientManager
 from client.main import GameClientHandler
 from client.menus import MainMenuHandler
 
-import pygrafix
+import sfml
 
 # DEBUG ONLY
 import cProfile
 import pstats
 import os
-
-# add resource locations
-if os.path.isdir("sprites"):
-    pygrafix.resource.add_location("sprites")
-if os.path.isfile("sprites.zip"):
-    pygrafix.resource.add_location("sprites.zip")
 
 def profileGG2():
     cProfile.run("GG2main()", sort="time")
