@@ -6,7 +6,7 @@ from __future__ import division, print_function
 import sys, uuid
 sys.path.append("../")
 
-import precision_timer
+import precision_timer, time
 import engine.game
 import constants
 import networker
@@ -58,7 +58,9 @@ class Server(object):
                 self.game.update(self.networker, frametime)
                 self.networker.update(self, self.game, frametime)
                 self.lobbyannouncer.update(self, frametime)
-
+                
+                if frametime < constants.SERVER_MAX_FPS:
+                    time.sleep(constants.SERVER_MAX_FPS - frametime)
             except KeyboardInterrupt:
                 self.destroy()
                 sys.exit()
