@@ -17,7 +17,7 @@ class Game:
         self.isserver = False
 
         #DEBUGTOOL
-        self.toggle_masks = True
+        self.toggle_masks = False
         
         self.old_states = {}
 
