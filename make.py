@@ -1,4 +1,4 @@
-#!/usr/bin/env python27
+#!/usr/bin/env python2.7
 from __future__ import division, print_function
 
 import sys, os, platform, os.path
