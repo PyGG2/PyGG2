@@ -16,6 +16,7 @@ class Game:
         self.servername = ""
         self.isserver = False
         #DEBUGTOOL
+        self.toggle_masks = True
         self.lag_comp = True
         self.old_states = {}
 
