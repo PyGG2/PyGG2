@@ -15,6 +15,11 @@ class Game:
         self.maxplayers = 8
         self.servername = ""
         self.isserver = False
+
+        #DEBUGTOOL
+        self.toggle_masks = True
+        self.lag_comp = True
+        
         self.old_states = {}
 
         # map data

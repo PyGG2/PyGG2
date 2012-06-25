@@ -7,8 +7,6 @@ import function
 GAME_WIDTH = 800
 GAME_HEIGHT = 600
 
-SERVER_IP = "127.0.0.1"
-
 PHYSICS_TIMESTEP = 1/60 # always update physics in these steps
 
 GAME_VERSION_NUMBER = 25000
@@ -20,6 +18,7 @@ INPUT_SEND_FPS = 1/30 # we send input to the server at this rate
 MAX_PACKET_SIZE = 2048
 NETWORK_UPDATE_RATE = 1/20 # the server sends state info to the client at this rate
 CLIENT_TIMEOUT = 300
+CONNECTION_TIMEOUT = 10
 
 # Lobby
 LOBBY_HOST = "ganggarrison.com"
