@@ -18,7 +18,6 @@ class Game:
 
         #DEBUGTOOL
         self.toggle_masks = True
-        self.lag_comp = True
         
         self.old_states = {}
 
