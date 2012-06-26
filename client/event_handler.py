@@ -41,7 +41,7 @@ def Server_Event_Spawn(client, networker, game, event):
 
 def Server_Snapshot_Update(client, networker, game, event):
     # Copy the current game state, and replace it with everything the server knows
-    time = struct.unpack_from(">f", event.bytestr)[0]
+    time = round(struct.unpack_from(">f", event.bytestr)[0], 3)
     event.bytestr= event.bytestr[4:]
 
     if len(game.old_states) > 0:
@@ -50,13 +50,12 @@ def Server_Snapshot_Update(client, networker, game, event):
             if time in old_state_times:
                 state = game.old_states[time]
             else:
-                old_state_times.sort(lambda a, b: (abs(a-time) < abs(b-time)))
+                old_state_times.sort(key=lambda x: abs(x-time))
 
-                state_1 = game.old_states[old_state_times[0]]
-                state_2 = game.old_states[old_state_times[1]]
+                state_1 = game.old_states[min(old_state_times[:1])]
+                state_2 = game.old_states[max(old_state_times[:1])]
                 state = state_1.copy()
                 state.interpolate(state_1, state_2, (time - old_state_times[0]) / (old_state_times[1] - old_state_times[0]))
-
         else:
             state = game.current_state
 
@@ -90,11 +89,11 @@ def Server_Snapshot_Update(client, networker, game, event):
     for old_state_time, old_state in game.old_states.items():
         state.update_all_objects(game, min(constants.PHYSICS_TIMESTEP, old_state_time - state.time))
 
-        old_player = old_state.players[client.our_player_id]
-        input = old_player.serialize_input()
-
-        player = state.players[client.our_player_id]
-        player.deserialize_input(input)
+        #old_player = old_state.players[client.our_player_id]
+        #input = old_player.serialize_input()
+        #
+        #player = state.players[client.our_player_id]
+        #player.deserialize_input(input)
 
     game.current_state = state
 

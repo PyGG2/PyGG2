@@ -27,7 +27,7 @@ class GameClientHandler(Handler):
 
         self.server_password = ""# FIXME: Remove and replace with something more flexible
         self.player_name = str(self.manager.config.setdefault('player_name', 'Tenderfoot'))
-        
+
         self.server_ip = str(self.manager.config.setdefault('server_ip', '127.0.0.1'))
         self.server_port = str(self.manager.config.setdefault('server_port', 8190))
         print("Trying to connect to " + str(self.server_ip) + " at port: " + str(self.server_port))
@@ -44,10 +44,10 @@ class GameClientHandler(Handler):
 
         #Whether or not the window is focused
         self.window_focused = True
-        
+
         #precision time tracker
         self.clock = precision_timer.Clock()
-        
+
         self.timeout_accumulator = 0.0
     def start_game(self, player_id):
         # Only start the game once the networker has confirmed a connection with the server
@@ -194,7 +194,7 @@ class GameClientHandler(Handler):
                     print("Unable to connect to " + str(self.server_ip) + " at port: " + str(self.server_port))
                     return (False) #exit
                 time.sleep(max(frame_time, 0.25)) # Slow down the execution rate
-                
+
         self.cleanup()
 
     def cleanup(self):

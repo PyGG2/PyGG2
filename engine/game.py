@@ -18,7 +18,7 @@ class Game:
 
         #DEBUGTOOL
         self.toggle_masks = False
-        
+
         self.old_states = {}
 
         # map data
@@ -34,7 +34,7 @@ class Game:
         # this accumulator is used to update the engine in fixed timesteps
         self.accumulator = 0.0
         #These variables are useful for modifying to change the offsets of objects ingame
-        #DEBUGTOOLL
+        #DEBUGTOOL
         self.horizontal = 0
         self.vertical = 0
     def update(self, networker, frametime):
@@ -43,10 +43,11 @@ class Game:
         while self.accumulator >= constants.PHYSICS_TIMESTEP:
             self.accumulator -= constants.PHYSICS_TIMESTEP
 
-            if not self.isserver:
-                self.old_states[self.current_state.time] = self.current_state
-
             self.previous_state = self.current_state.copy()
             self.current_state.update_all_objects(self, constants.PHYSICS_TIMESTEP)
             networker.sendbuffer += self.sendbuffer
             self.sendbuffer = []
+
+            tmp_state = self.current_state.copy()
+            tmp_state.time = round(tmp_state.time, 3)
+            self.old_states[round(self.current_state.time, 3)] = tmp_state
