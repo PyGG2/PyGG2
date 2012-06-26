@@ -1,12 +1,12 @@
-#import pygrafix
 import webbrowser
 import socket
 import uuid
 import struct
 import random
-#from pygrafix.window import key, mouse
+import sfml
 
 import constants
+import function
 from .handler import Handler
 from .spritefont import SpriteFont
 from .main import GameClientHandler
@@ -31,22 +31,25 @@ class MenuHandler(Handler):
         for item in self.menuitems:
             if item is hoveritem:
                 width, height = self.font.stringSize(item[0])
-                #pygrafix.draw.rectangle((x, y), (width, height), (1, 0.5, 0))
-            self.font.renderString(item[0], x, y)
+                rect = sfml.RectangleShape((width, height))
+                rect.fill_color = sfml.Color.RED
+                rect.position = (x, y)
+                self.window.draw(rect)
+            self.font.renderString(item[0], self.window, x, y)
             y += self.spacing
 
-        self.window.flip()
+        self.window.display()
 
     def step(self):
-        self.window.poll_events()
+        #self.window.poll_events()
 
-         #check if user exited the game
-        if not self.window.is_open() or self.window.is_key_pressed(key.ESCAPE):
+        # check if user exited the game
+        if not self.window.open or sfml.Keyboard.is_key_pressed(sfml.Keyboard.ESCAPE):
             return False
 
-         #handle input
-        leftmouse = self.window.is_mouse_button_pressed(mouse.LEFT)
-        mouse_x, mouse_y = self.window.get_mouse_position()
+        # handle input
+        leftmouse = sfml.Mouse.is_button_pressed(sfml.Mouse.LEFT)
+        mouse_x, mouse_y = sfml.Mouse.get_position(self.window)
         x = self.offsetx
         y = self.offsety
         hoveritem = None
@@ -63,7 +66,7 @@ class MenuHandler(Handler):
         # draw stuff
         self.draw(hoveritem)
         
-        self.window.title = 'PyGG2 - %s FPS' % self.window.get_fps()
+        self.window.title = 'PyGG2 - x/0 FPS: powered by pygrafix'
 
         return True
 
@@ -95,17 +98,16 @@ class MainMenuHandler(MenuHandler):
     def __init__(self, window, manager):
         super(MainMenuHandler, self).__init__(window, manager)
 
-        #self.menubg = pygrafix.sprite.Sprite(
-        #    pygrafix.image.load(
-        #        "sprites/gameelements/menubackgrounds/%s.png" % random.randint(0,2)
-        #    )
-        #)
-        #self.menubg.x = 200
-        #self.color = tuple(self.manager.config.setdefault('menu_color', [0.7, 0.25, 0]))
+        self.menubg = sfml.Sprite(function.load_texture("gameelements/menubackgrounds/%s.png" % random.randint(0,2)))
+        self.menubg.x = 200
+        self.color = tuple(self.manager.config.setdefault('menu_color', [0.7, 0.25, 0]))
+        self.color = sfml.Color(self.color[0] * 255, self.color[1] * 255, self.color[2] * 255)
 
     def draw(self, hoveritem):
-        self.menubg.draw(scale_smoothing = False)
-        #pygrafix.draw.rectangle((0, 0), (200, 600), self.color)
+        self.window.draw(self.menubg)
+        rect = sfml.RectangleShape((200, 600))
+        rect.fill_color = self.color
+        self.window.draw(rect)
 
         super(MainMenuHandler, self).draw(hoveritem)
 
@@ -126,11 +128,11 @@ class LobbyHandler(MenuHandler):
             ('', None)
         ]
 
-        self.menubg = pygrafix.sprite.Sprite(
-            pygrafix.image.load("sprites/gameelements/menubackgrounds/0.png")
-        )
+        self.menubg = sfml.Sprite(function.load_texture("gameelements/menubackgrounds/0.png"))
+        self.menubg.x = 200
         self.menubg.x = 200
         self.color = tuple(self.manager.config.setdefault('menu_color', [0.7, 0.25, 0]))
+        self.color = sfml.Color(self.color[0] * 255, self.color[1] * 255, self.color[2] * 255)
 
         self.sendbuf = b''
 
@@ -203,7 +205,9 @@ class LobbyHandler(MenuHandler):
         return super(LobbyHandler, self).step()
 
     def draw(self, hoveritem):
-        self.menubg.draw(scale_smoothing = False)
-        pygrafix.draw.rectangle((0, 0), (200, 600), self.color)
+        self.window.draw(self.menubg)
+        rect = sfml.RectangleShape((200, 600))
+        rect.fill_color = self.color
+        self.window.draw(rect)
 
         super(LobbyHandler, self).draw(hoveritem)

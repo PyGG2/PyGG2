@@ -78,5 +78,5 @@ class HealthText(object):
         tw, th = self.font.stringSize(self.text)
         tx = self.health_location[0] + (self.health_size[0] - tw)/2
         ty = self.health_location[1] + (self.health_size[1] - th)/2
-        self.font.renderString(self.text, renderer, tx, ty, )
+        self.font.renderString(self.text, renderer.window, tx, ty, )
 
