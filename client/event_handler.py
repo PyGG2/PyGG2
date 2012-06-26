@@ -45,21 +45,17 @@ def Server_Snapshot_Update(client, networker, game, event):
     event.bytestr= event.bytestr[4:]
 
     if len(game.old_states) > 0:
-        keys = game.old_states.keys()
-        if max(keys) > time:
-            if time in keys:
+        old_state_times = game.old_states.keys()
+        if max(old_state_times) > time:
+            if time in old_state_times:
                 state = game.old_states[time]
             else:
-                times = keys
-                keys.sort()
-                times.sort(lambda a, b: (abs(a-time) < abs(b-time)))
-                key1 = times[0]
-                key2 = keys[keys.index(key1) + (key1<time)]
+                old_state_times.sort(lambda a, b: (abs(a-time) < abs(b-time)))
 
-                state_1 = game.old_states[key1]
-                state_2 = game.old_states[key2]
+                state_1 = game.old_states[old_state_times[0]]
+                state_2 = game.old_states[old_state_times[1]]
                 state = state_1.copy()
-                state.interpolate(state_1, state_2, (time-key1)/(key2-key1))
+                state.interpolate(state_1, state_2, (time - old_state_times[0]) / (old_state_times[1] - old_state_times[0]))
 
         else:
             state = game.current_state
