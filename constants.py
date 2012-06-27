@@ -13,6 +13,9 @@ GAME_VERSION_NUMBER = 25000
 GAME_VERSION_STRING = "2.5b"
 GAME_URL = "http://www.ganggarrison.com/forums/index.php?topic=29530.0"
 
+# Server
+SERVER_MAX_FPS = 1/100
+
 # Networking
 INPUT_SEND_FPS = 1/30 # we send input to the server at this rate
 MAX_PACKET_SIZE = 2048
