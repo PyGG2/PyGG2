@@ -24,6 +24,11 @@ class MenuHandler(Handler):
 
         self.font = SpriteFont(bold=True)
         self.prevleft = None
+        
+        self.window_focused = True
+        self.joke_counter = 0
+
+        self.window.title = 'PyGG2 - ??? FPS:'
 
     def draw(self, hoveritem=None):
         x = self.offsetx
@@ -41,15 +46,39 @@ class MenuHandler(Handler):
         self.window.display()
 
     def step(self):
-        #self.window.poll_events()
 
         # check if user exited the game
         if not self.window.open or sfml.Keyboard.is_key_pressed(sfml.Keyboard.ESCAPE):
             return False
-
-        # handle input
-        leftmouse = sfml.Mouse.is_button_pressed(sfml.Mouse.LEFT)
-        mouse_x, mouse_y = sfml.Mouse.get_position(self.window)
+        for event in self.window.iter_events():
+            if event.type == sfml.Event.CLOSED: #Press the 'x' button
+                return False
+            elif event.type == sfml.Event.LOST_FOCUS:
+                self.window_focused = False
+            elif event.type == sfml.Event.GAINED_FOCUS:
+                self.window_focused = True
+            elif event.type == sfml.Event.KEY_PRESSED: #Key handler
+                if event.code == sfml.Keyboard.ESCAPE:
+                    return False
+                elif event.code == sfml.Keyboard.LEFT:
+                    self.game.horizontal -= 1
+                elif event.code == sfml.Keyboard.RIGHT:
+                    self.game.horizontal += 1
+                elif event.code == sfml.Keyboard.UP:
+                    self.game.vertical -= 1
+                elif event.code == sfml.Keyboard.DOWN:
+                    self.game.vertical += 1
+                elif event.code == sfml.Keyboard.L_SHIFT:
+                    print("HORIZONTAL OFFSET = " + str(self.game.horizontal))
+                    print("VERTICAL OFFSET = " + str(self.game.vertical))
+                    
+        if self.window_focused:
+            # handle input
+            leftmouse = sfml.Mouse.is_button_pressed(sfml.Mouse.LEFT)
+            mouse_x, mouse_y = sfml.Mouse.get_position(self.window)
+        else:
+            leftmouse = False
+            mouse_x, mouse_y = (0,0)
         x = self.offsetx
         y = self.offsety
         hoveritem = None
@@ -66,7 +95,6 @@ class MenuHandler(Handler):
         # draw stuff
         self.draw(hoveritem)
         
-        self.window.title = 'PyGG2 - x/0 FPS: powered by pygrafix'
 
         return True
 
@@ -76,7 +104,7 @@ class MainMenuHandler(MenuHandler):
         self.manager.switch_handler(GameClientHandler)
 
     def item_go_github(self):
-        webbrowser.open('http://github.com/nightcracker/PyGG2')
+        webbrowser.open('http://github.com/PyGG2/PyGG2')
 
     def item_go_lobby(self):
         self.manager.switch_handler(LobbyHandler)
@@ -87,7 +115,7 @@ class MainMenuHandler(MenuHandler):
     menuitems = [
         ('Start test client', item_start_game),
         ('Lobby', item_go_lobby),
-        ('Go to GitHub', item_go_github),
+        ("Go to Github", item_go_github),
         ('Quit', item_quit)
     ]
 
