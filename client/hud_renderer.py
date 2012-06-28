@@ -33,8 +33,8 @@ class HealthRenderer(HudRenderer):
         self.health_text.health_size = (36, 36)
         
     def render(self, renderer, game, state, character_id):
+        super(HealthRenderer,self).render(renderer, game, state)
         
-        HudRenderer.render(self,renderer, game, state)
         character = state.entities[character_id]
         character_hp = int(character.hp)
         
@@ -43,32 +43,37 @@ class HealthRenderer(HudRenderer):
         health_percentage = max(0.01,(character_hp / character_maxhp))
        
         self.health_text.text = str(character_hp)
-        #self.health_box_background = HealthBar() #background first
-        #self.health_box_background.health_location = (52, (renderer.view_height - 54))
-        #self.health_box_background.health_size = (40, 40)
-        #self.health_box_background.health_color = (0,0,0,1) # last is alpha
-        #renderer.hud_overlay.append(self.health_box_background)
-
         
+        #The black background behind green health
+        self.health_box_background = DrawRectangle() 
+        self.health_box_background.location = (52, (renderer.view_height - 53))
+        self.health_box_background.size = (40, 39)
+        self.health_box_background.color = (sfml.Color.BLACK)
+        renderer.hud_overlay.append(self.health_box_background)
+        
+        #The Green Health
+        self.health_box = DrawRectangle()
+        self.health_box.location = (52, min ( (renderer.view_height - 12), (renderer.view_height - 53) + (39 - 39 * abs(health_percentage))) )
+        self.health_box.size = (40, max(0, 39 * health_percentage))
 
-        #self.health_box = HealthBar()
-        #self.health_box.health_location = (52, min ( (renderer.view_height - 14), (renderer.view_height - 54) + (40 - 40 * abs(health_percentage))) )
-        #self.health_box.health_size = (40, max(0, 40 * health_percentage))
-
-        #if health_percentage > 0.5:
-        #    exponent = 2 # The higher this will be, the quicker will the change happen, and the flatter will the curve be
-        #    # Color it green-yellow
-        #    self.health_box.health_color = ((1 - 2*(health_percentage-0.5))**exponent, 1, 0, 1)
-        #else:
-        #    exponent = 3 # The higher this will be, the quicker will the change happen, and the flatter will the curve be
-        #    # Color it yellow-red
-        #    self.health_box.health_color = (1, (2*health_percentage)**exponent, 0, 1)
-        #renderer.hud_overlay.append(self.health_box)
+        if health_percentage > 0.5:
+            exponent = 2 # The higher this will be, the quicker will the change happen, and the flatter will the curve be
+            # Color it green-yellow
+            self.health_box.color = sfml.Color(((1 - 2*(health_percentage-0.5))**exponent)*220, 220, 0, 255)
+        else:
+            exponent = 3 # The higher this will be, the quicker will the change happen, and the flatter will the curve be
+            # Color it yellow-red
+            self.health_box.color = sfml.Color(255, ((2*health_percentage)**exponent)*255, 0, 255)
+        renderer.hud_overlay.append(self.health_box)
         renderer.hud_overlay.append(self.health_text)
 
-class HealthBar(object):
+class DrawRectangle(object):
     def render(self, renderer, game, state):
-        pygrafix.draw.rectangle(self.health_location, self.health_size, self.health_color)
+        
+        rect = sfml.RectangleShape(self.size)
+        rect.fill_color = self.color
+        rect.position = (self.location)
+        renderer.window.draw(rect)
 
 class HealthText(object):
     def __init__(self):
