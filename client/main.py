@@ -18,7 +18,7 @@ def get_input(window):
 
 # handler for when client is in game
 class GameClientHandler(Handler):
-    def __init__(self, window, manager):
+    def __init__(self, window, manager, host=None, port=None):
         self.manager = manager
         self.window = window
 
@@ -28,8 +28,12 @@ class GameClientHandler(Handler):
         self.server_password = ""# FIXME: Remove and replace with something more flexible
         self.player_name = str(self.manager.config.setdefault('player_name', 'Tenderfoot'))
         
-        self.server_ip = str(self.manager.config.setdefault('server_ip', '127.0.0.1'))
-        self.server_port = str(self.manager.config.setdefault('server_port', 8190))
+        if host and port:
+            self.server_ip = host
+            self.server_port = port
+        else:
+            self.server_ip = str(self.manager.config.setdefault('server_ip', '127.0.0.1'))
+            self.server_port = str(self.manager.config.setdefault('server_port', 8190))
         print("Trying to connect to " + str(self.server_ip) + " at port: " + str(self.server_port))
 
         # Create the networking-handler

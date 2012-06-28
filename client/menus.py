@@ -77,7 +77,9 @@ class MenuHandler(Handler):
             if x <= mouse_x <= x+width and y <= mouse_y <= y+height:
                 hoveritem = item
                 if leftmouse and not self.prevleft and item[1]:
-                    item[1](self)
+                    args = [] if len(item) < 3 else item[2]
+                    kwargs = {} if len(item) < 4 else item[3]
+                    item[1](self, *args, **kwargs)
             y += self.spacing
         self.prevleft = leftmouse
         
@@ -130,6 +132,12 @@ class MainMenuHandler(MenuHandler):
 
 # handler for lobby
 class LobbyHandler(MenuHandler):
+    def join_server(self, host, port):
+        self.manager.switch_handler(GameClientHandler, host, port)
+
+    def display_info(self, url):
+        webbrowser.open(url)
+
     def go_back(self):
         self.manager.switch_handler(MainMenuHandler)
 
@@ -162,6 +170,7 @@ class LobbyHandler(MenuHandler):
         lobbyuuid = uuid.UUID(constants.LOBBY_MESSAGE_TYPE_LIST).get_bytes()
         self.protocoluuid = uuid.UUID(constants.GG2_LOBBY_UUID).get_bytes()
         self.send_all(lobbyuuid+self.protocoluuid)
+        self.compatuuid = uuid.UUID(constants.PYGG2_COMPATIBILITY_PROTOCOL).get_bytes()
 
     def send_all(self, buf):
         while len(buf) > 0:
@@ -206,10 +215,9 @@ class LobbyHandler(MenuHandler):
                 data = datablock[:datalen]
                 datablock = datablock[datalen:]
                 if key == 'protocol_id':
-                    same_protocol_id = data == (self.protocoluuid)
-                else:
-                    server['infos'][key] = data
-            server['compatible'] = (server['protocol'] == 0 and server['port'] > 0 and same_protocol_id)
+                    same_protocol_id = (data == self.compatuuid)
+                server['infos'][key] = data
+            server['compatible'] = (server['protocol'] == 1 and server['port'] > 0 and same_protocol_id)
             if server['bots']:
                 playercount = '%s+%s' % (server['players'], server['bots'])
             else:
@@ -218,7 +226,12 @@ class LobbyHandler(MenuHandler):
             server['name'] = server['infos']['name']
             self.servers_read += 1
 
-            self.menuitems.append( ('%s - [%s]' % (server['name'], server['playerstring']), None) )
+            if server['compatible']:
+                label = '{0} - [{1}]'.format(server['name'], server['playerstring'])
+                self.menuitems.append((label, LobbyHandler.join_server, [server['ip'], server['port']]))
+            else:
+                label = '[INCOMPATIBLE: {0} {1}]: {2}'.format(server['infos']['game_short'], server['infos']['game_ver'], server['name'])
+                self.menuitems.append((label, LobbyHandler.display_info, [server['infos']['game_url']]))
         return super(LobbyHandler, self).step()
 
     def draw(self, hoveritem):
