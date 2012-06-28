@@ -60,18 +60,7 @@ class MenuHandler(Handler):
             elif event.type == sfml.Event.KEY_PRESSED: #Key handler
                 if event.code == sfml.Keyboard.ESCAPE:
                     return False
-                elif event.code == sfml.Keyboard.LEFT:
-                    self.game.horizontal -= 1
-                elif event.code == sfml.Keyboard.RIGHT:
-                    self.game.horizontal += 1
-                elif event.code == sfml.Keyboard.UP:
-                    self.game.vertical -= 1
-                elif event.code == sfml.Keyboard.DOWN:
-                    self.game.vertical += 1
-                elif event.code == sfml.Keyboard.L_SHIFT:
-                    print("HORIZONTAL OFFSET = " + str(self.game.horizontal))
-                    print("VERTICAL OFFSET = " + str(self.game.vertical))
-                    
+                
         if self.window_focused:
             # handle input
             leftmouse = sfml.Mouse.is_button_pressed(sfml.Mouse.LEFT)
