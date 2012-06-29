@@ -119,11 +119,14 @@ class MainMenuHandler(MenuHandler):
 
         self.menubg = sfml.Sprite(function.load_texture("gameelements/menubackgrounds/%s.png" % random.randint(0,2)))
         self.menubg.x = 200
+        self.pigg2 = sfml.Sprite(function.load_texture("pigg2.png"))
+        self.pigg2.x, self.pigg2.y = 526, 523
         self.color = tuple(self.manager.config.setdefault('menu_color', [0.7, 0.25, 0]))
         self.color = sfml.Color(self.color[0] * 255, self.color[1] * 255, self.color[2] * 255)
 
     def draw(self, hoveritem):
         self.window.draw(self.menubg)
+        self.window.draw(self.pigg2)
         rect = sfml.RectangleShape((200, 600))
         rect.fill_color = self.color
         self.window.draw(rect)
