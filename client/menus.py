@@ -1,12 +1,12 @@
-#import pygrafix
 import webbrowser
 import socket
 import uuid
 import struct
 import random
-#from pygrafix.window import key, mouse
+import sfml
 
 import constants
+import function
 from .handler import Handler
 from .spritefont import SpriteFont
 from .main import GameClientHandler
@@ -24,6 +24,11 @@ class MenuHandler(Handler):
 
         self.font = SpriteFont(bold=True)
         self.prevleft = None
+        
+        self.window_focused = True
+        self.joke_counter = 0
+
+        self.window.title = 'PyGG2 - ??? FPS:'
 
     def draw(self, hoveritem=None):
         x = self.offsetx
@@ -31,22 +36,38 @@ class MenuHandler(Handler):
         for item in self.menuitems:
             if item is hoveritem:
                 width, height = self.font.stringSize(item[0])
-                #pygrafix.draw.rectangle((x, y), (width, height), (1, 0.5, 0))
-            self.font.renderString(item[0], x, y)
+                rect = sfml.RectangleShape((width, height))
+                rect.fill_color = sfml.Color.RED
+                rect.position = (x, y)
+                self.window.draw(rect)
+            self.font.renderString(item[0], self.window, x, y)
             y += self.spacing
 
-        self.window.flip()
+        self.window.display()
 
     def step(self):
-        self.window.poll_events()
 
-         #check if user exited the game
-        if not self.window.is_open() or self.window.is_key_pressed(key.ESCAPE):
+        # check if user exited the game
+        if not self.window.open or sfml.Keyboard.is_key_pressed(sfml.Keyboard.ESCAPE):
             return False
-
-         #handle input
-        leftmouse = self.window.is_mouse_button_pressed(mouse.LEFT)
-        mouse_x, mouse_y = self.window.get_mouse_position()
+        for event in self.window.iter_events():
+            if event.type == sfml.Event.CLOSED: #Press the 'x' button
+                return False
+            elif event.type == sfml.Event.LOST_FOCUS:
+                self.window_focused = False
+            elif event.type == sfml.Event.GAINED_FOCUS:
+                self.window_focused = True
+            elif event.type == sfml.Event.KEY_PRESSED: #Key handler
+                if event.code == sfml.Keyboard.ESCAPE:
+                    return False
+                
+        if self.window_focused:
+            # handle input
+            leftmouse = sfml.Mouse.is_button_pressed(sfml.Mouse.LEFT)
+            mouse_x, mouse_y = sfml.Mouse.get_position(self.window)
+        else:
+            leftmouse = False
+            mouse_x, mouse_y = (0,0)
         x = self.offsetx
         y = self.offsety
         hoveritem = None
@@ -56,14 +77,15 @@ class MenuHandler(Handler):
             if x <= mouse_x <= x+width and y <= mouse_y <= y+height:
                 hoveritem = item
                 if leftmouse and not self.prevleft and item[1]:
-                    item[1](self)
+                    args = [] if len(item) < 3 else item[2]
+                    kwargs = {} if len(item) < 4 else item[3]
+                    item[1](self, *args, **kwargs)
             y += self.spacing
         self.prevleft = leftmouse
         
         # draw stuff
         self.draw(hoveritem)
         
-        self.window.title = 'PyGG2 - %s FPS' % self.window.get_fps()
 
         return True
 
@@ -73,7 +95,7 @@ class MainMenuHandler(MenuHandler):
         self.manager.switch_handler(GameClientHandler)
 
     def item_go_github(self):
-        webbrowser.open('http://github.com/nightcracker/PyGG2')
+        webbrowser.open('http://github.com/PyGG2/PyGG2')
 
     def item_go_lobby(self):
         self.manager.switch_handler(LobbyHandler)
@@ -84,7 +106,7 @@ class MainMenuHandler(MenuHandler):
     menuitems = [
         ('Start test client', item_start_game),
         ('Lobby', item_go_lobby),
-        ('Go to GitHub', item_go_github),
+        ("Go to Github", item_go_github),
         ('Quit', item_quit)
     ]
 
@@ -95,22 +117,30 @@ class MainMenuHandler(MenuHandler):
     def __init__(self, window, manager):
         super(MainMenuHandler, self).__init__(window, manager)
 
-        #self.menubg = pygrafix.sprite.Sprite(
-        #    pygrafix.image.load(
-        #        "sprites/gameelements/menubackgrounds/%s.png" % random.randint(0,2)
-        #    )
-        #)
-        #self.menubg.x = 200
-        #self.color = tuple(self.manager.config.setdefault('menu_color', [0.7, 0.25, 0]))
+        self.menubg = sfml.Sprite(function.load_texture("gameelements/menubackgrounds/%s.png" % random.randint(0,2)))
+        self.menubg.x = 200
+        self.pigg2 = sfml.Sprite(function.load_texture("pigg2.png"))
+        self.pigg2.x, self.pigg2.y = 526, 523
+        self.color = tuple(self.manager.config.setdefault('menu_color', [0.7, 0.25, 0]))
+        self.color = sfml.Color(self.color[0] * 255, self.color[1] * 255, self.color[2] * 255)
 
     def draw(self, hoveritem):
-        self.menubg.draw(scale_smoothing = False)
-        #pygrafix.draw.rectangle((0, 0), (200, 600), self.color)
+        self.window.draw(self.menubg)
+        self.window.draw(self.pigg2)
+        rect = sfml.RectangleShape((200, 600))
+        rect.fill_color = self.color
+        self.window.draw(rect)
 
         super(MainMenuHandler, self).draw(hoveritem)
 
 # handler for lobby
 class LobbyHandler(MenuHandler):
+    def join_server(self, host, port):
+        self.manager.switch_handler(GameClientHandler, host, port)
+
+    def display_info(self, url):
+        webbrowser.open(url)
+
     def go_back(self):
         self.manager.switch_handler(MainMenuHandler)
 
@@ -126,11 +156,11 @@ class LobbyHandler(MenuHandler):
             ('', None)
         ]
 
-        self.menubg = pygrafix.sprite.Sprite(
-            pygrafix.image.load("sprites/gameelements/menubackgrounds/0.png")
-        )
+        self.menubg = sfml.Sprite(function.load_texture("gameelements/menubackgrounds/0.png"))
+        self.menubg.x = 200
         self.menubg.x = 200
         self.color = tuple(self.manager.config.setdefault('menu_color', [0.7, 0.25, 0]))
+        self.color = sfml.Color(self.color[0] * 255, self.color[1] * 255, self.color[2] * 255)
 
         self.sendbuf = b''
 
@@ -143,6 +173,7 @@ class LobbyHandler(MenuHandler):
         lobbyuuid = uuid.UUID(constants.LOBBY_MESSAGE_TYPE_LIST).get_bytes()
         self.protocoluuid = uuid.UUID(constants.GG2_LOBBY_UUID).get_bytes()
         self.send_all(lobbyuuid+self.protocoluuid)
+        self.compatuuid = uuid.UUID(constants.PYGG2_COMPATIBILITY_PROTOCOL).get_bytes()
 
     def send_all(self, buf):
         while len(buf) > 0:
@@ -187,10 +218,9 @@ class LobbyHandler(MenuHandler):
                 data = datablock[:datalen]
                 datablock = datablock[datalen:]
                 if key == 'protocol_id':
-                    same_protocol_id = data == (self.protocoluuid)
-                else:
-                    server['infos'][key] = data
-            server['compatible'] = (server['protocol'] == 0 and server['port'] > 0 and same_protocol_id)
+                    same_protocol_id = (data == self.compatuuid)
+                server['infos'][key] = data
+            server['compatible'] = (server['protocol'] == 1 and server['port'] > 0 and same_protocol_id)
             if server['bots']:
                 playercount = '%s+%s' % (server['players'], server['bots'])
             else:
@@ -199,11 +229,18 @@ class LobbyHandler(MenuHandler):
             server['name'] = server['infos']['name']
             self.servers_read += 1
 
-            self.menuitems.append( ('%s - [%s]' % (server['name'], server['playerstring']), None) )
+            if server['compatible']:
+                label = '{0} - [{1}]'.format(server['name'], server['playerstring'])
+                self.menuitems.append((label, LobbyHandler.join_server, [server['ip'], server['port']]))
+            else:
+                label = '[INCOMPATIBLE: {0} {1}]: {2}'.format(server['infos']['game_short'], server['infos']['game_ver'], server['name'])
+                self.menuitems.append((label, LobbyHandler.display_info, [server['infos']['game_url']]))
         return super(LobbyHandler, self).step()
 
     def draw(self, hoveritem):
-        self.menubg.draw(scale_smoothing = False)
-        pygrafix.draw.rectangle((0, 0), (200, 600), self.color)
+        self.window.draw(self.menubg)
+        rect = sfml.RectangleShape((200, 600))
+        rect.fill_color = self.color
+        self.window.draw(rect)
 
         super(LobbyHandler, self).draw(hoveritem)

@@ -28,7 +28,7 @@ class SpriteFont(object):
     def stringSize(self, string):
         return (len(string) * self.cw, self.ch)
             
-    def renderString(self, string, renderer, x, y):
+    def renderString(self, string, window, x, y):
 
         for i, char in enumerate(string):
             char = ord(char)
@@ -36,4 +36,4 @@ class SpriteFont(object):
                 char = ord(' ')
             text = (self.chars[char])
             text.position = (x + i*self.cw,y)
-            renderer.window.draw(text)
+            window.draw(text)

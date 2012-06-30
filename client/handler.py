@@ -12,6 +12,8 @@ class ClientManager(object):
         self.window.framerate_limit = self.config.setdefault('framerate_limit', 80) #prevent 100% cpu usage
         self.quitting = False
         self.newhandler = None
+        self.newhandler_args = []
+        self.newhandler_kwargs = {}
 
         self.handler = handler(self.window, self)
 
@@ -30,13 +32,15 @@ class ClientManager(object):
         while self.handler.step() and not self.quitting:
             if self.newhandler:
                 self.handler.clearup()
-                self.handler = self.newhandler(self.window, self)
+                self.handler = self.newhandler(self.window, self, *self.newhandler_args, **self.newhandler_kwargs)
                 self.newhandler = None
         self.clearup()
 
         
-    def switch_handler(self, handler):
+    def switch_handler(self, handler, *args, **kwargs):
         self.newhandler = handler
+        self.newhandler_args = args
+        self.newhandler_kwargs = kwargs
 
     def quit(self):
         self.quitting = True
