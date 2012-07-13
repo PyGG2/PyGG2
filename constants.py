@@ -22,6 +22,7 @@ MAX_PACKET_SIZE = 2048
 NETWORK_UPDATE_RATE = 1/20 # the server sends state info to the client at this rate
 CLIENT_TIMEOUT = 300
 CONNECTION_TIMEOUT = 10
+MAX_EXTRAPOLATION = 1
 
 # Lobby
 LOBBY_HOST = "ganggarrison.com"
