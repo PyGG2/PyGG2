@@ -19,7 +19,7 @@ class Game:
         #DEBUGTOOL
         self.toggle_masks = False
 
-        self.old_states = {}
+        self.old_states = []
 
         # map data
         self.map = map.Map(self, "twodforttwo_remix")
@@ -48,6 +48,5 @@ class Game:
             networker.sendbuffer += self.sendbuffer
             self.sendbuffer = []
 
-            tmp_state = self.current_state.copy()
-            tmp_state.time = round(tmp_state.time, 3)
-            self.old_states[round(self.current_state.time, 3)] = tmp_state
+            if not self.isserver:
+                self.old_states.append(self.current_state.copy())
