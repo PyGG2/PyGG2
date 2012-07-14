@@ -44,14 +44,28 @@ def Server_Snapshot_Update(client, networker, game, event):
     packet_time = round(struct.unpack_from(">f", event.bytestr)[0], 3)
     event.bytestr= event.bytestr[4:]
 
-    if len(game.old_states) > 0:
+    # Delete all the deprecated old states, they are useless. Remember that list is chronologically ordered
+    while len(game.old_states) > 0:
+        if game.old_states[0].time <= packet_time:
+            game.old_states.pop(0)
+        else:
+            break
+    # Also delete those too far ahead
+    server_current_time = packet_time + networker.estimated_ping
+    while len(game.old_states) > 0:
+        if game.old_states[-1].time >= packet_time + min(networker.estimated_ping, constants.MAX_EXTRAPOLATION):
+            game.old_states.pop(-1)
+        else:
+            break
 
+    if len(game.old_states) > 0:
         tmp = game.old_states
         tmp.sort(key=lambda x: x.time)
         #if tmp != game.old_states:
         #    print([s.time for s in game.old_states])
 
         old_state_times = [old_state.time for old_state in game.old_states]
+
         if max(old_state_times) > packet_time:
             if packet_time in old_state_times:
                 # The packet time miraculously is equal one of the stored states
