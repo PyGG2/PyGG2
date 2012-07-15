@@ -19,6 +19,7 @@ class Networker(object):
         self.sequence = 1
         self.server_acksequence = 0
         self.client_acksequence = 0
+        self.estimated_ping = 0
 
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind(("", 0))
@@ -96,6 +97,8 @@ class Networker(object):
             # ack the packet
             self.client_acksequence = packet.sequence
             self.server_acksequence = packet.acksequence
+
+            self.estimated_ping = (self.sequence - self.server_acksequence) * constants.INPUT_SEND_FPS
 
             # Clear the acked stuff from the history
             index = 0

@@ -199,7 +199,7 @@ class Character(entity.MovingObject):
 
     def serialize(self, state):
         packetstr = ""
-        packetstr += struct.pack(">IIii", round(self.x), round(self.y), round(self.hspeed*10), round(self.vspeed*10))
+        packetstr += struct.pack(">IIff", round(self.x), round(self.y), round(self.hspeed*10), round(self.vspeed*10))
 
         # Serialize intel, doublejump, etc... in one byte. Should we merge this with the input serialization in Player? Move the input ser. here?
         byte = 0
@@ -213,7 +213,7 @@ class Character(entity.MovingObject):
         return packetstr
 
     def deserialize(self, state, packetstr):
-        self.x, self.y, self.hspeed, self.vspeed = struct.unpack_from(">IIii", packetstr)
+        self.x, self.y, self.hspeed, self.vspeed = struct.unpack_from(">IIff", packetstr)
         self.hspeed /= 10;
         self.vspeed /= 10;
         packetstr = packetstr[16:]

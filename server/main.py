@@ -58,7 +58,7 @@ class Server(object):
                 self.game.update(self.networker, frametime)
                 self.networker.update(self, self.game, frametime)
                 self.lobbyannouncer.update(self, frametime)
-                
+
                 if frametime < constants.SERVER_MAX_FPS:
                     time.sleep(constants.SERVER_MAX_FPS - frametime)
             except KeyboardInterrupt:
