@@ -41,56 +41,59 @@ def Server_Event_Spawn(client, networker, game, event):
 
 def Server_Snapshot_Update(client, networker, game, event):
     # Copy the current game state, and replace it with everything the server knows
-    packet_time = round(struct.unpack_from(">f", event.bytestr)[0], 3)
+    packet_time = round(struct.unpack_from(">f", event.bytestr)[0], 5)
     event.bytestr= event.bytestr[4:]
 
     # Delete all the deprecated old states, they are useless. Remember that list is chronologically ordered
     while len(game.old_states) > 0:
-        if game.old_states[0].time < packet_time:
+        if game.old_states[0].time < packet_time - constants.PHYSICS_TIMESTEP:
             game.old_states.pop(0)
         else:
             break
-    # Also delete those too far ahead
+    # Also delete those too far ahead, but keep one slightly ahead to be able to interpolate well
     server_current_time = packet_time + networker.estimated_ping
     while len(game.old_states) > 0:
-        if game.old_states[-1].time >= packet_time + min(networker.estimated_ping, constants.MAX_EXTRAPOLATION):
+        if game.old_states[-1].time >= packet_time + min(networker.estimated_ping, constants.MAX_EXTRAPOLATION) + constants.PHYSICS_TIMESTEP:
             game.old_states.pop(-1)
         else:
             break
 
-    if len(game.old_states) > 0:
+    print("game.old_states:{}".format([s.time for s in game.old_states]))
+
+    if len(game.old_states) > 1:
         old_state_times = [old_state.time for old_state in game.old_states]
 
-        if max(old_state_times) > packet_time:
-            if packet_time in old_state_times:
-                # The packet time miraculously is equal one of the stored states
-                state = game.old_states[old_state_times.index(packet_time)]
-            elif len(old_state_times) == 1:
-                if old_state_times[0] > packet_time:
-                    state = game.old_states[0]
-                else:
-                    state = game.current_state
-            else:
-                # it isn't, we gotta interpolate between the two nearest
-                sorted_times = old_state_times
-                sorted_times.sort(key=lambda state_time: abs(state_time - packet_time))
-
-                state_1 = game.old_states[old_state_times.index(sorted_times[0])]
-                state_2 = game.old_states[old_state_times.index(sorted_times[1])]
-                state = state_1.copy()
-                state.interpolate(state_1, state_2, (packet_time - sorted_times[0]) / (sorted_times[1] - sorted_times[0]))
+        if packet_time in old_state_times:
+            # The packet time miraculously is equal one of the stored states
+            state = game.old_states[old_state_times.index(packet_time)]
         else:
-            state = game.current_state
-    else:
-        state = game.current_state
+            # it isn't, we gotta interpolate between the two nearest
+            sorted_times = old_state_times
+            sorted_times.sort(key=lambda state_time: abs(state_time - packet_time))
 
-    if state.time < packet_time:
+            state_1 = game.old_states[old_state_times.index(sorted_times[0])]
+            state_2 = game.old_states[old_state_times.index(sorted_times[1])]
+            state = state_1.copy()
+            state.interpolate(state_1, state_2, (packet_time - sorted_times[0]) / (sorted_times[1] - sorted_times[0]))
+
+    else:
+        if len(game.old_states) == 1:
+            state = game.old_states[0]
+        else:
+            # game.old_states is empty
+            state = game.current_state
+
+        # Interpolate to the packet time
         state.update_all_objects(game, packet_time-state.time)
 
-    #try:
-    #    print("game.old_states: {}\n".format([s.time for s in game.old_states]), "{0} < {1} < {2}\n".format(state_1.time, state.time, state_2.time), "packet time:{}\n".format(packet_time), "server time:{}\n".format(packet_time+networker.estimated_ping))
-    #except:
-    #    print("game.old_states: {}\n".format([s.time for s in game.old_states]), "state.time:{0}\n".format(state.time),"current_state.time:{}\n".format(game.current_state.time), "state.time-current_state.time:{}\n".format(state.time - game.current_state.time), "packet time:{}\n".format(packet_time), "server time:{}\n".format(packet_time+networker.estimated_ping))
+    if state.time != packet_time:
+        # Shouldn't happen
+        print("\n\nSTATE.TIME != PACKET_TIME; state.time={0}; packet_time={1}; delta={2}\n\n".format(state.time, packet_time, state.time-packet_time))
+
+    try:
+        print("{0} < {1} < {2}\n".format(state_1.time, state.time, state_2.time), "packet time:{}\n".format(packet_time), "server time:{}\n".format(packet_time+networker.estimated_ping))
+    except:
+        print("state.time:{0}\n".format(state.time),"current_state.time:{}\n".format(game.current_state.time), "state.time-current_state.time:{}\n".format(state.time - game.current_state.time), "packet time:{}\n".format(packet_time), "server time:{}\n".format(packet_time+networker.estimated_ping))
 
     # State should now be exactly what the client thinks should happen at packet_time. Now let the server correct that assumption
 
@@ -108,19 +111,24 @@ def Server_Snapshot_Update(client, networker, game, event):
 
     # Now we have exactly what happened on the server at packet_time, update it to packet_time+ping (which also happens to be the length of all old_states)
 
-    #state.update_all_objects(game, networker.estimated_ping)
+    # BREAKS game.old_states!
+    print("\n\nBefore: game.old_states:{}".format([s.time for s in game.old_states]))
+    state.update_all_objects(game, networker.estimated_ping)
+    print("After: game.old_states:{}\n\n".format([s.time for s in game.old_states]))
 
-    # Update this state with all the input information that appeared in the meantime
-    for old_state in game.old_states:
-        state.update_synced_objects(game, min(constants.PHYSICS_TIMESTEP, old_state.time - state.time))
+    # Get rid of the last entry in game.old_states if that is ahead of current state
+    try:
+        while game.old_states[-1].time >= state.time:
+            game.old_states.pop(-1)
+    except IndexError:
+        pass
 
-        old_player = old_state.players[client.our_player_id]
-        input = old_player.serialize_input()
-
-        player = state.players[client.our_player_id]
-        player.deserialize_input(input)
+    print("END OF THE HANDLER")
+    print(state.time, [s.time for s in game.old_states])
 
     game.current_state = state
+    if game.current_state.time != packet_time + networker.estimated_ping:
+        print("\n\n\n\ngame.current_state.time={0}; packet_time+networker.estimated_ping={1}; delta={2}".format(game.current_state.time, packet_time + networker.estimated_ping, 20*(game.current_state.time-(packet_time + networker.estimated_ping))))
 
 
 def Server_Full_Update(client, networker, game, event):

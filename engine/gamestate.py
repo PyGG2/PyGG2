@@ -22,6 +22,8 @@ class Gamestate(object):
 
 
     def update_synced_objects(self, game, frametime):
+        time += frametime
+
         for entity in self.entities.values():
             if entity.issynced:
                 entity.beginstep(game, self, frametime)
