@@ -51,4 +51,3 @@ class Game:
             if not self.isserver:
                 self.old_states.append(self.current_state.copy())
                 self.old_states[-1].time = round(self.old_states[-1].time, 5)
-                print("Old states just got enlarged:", [s.time for s in self.old_states])
