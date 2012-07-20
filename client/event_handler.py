@@ -58,8 +58,6 @@ def Server_Snapshot_Update(client, networker, game, event):
         else:
             break
 
-    print("game.old_states:{}".format([s.time for s in game.old_states]))
-
     if len(game.old_states) > 1:
         old_state_times = [old_state.time for old_state in game.old_states]
 
@@ -86,15 +84,6 @@ def Server_Snapshot_Update(client, networker, game, event):
         # Interpolate to the packet time
         state.update_all_objects(game, packet_time-state.time)
 
-    if state.time != packet_time:
-        # Shouldn't happen
-        print("\n\nSTATE.TIME != PACKET_TIME; state.time={0}; packet_time={1}; delta={2}\n\n".format(state.time, packet_time, state.time-packet_time))
-
-    #try:
-    #    print("{0} < {1} < {2}\n".format(state_1.time, state.time, state_2.time), "packet time:{}\n".format(packet_time), "server time:{}\n".format(packet_time+networker.estimated_ping))
-    #except:
-    #    print("state.time:{0}\n".format(state.time),"current_state.time:{}\n".format(game.current_state.time), "state.time-current_state.time:{}\n".format(state.time - game.current_state.time), "packet time:{}\n".format(packet_time), "server time:{}\n".format(packet_time+networker.estimated_ping))
-
     # State should now be exactly what the client thinks should happen at packet_time. Now let the server correct that assumption
 
     for player in state.players.values():
@@ -109,9 +98,7 @@ def Server_Snapshot_Update(client, networker, game, event):
             # Character is dead; continue
             pass
 
-    # Now we have exactly what happened on the server at packet_time, update it to packet_time+ping (which also happens to be the length of all old_states)
-
-    # BREAKS game.old_states!
+    # Now we have exactly what happened on the server at packet_time, update it to packet_time+ping
     state.update_all_objects(game, networker.estimated_ping)
 
     # Get rid of the last entry in game.old_states if that is ahead of current state
@@ -121,13 +108,7 @@ def Server_Snapshot_Update(client, networker, game, event):
     except IndexError:
         pass
 
-    print("END OF THE HANDLER")
-    print(state.time, [s.time for s in game.old_states])
-
     game.current_state = state
-    if game.current_state.time != packet_time + networker.estimated_ping:
-        print("\n\n\n\ngame.current_state.time={0}; packet_time+networker.estimated_ping={1}; delta={2}".format(game.current_state.time, packet_time + networker.estimated_ping, 20*(game.current_state.time-(packet_time + networker.estimated_ping))))
-
 
 def Server_Full_Update(client, networker, game, event):
     game.current_state.time, numof_players = struct.unpack_from(">IB", event.bytestr)
