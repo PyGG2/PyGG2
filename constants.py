@@ -1,7 +1,5 @@
 from __future__ import division, print_function
 
-import function
-
 # this file contains all kinds of constants
 
 GAME_WIDTH = 800
@@ -48,6 +46,8 @@ EVENT_JUMP = 10
 EVENT_PLAYER_SPAWN = 11
 EVENT_PLAYER_DIE = 12
 EVENT_PLAYER_DISCONNECT = 13
+EVENT_FIRE_PRIMARY = 14
+EVENT_FIRE_SECONDARY = 15
 
 # Class Constants - To use only in networking
 CLASS_SCOUT = 0

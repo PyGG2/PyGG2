@@ -122,6 +122,28 @@ def Server_Event_Disconnect(client, networker, game, event):
     print (player.name +" has disconnected")
     player.destroy(game, game.current_state)
 
+def Server_Event_Fire_Primary(client, networker, game, event):
+    #FIXME: After merge, use state instead of game.current_state
+    player = game.current_state.players[event.playerid]
+    try:
+        character = game.current_state.entities[player.character_id]
+        weapon = game.current_state.entities[character.weapon]
+        weapon.fire_primary(game, game.current_state)
+    except IndexError:
+        # character is dead or something. Shouldn't happen, so print something
+        print("Error: Firing event called for dead or non-existent character!")
+
+def Server_Event_Fire_Secondary(client, networker, game, event):
+    #FIXME: After merge, use state instead of game.current_state
+    player = game.current_state.players[event.playerid]
+    try:
+        character = game.current_state.entities[player.character_id]
+        weapon = game.current_state.entities[character.weapon]
+        weapon.fire_secondary(game, game.current_state)
+    except IndexError:
+        # character is dead or something. Shouldn't happen, so print something
+        print("Error: Firing event called for dead or non-existent character!")
+
 # Gather the functions together to easily be called by the event ID
 eventhandlers = {}
 eventhandlers[constants.EVENT_HELLO] = Server_Event_Hello
@@ -132,3 +154,5 @@ eventhandlers[constants.EVENT_PLAYER_SPAWN] = Server_Event_Spawn
 eventhandlers[constants.SNAPSHOT_UPDATE] = Server_Snapshot_Update
 eventhandlers[constants.FULL_UPDATE] = Server_Full_Update
 eventhandlers[constants.EVENT_PLAYER_DISCONNECT] = Server_Event_Disconnect
+eventhandlers[constants.EVENT_FIRE_PRIMARY] = Server_Event_Fire_Primary
+eventhandlers[constants.EVENT_FIRE_SECONDARY] = Server_Event_Fire_Secondary
