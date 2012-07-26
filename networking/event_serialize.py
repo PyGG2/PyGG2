@@ -242,3 +242,37 @@ class ServerEventDisconnect(object):
         self.playerid = struct.unpack_from(">B", packetstr)[0]
 
         return struct.calcsize(">B")
+
+@serverevent
+class ServerEventFirePrimary(object):
+    eventid = constants.EVENT_FIRE_PRIMARY
+
+    def __init__(self, playerid):
+        self.playerid = playerid
+
+    def pack(self):
+        packetstr = struct.pack(">B", self.playerid)
+
+        return packetstr
+
+    def unpack(self, packetstr):
+        self.playerid = struct.unpack_from(">B", packetstr)[0]
+
+        return struct.calcsize(">B")
+
+@serverevent
+class ServerEventFireSecondary(object):
+    eventid = constants.EVENT_FIRE_SECONDARY
+
+    def __init__(self, playerid):
+        self.playerid = playerid
+
+    def pack(self):
+        packetstr = struct.pack(">B", self.playerid)
+
+        return packetstr
+
+    def unpack(self, packetstr):
+        self.playerid = struct.unpack_from(">B", self.playerid)[0]
+
+        return struct.calcsize(">B")

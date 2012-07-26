@@ -5,10 +5,12 @@ from __future__ import division, print_function
 import math
 import struct
 import random
+
 import function
 import entity
 import projectile
 import sentry
+from networking import event_serialize
 
 # abstract class, don't directly instantiate
 class Weapon(entity.Entity):
@@ -43,11 +45,16 @@ class Weapon(entity.Entity):
         else:
             self.reloadalarm -= frametime
 
-        if owner.get_player(game, state).leftmouse and self.refirealarm == 0:
-            self.fire_primary(game, state)
+        if game.isserver:
+            if owner.get_player(game, state).leftmouse and self.refirealarm == 0:
+                self.fire_primary(game, state)
+                event = event_serialize.ServerEventFirePrimary(owner.player_id)
+                game.sendbuffer.append(event)
 
-        if owner.get_player(game, state).rightmouse and self.refirealarm == 0:
-            self.fire_secondary(game, state)
+            if owner.get_player(game, state).rightmouse and self.refirealarm == 0:
+                self.fire_secondary(game, state)
+                event = event_serialize.ServerEventFireSecondary(owner.player_id)
+                game.sendbuffer.append(event)
 
     # override this
     def fire_primary(self, game, state): pass
