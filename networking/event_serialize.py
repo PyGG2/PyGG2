@@ -273,6 +273,6 @@ class ServerEventFireSecondary(object):
         return packetstr
 
     def unpack(self, packetstr):
-        self.playerid = struct.unpack_from(">B", self.playerid)[0]
+        self.playerid = struct.unpack_from(">B", packetstr)[0]
 
         return struct.calcsize(">B")
