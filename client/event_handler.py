@@ -44,61 +44,19 @@ def Server_Snapshot_Update(client, networker, game, event):
     time = struct.unpack_from(">f", event.bytestr)[0]
     event.bytestr= event.bytestr[4:]
 
-    if len(game.old_states) > 0:
-        keys = game.old_states.keys()
-        if max(keys) > time:
-            if time in keys:
-                state = game.old_states[time]
-            else:
-                times = keys
-                keys.sort()
-                times.sort(lambda a, b: (abs(a-time) < abs(b-time)))
-                key1 = times[0]
-                key2 = keys[keys.index(key1) + (key1<time)]
-
-                state_1 = game.old_states[key1]
-                state_2 = game.old_states[key2]
-                state = state_1.copy()
-                state.interpolate(state_1, state_2, (time-key1)/(key2-key1))
-
-        else:
-            state = game.current_state
-
-        # Delete all the old states, they are useless
-        times = game.old_states.keys()
-        while len(game.old_states) > 0:
-            if times[0] < time:
-                del game.old_states[times[0]]
-                del times[0]
-            else:
-                break
-
-    else:
-        state = game.current_state
+    state = game.current_state
 
     state.time = time
 
-    for player in state.players.values():
-        length = player.deserialize_input(event.bytestr)
-        event.bytestr = event.bytestr[length:]
-
-        try:
-            character = state.entities[player.character_id]
-            length = character.deserialize(state, event.bytestr)
-            event.bytestr = event.bytestr[length:]
-        except KeyError:
-            # Character is dead
-            pass
-
-    # Update this state with all the input information that appeared in the meantime
-    for old_state_time, old_state in game.old_states.items():
-        state.update_all_objects(game, min(constants.PHYSICS_TIMESTEP, old_state_time - state.time))
-
-        old_player = old_state.players[client.our_player_id]
-        input = old_player.serialize_input()
-
-        player = state.players[client.our_player_id]
-        player.deserialize_input(input)
+    ## Update this state with all the input information that appeared in the meantime
+    #for old_state_time, old_state in game.old_states.items():
+    #    state.update_all_objects(game, min(constants.PHYSICS_TIMESTEP, old_state_time - state.time))
+    #
+    #    old_player = old_state.players[client.our_player_id]
+    #    input = old_player.serialize_input()
+    #
+    #    player = state.players[client.our_player_id]
+    #    player.deserialize_input(input)
 
     game.current_state = state
 
