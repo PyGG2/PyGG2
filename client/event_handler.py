@@ -48,15 +48,17 @@ def Server_Snapshot_Update(client, networker, game, event):
 
     state.time = time
 
-    ## Update this state with all the input information that appeared in the meantime
-    #for old_state_time, old_state in game.old_states.items():
-    #    state.update_all_objects(game, min(constants.PHYSICS_TIMESTEP, old_state_time - state.time))
-    #
-    #    old_player = old_state.players[client.our_player_id]
-    #    input = old_player.serialize_input()
-    #
-    #    player = state.players[client.our_player_id]
-    #    player.deserialize_input(input)
+    for player in state.players.values():
+        length = player.deserialize_input(event.bytestr)
+        event.bytestr = event.bytestr[length:]
+
+        try:
+            character = state.entities[player.character_id]
+            length = character.deserialize(state, event.bytestr)
+            event.bytestr = event.bytestr[length:]
+        except KeyError:
+            # Character is dead
+            pass
 
     game.current_state = state
 
