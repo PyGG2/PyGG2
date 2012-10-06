@@ -3,6 +3,7 @@ from __future__ import division, print_function
 import constants
 import character
 import struct
+import function
 from networking import event_serialize
 
 class Player(object):
@@ -68,6 +69,18 @@ class Player(object):
             # Character is already dead
             pass
         del state.players[self.id]
+
+    def interpolate(self, prev_obj, next_obj, alpha):
+        # Since the great majority of the attributes are binary, just mass copy
+        if alpha < 0.5:
+            obj = prev_obj
+        else:
+            obj = next_obj
+        self = obj.copy()
+        
+        # Then deal with the few vars that aren't binary
+        self.respawntimer = prev_obj.respawntimer + (next_obj.respawntimer - prev_obj.respawntimer)*alpha
+        self.aimdirection = function.interpolate_angle(prev_obj.aimdirection, next_obj.aimdirection, alpha)
 
     def serialize_input(self):
         keybyte = 0

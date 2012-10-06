@@ -37,22 +37,28 @@ class Gamestate(object):
 
 
     def interpolate(self, prev_state, next_state, alpha):
+        if not(0 <= alpha <= 1):
+            print("Error: alpha={} while interpolating two states".format(alpha))
+        
         self.next_entity_id = next_state.next_entity_id
         self.time = prev_state.time + (next_state.time - prev_state.time) * alpha
 
-        # remove unnecessary entities
-        self.entities = {id:entity for id, entity in self.entities.items() if id in next_state.entities}
+        if alpha < 0.5:
+            # Give previous state priority for binary choice (like entity existence)
+            self.entities = prev_state.entities
+            self.players = prev_state.players
+        else:
+            # Copy from next_state
+            self.entities = next_state.entities
+            self.players = next_state.players
 
-        for id, entity in next_state.entities.items():
-            if not id in self.entities:
-                self.entities[id] = next_state.entities[id].copy()
+        for id, entity in self.entities.items():
+            if id in prev_state.entities and id in next_state.entities:
+                self.entities[id].interpolate(prev_state.entities[id], next_state.entities[id], alpha)
 
-            if id in prev_state.entities:
-                prev_entity = prev_state.entities[id]
-            else:
-                prev_entity = entity
-
-            self.entities[id].interpolate(prev_entity, entity, alpha)
+        for id, player in self.players.items():
+            if id in prev_state.players and id in next_state.players:
+                self.players[id].interpolate(prev_state.players[id], next_state.players[id], alpha)
 
     def copy(self):
         new = Gamestate()
