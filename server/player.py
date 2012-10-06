@@ -52,6 +52,7 @@ class Player(object):
         packet = networking.packet.Packet("server")
         packet.sequence = self.sequence
         packet.acksequence = self.server_acksequence
+        packet.time = game.current_state.time
 
         for seq, event in self.events:
             packet.events.append((seq, event))

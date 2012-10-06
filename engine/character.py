@@ -21,7 +21,6 @@ class Character(entity.MovingObject):
     def __init__(self, game, state, player_id):
         super(Character, self).__init__(game, state)
 
-
         self.player_id = player_id
 
         # are we flipped around?

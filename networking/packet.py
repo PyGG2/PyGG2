@@ -14,13 +14,14 @@ class Packet(object):
     def __init__(self, sender):
         self.sequence = None
         self.acksequence = None
+        self.time = 0
         self.events = []
         self.sender = sender
 
     def pack(self):
         packetstr = ""
 
-        packetstr += struct.pack(">HH", self.sequence, self.acksequence)
+        packetstr += struct.pack(">HHf", self.sequence, self.acksequence, self.time)
 
         for seq, event in self.events:
             packetstr += struct.pack(">H", seq)
@@ -33,8 +34,8 @@ class Packet(object):
         self.events = []
         statedata = []
 
-        self.sequence, self.acksequence = struct.unpack_from(">HH", packetstr)
-        packetstr = packetstr[struct.calcsize(">HH"):]
+        self.sequence, self.acksequence, self.time = struct.unpack_from(">HHf", packetstr)
+        packetstr = packetstr[struct.calcsize(">HHf"):]
 
         while packetstr:
             sequence, eventid = struct.unpack_from(">HB", packetstr)

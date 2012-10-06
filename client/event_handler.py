@@ -11,7 +11,7 @@ import function, constants
 from networking import event_serialize
 
 
-def Server_Event_Hello(client, networker, game, event):
+def Server_Event_Hello(client, networker, game, state, event):
     # Stop saying hello
     networker.has_connected = True
     # TODO: Some version check using event.version and constants.GAME_VERSION_NUMBER
@@ -20,38 +20,30 @@ def Server_Event_Hello(client, networker, game, event):
     player_id = event.playerid
     game.maxplayers = event.maxplayers
     game.map = engine.map.Map(game, event.mapname)
-    client.start_game(player_id)
+    client.start_game(player_id, state)
 
-def Server_Event_Player_Join(client, networker, game, event):
-    newplayer = engine.player.Player(game, game.current_state, event.id)
+def Server_Event_Player_Join(client, networker, game, state, event):
+    newplayer = engine.player.Player(game, state, event.id)
     newplayer.name = event.name
 
-def Server_Event_Changeclass(client, networker, game, event):
-    player = game.current_state.players[event.playerid]
+def Server_Event_Changeclass(client, networker, game, state, event):
+    player = state.players[event.playerid]
     player.nextclass = function.convert_class(event.newclass)
 
-def Server_Event_Die(client, networker, game, event):
-    player = game.current_state.players[event.playerid]
-    character = game.current_state.entities[player.character_id]
-    character.die(game, game.current_state)
+def Server_Event_Die(client, networker, game, state, event):
+    player = state.players[event.playerid]
+    character = state.entities[player.character_id]
+    character.die(game, state)
 
-def Server_Event_Spawn(client, networker, game, event):
-    player = game.current_state.players[event.playerid]
-    player.spawn(game, game.current_state)
+def Server_Event_Spawn(client, networker, game, state, event):
+    player = state.players[event.playerid]
+    player.spawn(game, state)
 
-def Server_Snapshot_Update(client, networker, game, event):
-    # Copy the current game state, and replace it with everything the server knows
-    time = struct.unpack_from(">f", event.bytestr)[0]
-    event.bytestr= event.bytestr[4:]
-
-    state = game.current_state
-
-    state.time = time
-
+def Server_Snapshot_Update(client, networker, game, state, event):
     for player in state.players.values():
         length = player.deserialize_input(event.bytestr)
         event.bytestr = event.bytestr[length:]
-
+        
         try:
             character = state.entities[player.character_id]
             length = character.deserialize(state, event.bytestr)
@@ -60,46 +52,41 @@ def Server_Snapshot_Update(client, networker, game, event):
             # Character is dead
             pass
 
-    game.current_state = state
-
-
-def Server_Full_Update(client, networker, game, event):
-    game.current_state.time, numof_players = struct.unpack_from(">IB", event.bytestr)
+def Server_Full_Update(client, networker, game, state, event):
+    numof_players = struct.unpack_from(">B", event.bytestr)
     event.bytestr = event.bytestr[5:]
 
     for index in range(numof_players):
-        player = engine.player.Player(game, game.current_state, index)
-
+        player = engine.player.Player(game, state, index)
+        
         player.name, player_class, character_exists = struct.unpack_from(">32pBB", event.bytestr)
         player.nextclass = function.convert_class(player_class)
         event.bytestr = event.bytestr[34:]
-
+        
         if character_exists:
-            player.spawn(game, game.current_state)
+            player.spawn(game, state)
 
-def Server_Event_Disconnect(client, networker, game, event):
-    player = game.current_state.players[event.playerid]
+def Server_Event_Disconnect(client, networker, game, state, event):
+    player = state.players[event.playerid]
     print (player.name +" has disconnected")
-    player.destroy(game, game.current_state)
+    player.destroy(game, state)
 
-def Server_Event_Fire_Primary(client, networker, game, event):
-    #FIXME: After merge, use state instead of game.current_state
-    player = game.current_state.players[event.playerid]
+def Server_Event_Fire_Primary(client, networker, game, state, event):
+    player = state.players[event.playerid]
     try:
-        character = game.current_state.entities[player.character_id]
-        weapon = game.current_state.entities[character.weapon]
-        weapon.fire_primary(game, game.current_state)
+        character = state.entities[player.character_id]
+        weapon = state.entities[character.weapon]
+        weapon.fire_primary(game, state)
     except IndexError:
         # character is dead or something. Shouldn't happen, so print something
         print("Error: Firing event called for dead or non-existent character!")
 
-def Server_Event_Fire_Secondary(client, networker, game, event):
-    #FIXME: After merge, use state instead of game.current_state
-    player = game.current_state.players[event.playerid]
+def Server_Event_Fire_Secondary(client, networker, game, state, event):
+    player = state.players[event.playerid]
     try:
-        character = game.current_state.entities[player.character_id]
-        weapon = game.current_state.entities[character.weapon]
-        weapon.fire_secondary(game, game.current_state)
+        character = state.entities[player.character_id]
+        weapon = state.entities[character.weapon]
+        weapon.fire_secondary(game, state)
     except IndexError:
         # character is dead or something. Shouldn't happen, so print something
         print("Error: Firing event called for dead or non-existent character!")

@@ -53,7 +53,7 @@ class GameClientHandler(Handler):
         self.clock = precision_timer.Clock()
         
         self.timeout_accumulator = 0.0
-    def start_game(self, player_id):
+    def start_game(self, player_id, state):
         # Only start the game once the networker has confirmed a connection with the server
 
         # keep state of keys stored for one frame so we can detect down/up events
@@ -62,7 +62,7 @@ class GameClientHandler(Handler):
 
         # TODO REMOVE THIS
         # create player
-        self.our_player_id = engine.player.Player(self.game, self.game.current_state, player_id).id
+        self.our_player_id = engine.player.Player(self.game, state, player_id).id
         self.spectator = spectator.Spectator(self.our_player_id)
 
         # create renderer object

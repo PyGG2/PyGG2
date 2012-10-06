@@ -41,8 +41,6 @@ class Networker(object):
     def generate_snapshot_update(self, state):
         packetstr = ""
 
-        packetstr += struct.pack(">f", state.time)
-
         for playerid, player_obj in state.players.items():
             packetstr += player_obj.serialize_input()
             try:
@@ -60,8 +58,7 @@ class Networker(object):
     def generate_full_update(self, game):
         packetstr = ""
         state = game.current_state
-
-        packetstr += struct.pack(">I", state.time)
+    
         packetstr += struct.pack(">B", len(state.players))
 
         for player_id, player_obj in state.players.items():
