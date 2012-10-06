@@ -26,7 +26,6 @@ class Game:
 
         # game states
         self.current_state = gamestate.Gamestate()
-        self.previous_state = self.current_state.copy()
 
         # This is a hack to allow game objects to append stuff to the networking event queue without having to pass networker around
         self.sendbuffer = []
@@ -46,7 +45,6 @@ class Game:
             if not self.isserver:
                 self.old_states.append(self.current_state.copy())
 
-            self.previous_state = self.current_state.copy()
             self.current_state.update_all_objects(self, constants.PHYSICS_TIMESTEP)
             networker.sendbuffer += self.sendbuffer
             self.sendbuffer = []

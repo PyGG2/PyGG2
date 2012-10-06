@@ -75,23 +75,23 @@ class GameRenderer(object):
         self.window = client.window
         alpha = game.accumulator / constants.PHYSICS_TIMESTEP
 
-        self.interpolated_state.interpolate(game.previous_state, game.current_state, alpha)
+        self.interpolated_state.interpolate(game.current_state, game.current_state, alpha)
         focus_object_id = game.current_state.players[client.our_player_id].character_id
 
         if focus_object_id != None:
             client.spectator.x = self.interpolated_state.entities[focus_object_id].x
             client.spectator.y = self.interpolated_state.entities[focus_object_id].y
 
-            if game.current_state.entities[focus_object_id].just_spawned:
+            if self.interpolated_state.entities[focus_object_id].just_spawned:
                 self.healthhud = None
                 self.healthhud = hud_renderer.HealthRenderer(self, game, self.interpolated_state, focus_object_id)
-                game.current_state.entities[focus_object_id].just_spawned = False
+                self.interpolated_state.entities[focus_object_id].just_spawned = False
             self.healthhud.render(self, game, self.interpolated_state, focus_object_id)
 
         else:
             if self.healthhud != None:
                 self.healthhud = None
-            player = game.current_state.players[client.our_player_id]
+            player = self.interpolated_state.players[client.our_player_id]
             if player.left:
                 client.spectator.x -= 800*frametime
             elif player.right:
