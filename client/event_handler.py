@@ -53,8 +53,8 @@ def Server_Snapshot_Update(client, networker, game, state, event):
             pass
 
 def Server_Full_Update(client, networker, game, state, event):
-    numof_players = struct.unpack_from(">B", event.bytestr)
-    event.bytestr = event.bytestr[5:]
+    numof_players = struct.unpack_from(">B", event.bytestr)[0]
+    event.bytestr = event.bytestr[1:]
 
     for index in range(numof_players):
         player = engine.player.Player(game, state, index)
