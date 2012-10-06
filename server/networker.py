@@ -111,7 +111,7 @@ class Networker(object):
                         # Event has already been processed before, discard
                         continue
                     try:
-                        event_handler.eventhandlers[event.eventid](self, game, self.players[sender], event)
+                        event_handler.eventhandlers[event.eventid](self, game, game.current_state, self.players[sender], event)
                     except KeyError:
                         # Invalid event; ignore
                         print("WARNING: Client sent invalid event:", type(event), event.eventid)

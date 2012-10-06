@@ -72,8 +72,8 @@ class Player(object):
         self.sequence = (self.sequence + 1) % 65535
 
     def destroy(self, networker, game):
-        player = game.current_state.players[self.id]
-        player.destroy(game, game.current_state)
+        player = state.players[self.id]
+        player.destroy(game, state)
         event = networking.event_serialize.ServerEventDisconnect(self.id)
         networker.sendbuffer.append(event)
         self.events = []
