@@ -118,8 +118,14 @@ class Networker(object):
                 state.update_all_objects(game, packet.time - state.time)
             
             # All old states before this packet are now useless, and all old states after it are wrong
-            # Hence, clean the slate
-            game.old_states = []
+            # But we have to keep a minimum for the interpolation, so get rid of the rest
+            index = 0
+            while index < len(game.old_states):
+                if not(0 < game.old_states[index].time - game.current_state.time <= constants.INTERP_BUFFER_LENGTH):
+                    # This old state is either wrong or useless
+                    game.old_states.pop(index)
+                    index -= 1
+                index += 1
             
             
             # only accept the packet if the sender is the server
