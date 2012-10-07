@@ -80,7 +80,12 @@ class Networker(object):
             #    # parse error, don't throw exception but print it
             #    print("Parse error: %s" % sys.exc_info()[1])
             #    continue # drop packet
-
+            
+            # Check whether the packet is even new enough
+            if packet.sequence <= self.client_acksequence:
+                print("Old packet:", packet.time, game.current_state.time)
+                # No need to even consider this packet
+                return
 
             # Try to get a template state that's as close to the received one as possible.
             state = None
