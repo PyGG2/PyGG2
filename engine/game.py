@@ -19,7 +19,10 @@ class Game:
         #DEBUGTOOL
         self.toggle_masks = False
         
-        self.old_states = []
+        # This list stores all client-made states for interpolating when receiving something from the server
+        self.old_client_states = []
+        # This list store only the server-corrected ones for rendering
+        self.old_server_states = []
 
         # map data
         self.map = map.Map(self, "twodforttwo_remix")
@@ -43,7 +46,7 @@ class Game:
             self.accumulator -= constants.PHYSICS_TIMESTEP
 
             if not self.isserver:
-                self.old_states.append(self.current_state.copy())
+                self.old_client_states.append(self.current_state.copy())
 
             self.current_state.update_all_objects(self, constants.PHYSICS_TIMESTEP)
             networker.sendbuffer += self.sendbuffer
