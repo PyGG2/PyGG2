@@ -20,7 +20,7 @@ MAX_PACKET_SIZE = 2048
 NETWORK_UPDATE_RATE = 1/20 # the server sends state info to the client at this rate
 CLIENT_TIMEOUT = 300
 CONNECTION_TIMEOUT = 10
-INTERP_BUFFER_LENGTH =  1/10 # The additional lag the client trades for visual smoothness
+INTERP_BUFFER_LENGTH =  NETWORK_UPDATE_RATE*2 + 1/30 # The additional lag the client trades for visual smoothness
 
 # Lobby
 LOBBY_HOST = "ganggarrison.com"

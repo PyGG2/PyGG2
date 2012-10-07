@@ -29,6 +29,7 @@ class GameRenderer(object):
 
         self.view_width = constants.GAME_WIDTH
         self.view_height = constants.GAME_HEIGHT
+    
 
         self.maprenderer = map_renderer.MapRenderer(self, "twodforttwo_remix")
         self.healthhud = None
