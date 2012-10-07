@@ -119,7 +119,7 @@ class Networker(object):
 
             # All old states before this packet are now useless, and all old states after it are wrong
             game.old_client_states = []
-            
+
             # only accept the packet if the sender is the server
             if sender == self.server_address:
                 for seq, event in packet.events:

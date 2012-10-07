@@ -73,9 +73,49 @@ class GameRenderer(object):
         self.hud_overlay = []
 
         self.window = client.window
-        alpha = game.accumulator / constants.PHYSICS_TIMESTEP
 
-        self.interpolated_state.interpolate(game.current_state, game.current_state, alpha)
+        # Gather in one (chronological) list all the states we have
+        states = game.old_server_states[:]
+        if game.current_state.time > states[-1].time:
+            # Add current state to the states if there isn't already a server state which is new enough
+            states.append(game.current_state.copy())
+        if game.current_state.time + constants.PHYSICS_TIMESTEP > states[-1].time:
+            # Also make a uber-new state for  the game.accumulator
+            newest_state = game.current_state.copy()
+            newest_state.update_all_objects(game, constants.PHYSICS_TIMESTEP)
+            states.append(newest_state)
+        # Target time is the time of the state we would like
+        target_time = game.current_state.time + game.accumulator - constants.INTERP_BUFFER_LENGTH
+        if target_time < 0:
+            # We're not even supposed to be rendering yet
+            # Exit
+            return
+        if states[0].time > target_time or len(states) < 2:
+            # We don't have old enough states to be able to interpolate properly
+            # Take the oldest one and move it back in time
+            self.interpolated_state = states[0].copy()
+            self.interpolated_state.update_all_objects(game, target_time - self.interpolated_state.time)
+        else:
+            # Now we need to find the two states that bracket target_time
+            # Easier to do this by looping over index
+            for i in range(len(states)-1):
+                if states[i].time <= target_time <= states[i+1].time:
+                    states = states[i:i+2]
+                    break
+            alpha = (target_time - states[0].time)/(states[1].time - states[0].time)
+            # Interpolate
+            self.interpolated_state.interpolate(states[0], states[1], alpha)
+        
+        # Get rid of all of the server states which we don't need anymore
+        # We can leave one old server state though to interpolate
+        # Remember that the states are chronologically sorted
+        index = 0
+        while index < len(game.old_server_states)-1:
+            if game.old_server_states[index+1].time < target_time:
+                game.old_server_states.pop(index)
+                index -= 1
+            index += 1
+
         focus_object_id = self.interpolated_state.players[client.our_player_id].character_id
 
         if focus_object_id != None:
