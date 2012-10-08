@@ -41,7 +41,7 @@ class Character(entity.MovingObject):
         self.issynced = True
 
     def step(self, game, state, frametime):
-        player = self.get_player(game, state)
+        player = self.get_player(state)
 
         # this is quite important, if hspeed / 20 drops below 1 self.animoffset will rapidly change and cause very fast moving legs (while we are moving very slow)
         if abs(self.hspeed) > 20:
@@ -119,7 +119,7 @@ class Character(entity.MovingObject):
 
     def endstep(self, game, state, frametime):
 
-        player = self.get_player(game, state)
+        player = self.get_player(state)
         # check if we are on the ground before moving (for walking over 1 unit walls)
         onground = True
 
@@ -177,7 +177,7 @@ class Character(entity.MovingObject):
         self.hp =  prev_obj.hp + (next_obj.hp - prev_obj.hp) * alpha
 
     def jump(self, game, state):
-        player = self.get_player(game, state)
+        player = self.get_player(state)
 
         if player.up:
             if self.onground(game, state):
@@ -185,15 +185,15 @@ class Character(entity.MovingObject):
 
     def die(self, game, state):
         # first we must unregister ourselves from our player
-        self.get_player(game, state).character_id = None
-        self.get_player(game, state).respawntimer = 1# in seconds
+        self.get_player(state).character_id = None
+        self.get_player(state).respawntimer = 1# in seconds
 
         # Then we have to destroy our weapon
         state.entities[self.weapon].destroy(state)
         # TODO: destroy our sentry
         self.destroy(state)
 
-    def get_player(self, game, state):
+    def get_player(self, state):
         return state.players[self.player_id]
 
     def serialize(self, state):
@@ -286,7 +286,7 @@ class Demoman(Character):
 
     def step(self, game, state, frametime):
         Character.step(self, game, state, frametime)
-        if self.get_player(game, state).leftmouse:
+        if self.get_player(state).leftmouse:
             self.hspeed = min(54, max(-54, self.hspeed))
 
 class Heavy(Character):
@@ -303,7 +303,7 @@ class Heavy(Character):
 
     def step(self, game, state, frametime):
         Character.step(self, game, state, frametime)
-        if self.get_player(game, state).leftmouse:
+        if self.get_player(state).leftmouse:
             self.hspeed = min(54, max(-54, self.hspeed))
 
 class Medic(Character):
