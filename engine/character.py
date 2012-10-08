@@ -109,7 +109,7 @@ class Character(entity.MovingObject):
         # Please consider resistance that's amplified at higher speeds & a threshold.
 
         # hspeed limit
-        # self.hspeed = min(self.max_speed, max(-self.max_speed, self.hspeed))
+        self.hspeed = min(self.max_speed, max(-self.max_speed, self.hspeed))
 
         self.hp+=self.hp_offset # test health change
         if self.hp < 0:
