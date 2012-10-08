@@ -137,8 +137,6 @@ class Networker(object):
                 # If the time difference is small, extrapolate state to game.current_state.time for the sake of smoothness
                 if abs(state.time - game.current_state.time) <= constants.PHYSICS_TIMESTEP:
                     state.update_all_objects(game, game.current_state.time - state.time)
-                else:
-                    print(state.time - game.current_state.time)
                 game.current_state = state.copy()
             # otherwise drop the packet
             else:
