@@ -83,14 +83,14 @@ class Character(entity.MovingObject):
         if self.desired_direction == -1:
             self.hspeed -= self.base_acceleration * self.run_power * frametime
             if self.hspeed > 0:
-                self.hspeed *= self.friction ** frametime
+                self.hspeed *= self.friction ** abs(frametime)
                                                     # accelerate right
         if self.desired_direction ==  1:
             self.hspeed += self.base_acceleration * self.run_power * frametime
             if self.hspeed < 0:
-                self.hspeed *= self.friction ** frametime
+                self.hspeed *= self.friction ** abs(frametime)
 
-        self.hspeed *= self.friction ** frametime
+        self.hspeed *= self.friction ** abs(frametime)
 
         if abs(self.hspeed) < 10 and abs(old_hspeed) > abs(self.hspeed):
             self.hspeed = 0
@@ -124,7 +124,7 @@ class Character(entity.MovingObject):
         onground = True
 
         # first we move, ignoring walls
-        self.x += self.hspeed * frametime
+        self.x += self.hspeed * abs(frametime)
         # if we are in a wall now, we must move back
 
         if game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y)))):
@@ -149,7 +149,7 @@ class Character(entity.MovingObject):
                 self.hspeed = 0
 
         # same stuff, but now vertically
-        self.y += self.vspeed * frametime
+        self.y += self.vspeed * abs(frametime)
 
         if game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y)))):
             self.y = float(round(self.y))
