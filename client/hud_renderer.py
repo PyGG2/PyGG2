@@ -36,7 +36,7 @@ class HealthRenderer(HudRenderer):
         super(HealthRenderer,self).render(renderer, game, state)
         
         character = state.entities[character_id]
-        character_hp = int(character.hp)
+        character_hp = int(round(character.hp))
         
         character_maxhp = character.maxhp
         #always have at least 1 percent, can't divide by zero!

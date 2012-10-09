@@ -91,7 +91,7 @@ class Player(object):
         keybyte |= self.leftmouse << 3
         keybyte |= self.rightmouse << 4
 
-        aim = int((self.aimdirection % 360) / 360 * 65535)
+        aim = int(round((self.aimdirection % 360) / 360 * 65535))
 
         bytestr = struct.pack(">BH", keybyte, aim)
 

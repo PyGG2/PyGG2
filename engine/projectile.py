@@ -48,14 +48,14 @@ class Shot(entity.MovingObject):
 
         self.flight_time += frametime
 
-        angle = int(self.direction) % 360
+        angle = int(round(self.direction)) % 360
         if angle in self.shot_hitmasks:
             mask = self.shot_hitmasks[angle]
         else:
             mask = function.load_mask("projectiles/shots/0").rotate(angle)
             self.shot_hitmasks[angle] = mask
 
-        if game.map.collision_mask.overlap(mask, (int(self.x), int(self.y))) or self.flight_time > self.max_flight_time:
+        if game.map.collision_mask.overlap(mask, (int(round(self.x)), int(round(self.y)))) or self.flight_time > self.max_flight_time:
             # calculate unit speeds (speeds normalized into the range 0-1)
             h_unit_speed = math.cos(math.radians(self.direction))
             v_unit_speed = -math.sin(math.radians(self.direction))
@@ -63,7 +63,7 @@ class Shot(entity.MovingObject):
             x, y = self.x, self.y
 
             # move back until we're not colliding anymore - this is the colliding point
-            while game.map.collision_mask.overlap(mask, (int(x), int(y))):
+            while game.map.collision_mask.overlap(mask, (int(round(x)), int(round(y)))):
                 x -= h_unit_speed
                 y -= v_unit_speed
 
@@ -114,14 +114,14 @@ class Needle(entity.MovingObject):
 
         self.flight_time += frametime
 
-        angle = int(self.direction) % 360
+        angle = int(round(self.direction)) % 360
         if angle in self.shot_hitmasks:
             mask = self.shot_hitmasks[angle]
         else:
             mask = function.load_mask("projectiles/needles/0").rotate(angle)
             self.shot_hitmasks[angle] = mask
 
-        if game.map.collision_mask.overlap(mask, (int(self.x), int(self.y))) or self.flight_time > self.max_flight_time:
+        if game.map.collision_mask.overlap(mask, (int(round(self.x)), int(round(self.y)))) or self.flight_time > self.max_flight_time:
             # calculate unit speeds (speeds normalized into the range 0-1)
             h_unit_speed = math.cos(math.radians(self.direction))
             v_unit_speed = -math.sin(math.radians(self.direction))
@@ -223,14 +223,14 @@ class Rocket(entity.MovingObject):
 
         self.flight_time += frametime
 
-        angle = int(self.direction) % 360
+        angle = int(round(self.direction)) % 360
         if angle in self.rocket_hitmasks:
             mask = self.rocket_hitmasks[angle]
         else:
             mask = function.load_mask("projectiles/rockets/0").rotate(angle)
             self.rocket_hitmasks[angle] = mask
 
-        if game.map.collision_mask.overlap(mask, (int(self.x), int(self.y))) or self.flight_time > self.max_flight_time:
+        if game.map.collision_mask.overlap(mask, (int(round(self.x)), int(round(self.y)))) or self.flight_time > self.max_flight_time:
             self.destroy(game, state, frametime)
 
     def interpolate(self, prev_obj, next_obj, alpha):
@@ -274,7 +274,7 @@ class Flame(entity.MovingObject):
 
         self.flight_time += frametime
 
-        angle = int(self.direction)
+        angle = int(round(self.direction))
 
         if angle in self.flame_hitmasks:
             mask = self.flame_hitmasks[angle]
@@ -282,7 +282,7 @@ class Flame(entity.MovingObject):
             mask = function.load_mask("projectiles/flames/0").rotate(angle)
             self.flame_hitmasks[angle] = mask
 
-        if game.map.collision_mask.overlap(mask, (int(self.x), int(self.y))) or self.flight_time > self.max_flight_time:
+        if game.map.collision_mask.overlap(mask, (int(round(self.x)), int(round(self.y)))) or self.flight_time > self.max_flight_time:
             self.destroy(state)
 
 
@@ -330,14 +330,14 @@ class Blade(entity.MovingObject):
 
         self.flight_time += frametime
 
-        angle = int(self.direction) % 360
+        angle = int(round(self.direction)) % 360
         if angle in self.shot_hitmasks:
             mask = self.shot_hitmasks[angle]
         else:
             mask = function.load_mask("projectiles/needles/0").rotate(angle)
             self.shot_hitmasks[angle] = mask
 
-        if game.map.collision_mask.overlap(mask, (int(self.x), int(self.y))) or self.flight_time > self.max_flight_time:
+        if game.map.collision_mask.overlap(mask, (int(round(self.x)), int(round(self.y)))) or self.flight_time > self.max_flight_time:
             # calculate unit speeds (speeds normalized into the range 0-1)
             h_unit_speed = math.cos(math.radians(self.direction))
             v_unit_speed = -math.sin(math.radians(self.direction))
@@ -345,7 +345,7 @@ class Blade(entity.MovingObject):
             x, y = self.x, self.y
 
             # move back until we're not colliding anymore - this is the colliding point
-            while game.map.collision_mask.overlap(mask, (int(x), int(y))):
+            while game.map.collision_mask.overlap(mask, (int(round(x)), int(round(y)))):
                 x -= h_unit_speed
                 y -= v_unit_speed
 

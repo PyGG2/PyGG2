@@ -67,7 +67,7 @@ class GameRenderer(object):
 
         self.rendering_stack = []
 
-    def render(self, client, game, frametime):
+    def render(self, client, game, frametime):    
         # reset spritegroups
         self.world_sprites = []
         self.hud_sprites = []
@@ -142,8 +142,8 @@ class GameRenderer(object):
             elif player.down:
                 client.spectator.y += 800*frametime
         # update view
-        self.xview = int(int(client.spectator.x) - self.view_width / 2)
-        self.yview = int(int(client.spectator.y) - self.view_height / 2)
+        self.xview = int(round(client.spectator.x - self.view_width / 2))
+        self.yview = int(round(client.spectator.y - self.view_height / 2))
 
         # clear screen if needed
         if client.spectator.x <= self.view_width / 2 or client.spectator.x + self.view_width >= game.map.width or client.spectator.y <= self.view_height / 2 or self.yview + self.view_height >= game.map.height:
@@ -169,7 +169,7 @@ class GameRenderer(object):
 
     def get_screen_coords(self, x, y):
         # calculate drawing position
-        draw_x = int(x - self.xview)
-        draw_y = int(y - self.yview)
+        draw_x = int(round(x - self.xview))
+        draw_y = int(round(y - self.yview))
 
         return draw_x, draw_y

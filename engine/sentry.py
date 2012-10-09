@@ -37,7 +37,7 @@ class Building_Sentry(entity.MovingObject):
     def step(self, game, state, frametime):
         if self.isfalling:
             # If we've hit the floor, get us back out and build
-            while game.map.collision_mask.overlap(self.collision_mask, (int(self.x), int(self.y))):
+            while game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y)))):
                 self.y -= 1
                 self.isfalling = False
 

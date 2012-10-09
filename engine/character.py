@@ -130,11 +130,11 @@ class Character(entity.MovingObject):
         if game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y)))):
             # but if we just walked onto a one-unit wall it's ok
             # but we had to be on the ground
-            if onground and not game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(self.y - 6))):
+            if onground and not game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y - 6)))):
                 while game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y)))):
                     self.y -= 1
             # but sometimes we are so fast we will need to take two stairs at the same time
-            elif onground and not game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(self.y - 12))) and game.map.collision_mask.overlap(self.collision_mask, (int(self.x - 6 * function.sign(self.hspeed)), int(round(self.y)))):
+            elif onground and not game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y - 12)))) and game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x - 6 * function.sign(self.hspeed))), int(round(self.y)))):
                 while game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y)))):
                     self.y -= 1
             else:
@@ -158,13 +158,13 @@ class Character(entity.MovingObject):
                 self.y -= function.sign(self.vspeed)
 
             self.vspeed = 0
-
+        
         player.last_left = player.left
         player.last_right = player.right
 
     def onground(self, game, state):
         # are we on the ground? About one third of an unit from the ground is enough to qualify for this
-        return game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(self.y + 1)))
+        return game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y + 1))))
 
     def interpolate(self, prev_obj, next_obj, alpha):
         super(Character, self).interpolate(prev_obj, next_obj, alpha)
