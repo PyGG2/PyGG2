@@ -39,7 +39,7 @@ class Game:
         #DEBUGTOOL
         self.horizontal = 0
         self.vertical = 0
-    def update(self, networker, frametime):
+    def update(self, networker, frametime):        
         self.accumulator += frametime
 
         while self.accumulator >= constants.PHYSICS_TIMESTEP:

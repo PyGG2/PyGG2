@@ -85,12 +85,14 @@ class GameRenderer(object):
             newest_state = game.current_state.copy()
             newest_state.update_all_objects(game, constants.PHYSICS_TIMESTEP)
             states.append(newest_state)
+
         # Target time is the time of the state we would like
         target_time = game.current_state.time + game.accumulator - constants.INTERP_BUFFER_LENGTH
         if target_time < 0:
             # We're not even supposed to be rendering yet
             # Exit
             return
+
         if states[0].time > target_time or len(states) < 2:
             # We don't have old enough states to be able to interpolate properly
             # Take the oldest one and move it back in time
@@ -102,11 +104,11 @@ class GameRenderer(object):
             for i in range(len(states)-1):
                 if states[i].time <= target_time <= states[i+1].time:
                     states = states[i:i+2]
-                    break
+                    break            
             alpha = (target_time - states[0].time)/(states[1].time - states[0].time)
             # Interpolate
             self.interpolated_state.interpolate(states[0], states[1], alpha)
-        
+
         # Get rid of all of the server states which we don't need anymore
         # We can leave one old server state though to interpolate
         # Remember that the states are chronologically sorted
