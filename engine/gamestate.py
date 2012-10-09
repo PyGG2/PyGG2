@@ -45,12 +45,12 @@ class Gamestate(object):
 
         if alpha < 0.5:
             # Give previous state priority for binary choice (like entity existence)
-            self.entities = prev_state.entities
-            self.players = prev_state.players
+            self.entities = {id:entity.copy() for id, entity in prev_state.entities.items()}
+            self.players = {id:player.copy() for id, player in prev_state.players.items()}
         else:
             # Copy from next_state
-            self.entities = next_state.entities
-            self.players = next_state.players
+            self.entities = {id:entity.copy() for id, entity in next_state.entities.items()}
+            self.players = {id:player.copy() for id, player in next_state.players.items()}
 
         for id, entity in self.entities.items():
             if id in prev_state.entities and id in next_state.entities:
