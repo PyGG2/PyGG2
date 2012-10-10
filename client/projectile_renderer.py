@@ -12,6 +12,9 @@ class ShotRenderer(object):
         self.shotsprite = sfml.Sprite(function.load_texture("projectiles/shots/0.png"))
 
     def render(self, renderer, game, state, shot):
+        if shot.flight_time < 0:
+            return
+        
         sprite = self.shotsprite
         sprite.rotation = 360 - shot.direction
 
@@ -30,6 +33,9 @@ class FlameRenderer(object):
         self.flamesprite = [sfml.Sprite(function.load_texture("projectiles/flames/{}.png".format(i))) for i in range(3)]
 
     def render(self, renderer, game, state, flame):
+        if flame.flight_time < 0:
+            return
+
         #sprite animation
         if self.currentindex == -1:
             self.currentindex = 0
@@ -51,6 +57,9 @@ class RocketRenderer(object):
         self.rocketsprite = sfml.Sprite(function.load_texture("projectiles/rockets/0.png"))
 
     def render(self, renderer, game, state, rocket):
+        if rocket.flight_time < 0:
+            return
+
         sprite = self.rocketsprite
         sprite.rotation = 360 - rocket.direction
 
@@ -66,6 +75,9 @@ class NeedleRenderer(object):
         self.needlesprite = sfml.Sprite(function.load_texture("projectiles/needles/0.png"))
 
     def render(self, renderer, game, state, needle):
+        if needle.flight_time < 0:
+            return
+
         sprite = self.needlesprite
         sprite.rotation = 360 - needle.direction
 
@@ -82,6 +94,9 @@ class BladeRenderer(object):
         self.bladesprite = sfml.Sprite(function.load_texture("projectiles/bladeprojectiles/0.png"))
 
     def render(self, renderer, game, state, blade):
+        if blade.flight_time < 0:
+            return
+
         sprite = self.bladesprite
         sprite.rotation = 360 - blade.direction
 

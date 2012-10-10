@@ -9,6 +9,7 @@ import entity
 import character
 import function
 import mask
+import constants
 
 class Shot(entity.MovingObject):
     shot_hitmasks = {}
@@ -55,18 +56,19 @@ class Shot(entity.MovingObject):
             mask = function.load_mask("projectiles/shots/0").rotate(angle)
             self.shot_hitmasks[angle] = mask
 
-        if game.map.collision_mask.overlap(mask, (int(round(self.x)), int(round(self.y)))) or self.flight_time > self.max_flight_time:
+        # FIXME: "and self.flight_time > constants.PHYSICS_TIMESTEP" is an extremely hacky way to prevent negative time collisions. Is there a better method?
+        if ((game.map.collision_mask.overlap(mask, (int(round(self.x)), int(round(self.y))))) and self.flight_time >= constants.PHYSICS_TIMESTEP) or self.flight_time >= self.max_flight_time:
             # calculate unit speeds (speeds normalized into the range 0-1)
             h_unit_speed = math.cos(math.radians(self.direction))
             v_unit_speed = -math.sin(math.radians(self.direction))
-
+        
             x, y = self.x, self.y
-
+        
             # move back until we're not colliding anymore - this is the colliding point
             while game.map.collision_mask.overlap(mask, (int(round(x)), int(round(y)))):
                 x -= h_unit_speed
                 y -= v_unit_speed
-
+        
             self.destroy(state)
 
     def interpolate(self, prev_obj, next_obj, alpha):
@@ -121,7 +123,8 @@ class Needle(entity.MovingObject):
             mask = function.load_mask("projectiles/needles/0").rotate(angle)
             self.shot_hitmasks[angle] = mask
 
-        if game.map.collision_mask.overlap(mask, (int(round(self.x)), int(round(self.y)))) or self.flight_time > self.max_flight_time:
+        # FIXME: "and self.flight_time > constants.PHYSICS_TIMESTEP" is an extremely hacky way to prevent negative time collisions. Is there a better method?
+        if ((game.map.collision_mask.overlap(mask, (int(round(self.x)), int(round(self.y))))) and self.flight_time >= constants.PHYSICS_TIMESTEP) or self.flight_time > self.max_flight_time:
             # calculate unit speeds (speeds normalized into the range 0-1)
             h_unit_speed = math.cos(math.radians(self.direction))
             v_unit_speed = -math.sin(math.radians(self.direction))
@@ -236,7 +239,8 @@ class Rocket(entity.MovingObject):
             mask = function.load_mask("projectiles/rockets/0").rotate(angle)
             self.rocket_hitmasks[angle] = mask
 
-        if game.map.collision_mask.overlap(mask, (int(round(self.x)), int(round(self.y)))) or self.flight_time > self.max_flight_time:
+        # FIXME: "and self.flight_time > constants.PHYSICS_TIMESTEP" is an extremely hacky way to prevent negative time collisions. Is there a better method?
+        if ((game.map.collision_mask.overlap(mask, (int(round(self.x)), int(round(self.y))))) and self.flight_time >= constants.PHYSICS_TIMESTEP) or self.flight_time >= self.max_flight_time:
             self.destroy(game, state, frametime)
 
     def interpolate(self, prev_obj, next_obj, alpha):
@@ -288,7 +292,8 @@ class Flame(entity.MovingObject):
             mask = function.load_mask("projectiles/flames/0").rotate(angle)
             self.flame_hitmasks[angle] = mask
 
-        if game.map.collision_mask.overlap(mask, (int(round(self.x)), int(round(self.y)))) or self.flight_time > self.max_flight_time:
+        # FIXME: "and self.flight_time > constants.PHYSICS_TIMESTEP" is an extremely hacky way to prevent negative time collisions. Is there a better method?
+        if ((game.map.collision_mask.overlap(mask, (int(round(self.x)), int(round(self.y))))) and self.flight_time >= constants.PHYSICS_TIMESTEP) or self.flight_time > self.max_flight_time:
             self.destroy(state)
 
 
@@ -343,7 +348,8 @@ class Blade(entity.MovingObject):
             mask = function.load_mask("projectiles/needles/0").rotate(angle)
             self.shot_hitmasks[angle] = mask
 
-        if game.map.collision_mask.overlap(mask, (int(round(self.x)), int(round(self.y)))) or self.flight_time > self.max_flight_time:
+        # FIXME: "and self.flight_time > constants.PHYSICS_TIMESTEP" is an extremely hacky way to prevent negative time collisions. Is there a better method?
+        if ((game.map.collision_mask.overlap(mask, (int(round(self.x)), int(round(self.y))))) and self.flight_time >= constants.PHYSICS_TIMESTEP) or self.flight_time >= self.max_flight_time:
             # calculate unit speeds (speeds normalized into the range 0-1)
             h_unit_speed = math.cos(math.radians(self.direction))
             v_unit_speed = -math.sin(math.radians(self.direction))

@@ -18,7 +18,7 @@ class ClassRenderer(object):
 
         if character.intel:
             anim_frame += 2
-        
+
         sprite = self.sprites[anim_frame]
         
         if character.flip:
