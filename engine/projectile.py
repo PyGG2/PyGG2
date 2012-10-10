@@ -167,7 +167,7 @@ class Rocket(entity.MovingObject):
 
         self.direction = srcwep.direction
 
-        self.speed = 500
+        self.speed = 390
         self.hspeed = math.cos(math.radians(self.direction)) * self.speed
         self.vspeed = math.sin(math.radians(self.direction)) * -self.speed
 
@@ -209,14 +209,20 @@ class Rocket(entity.MovingObject):
         super(Rocket, self).destroy(state)
 
     def step(self, game, state, frametime):
-        self.speed += 30 # Copied from GMK-GG2; should simulate some very basic acceleration+air resistance.
-        self.speed *= 0.92
+        # FIXME: MAKE THIS WORK FOR NEGATIVE frametime!
+        # GMK-GG2 tried to emulate basic acceleration and air resistance with two simple instructions:
+        #   [execute 30 times per second]
+        #   speed += 1
+        #   speed *= 0.92
+        # Underneath is the same thing converted to work with frametime.
+        # PS: If you ever have the chance, please bash whoever had the idea of a non-standard exponential function for a rocket in an 8-bit game on the head. Thank you.
+        self.speed /= 30
+        n = 30 * frametime
+        self.speed = (0.92**n) * self.speed + 0.92*((1 - (0.92**n))/(1 - 0.92))
+        self.speed *= 30
 
-        self.hspeed = math.cos(math.radians(self.direction)) * self.speed
-        self.vspeed = math.sin(math.radians(self.direction)) * -self.speed
-
-        # calculate direction
-        self.direction = function.point_direction(self.x - self.hspeed, self.y - self.vspeed, self.x, self.y)
+        self.hspeed = math.cos(math.radians(self.direction)) * self.speed * function.sign(frametime)
+        self.vspeed = math.sin(math.radians(self.direction)) * (-self.speed) * function.sign(frametime)
 
     def endstep(self, game, state, frametime):
         super(Rocket, self).endstep(game, state, frametime)
