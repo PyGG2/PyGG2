@@ -83,14 +83,14 @@ class Character(entity.MovingObject):
         if self.desired_direction == -1:
             self.hspeed -= self.base_acceleration * self.run_power * frametime
             if self.hspeed > 0:
-                self.hspeed *= self.friction ** abs(frametime)
+                self.hspeed *= self.friction ** frametime
                                                     # accelerate right
         if self.desired_direction ==  1:
             self.hspeed += self.base_acceleration * self.run_power * frametime
             if self.hspeed < 0:
-                self.hspeed *= self.friction ** abs(frametime)
+                self.hspeed *= self.friction ** frametime
 
-        self.hspeed *= self.friction ** abs(frametime)
+        self.hspeed *= self.friction ** frametime
 
         if abs(self.hspeed) < 10 and abs(old_hspeed) > abs(self.hspeed):
             self.hspeed = 0
@@ -124,7 +124,7 @@ class Character(entity.MovingObject):
         onground = True
 
         # first we move, ignoring walls
-        self.x += self.hspeed * abs(frametime)
+        self.x += self.hspeed * frametime
         # if we are in a wall now, we must move back
 
         if game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y)))):
@@ -144,18 +144,18 @@ class Character(entity.MovingObject):
                     self.x = math.ceil(self.x)
                 # and if one pixel wasn't enough
                 while game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y)))):
-                    self.x -= function.sign(self.hspeed)
+                    self.x -= function.sign(self.hspeed) * function.sign(frametime)
 
                 self.hspeed = 0
 
         # same stuff, but now vertically
-        self.y += self.vspeed * abs(frametime)
+        self.y += self.vspeed * frametime
 
         if game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y)))):
             self.y = float(round(self.y))
 
             while game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y)))):
-                self.y -= function.sign(self.vspeed)
+                self.y -= function.sign(self.vspeed) * function.sign(frametime)
 
             self.vspeed = 0
         

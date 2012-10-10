@@ -42,8 +42,8 @@ class MovingObject(Entity):
 
     def endstep(self, game, state, frametime):
         # first move
-        self.x += self.hspeed * abs(frametime)
-        self.y += self.vspeed * abs(frametime)
+        self.x += self.hspeed * frametime
+        self.y += self.vspeed * frametime
 
     def interpolate(self, prev_obj, next_obj, alpha):
         self.x = prev_obj.x + (next_obj.x - prev_obj.x) * alpha
