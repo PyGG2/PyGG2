@@ -72,6 +72,7 @@ def Server_Event_Disconnect(client, networker, game, state, event):
     player.destroy(game, state)
 
 def Server_Event_Fire_Primary(client, networker, game, state, event):
+    state.update_all_objects(game, event.time - state.time)
     player = state.players[event.playerid]
     try:
         character = state.entities[player.character_id]
@@ -82,6 +83,7 @@ def Server_Event_Fire_Primary(client, networker, game, state, event):
         print("Error: Firing event called for dead or non-existent character!")
 
 def Server_Event_Fire_Secondary(client, networker, game, state, event):
+    state.update_all_objects(game, event.time - state.time)
     player = state.players[event.playerid]
     try:
         character = state.entities[player.character_id]

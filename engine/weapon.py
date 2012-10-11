@@ -48,12 +48,12 @@ class Weapon(entity.Entity):
         if game.isserver:
             if owner.get_player(state).leftmouse and self.refirealarm == 0:
                 self.fire_primary(game, state)
-                event = event_serialize.ServerEventFirePrimary(owner.player_id)
+                event = event_serialize.ServerEventFirePrimary(owner.player_id, state.time)
                 game.sendbuffer.append(event)
 
             if owner.get_player(state).rightmouse and self.refirealarm == 0:
                 self.fire_secondary(game, state)
-                event = event_serialize.ServerEventFireSecondary(owner.player_id)
+                event = event_serialize.ServerEventFireSecondary(owner.player_id, state.time)
                 game.sendbuffer.append(event)
 
     # override this
