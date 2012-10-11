@@ -93,7 +93,7 @@ class Networker(object):
                 if packet.time < game.old_client_states[0].time:
                     # This packet is extremely old
                     # This shouldn't actually ever happen
-                    print("Packet received that is not in game.old_client_states!\nPacket time: {0}\ngame.old_client_states: {1}".format(time, [i.time for i in game.old_client_states]))
+                    print("Packet received that is not in game.old_client_states!\nPacket time: {0}\ngame.old_client_states: {1}".format(packet.time, [i.time for i in game.old_client_states]))
                     state = game.old_client_states[0].copy()
                     state.update_all_objects(game, packet.time - state.time)
 
