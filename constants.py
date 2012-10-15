@@ -17,10 +17,10 @@ SERVER_MAX_FPS = 1/100
 # Networking
 INPUT_SEND_FPS = 1/30 # we send input to the server at this rate
 MAX_PACKET_SIZE = 2048
-NETWORK_UPDATE_RATE = 1/20 # the server sends state info to the client at this rate
+NETWORK_UPDATE_RATE = 1/40 # the server sends state info to the client at this rate
 CLIENT_TIMEOUT = 300
 CONNECTION_TIMEOUT = 10
-INTERP_BUFFER_LENGTH =  NETWORK_UPDATE_RATE*2 + 1/30 # The additional lag the client trades for visual smoothness
+INTERP_BUFFER_LENGTH =  1/20 # The additional lag the client trades for visual smoothness
 
 # Lobby
 LOBBY_HOST = "ganggarrison.com"
