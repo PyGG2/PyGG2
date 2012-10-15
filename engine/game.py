@@ -39,7 +39,7 @@ class Game:
         #DEBUGTOOL
         self.horizontal = 0
         self.vertical = 0
-    def update(self, networker, frametime):        
+    def update(self, networker, frametime):
         self.accumulator += frametime
 
         while self.accumulator >= constants.PHYSICS_TIMESTEP:
@@ -49,5 +49,8 @@ class Game:
                 self.old_client_states.append(self.current_state.copy())
 
             self.current_state.update_all_objects(self, constants.PHYSICS_TIMESTEP)
-            networker.sendbuffer += self.sendbuffer
+
+            for event in self.sendbuffer:
+                event.time = self.current_state.time
+                networker.sendbuffer.append(event)
             self.sendbuffer = []

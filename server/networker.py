@@ -51,6 +51,7 @@ class Networker(object):
                 pass
 
         event = networking.event_serialize.ServerEventSnapshotUpdate(packetstr)
+        event.time = state.time
 
         return event
 
@@ -75,6 +76,7 @@ class Networker(object):
             packetstr += struct.pack(">32pBB", player_obj.name, current_class, character_exists)
 
         event = networking.event_serialize.ServerEventFullUpdate(packetstr)
+        event.time = state.time
         return event
 
 

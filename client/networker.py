@@ -132,11 +132,11 @@ class Networker(object):
                         # Event has already been processed before, discard
                         continue
                     # First modify state to correspond to the time of the event
-                    # Note that the real event time is unknown, this can only guess the nearest 1/20ths of a second
-                    event_time = packet.time - constants.NETWORK_UPDATE_RATE * (packet.sequence - seq)
-                    state.update_all_objects(game, event_time - packet.time)
+                    state.update_all_objects(game, event.time - state.time)
                     # process the event
                     event_handler.eventhandlers[event.eventid](client, self, game, state, event)
+
+                state.update_all_objects(game, packet.time - state.time)
                 game.old_server_states.append(state.copy())
                 # If the time difference is small, extrapolate state to game.current_state.time for the sake of smoothness
                 if abs(state.time - game.current_state.time) <= constants.PHYSICS_TIMESTEP:

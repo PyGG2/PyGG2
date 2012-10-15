@@ -6,13 +6,15 @@ import struct
 clientevents = {}
 serverevents = {}
 
-# decorators to register classes as events
+# decorators to register classes as events, and add time everywhere
 def clientevent(cls):
     clientevents[cls.eventid] = cls
+    cls.time = 0
     return cls
 
 def serverevent(cls):
     serverevents[cls.eventid] = cls
+    cls.time = 0
     return cls
 
 @serverevent
@@ -71,18 +73,11 @@ class ServerEventHello(object):
 class ClientEventJump(object):
     eventid = constants.EVENT_JUMP
 
-    def __init__(self, time):
-        self.time = time
-
     def pack(self):
-        packetstr = struct.pack(">I", time)
-
         return packetstr
 
     def unpack(self, packetstr):
-        self.time = struct.unpack(">I", packetstr)[0]
-
-        return struct.calcsize(">I")
+        return 0
 
 @serverevent
 class ServerEventChangeclass(object):
@@ -247,19 +242,18 @@ class ServerEventDisconnect(object):
 class ServerEventFirePrimary(object):
     eventid = constants.EVENT_FIRE_PRIMARY
 
-    def __init__(self, playerid, time):
+    def __init__(self, playerid):
         self.playerid = playerid
-        self.time = time
 
     def pack(self):
-        packetstr = struct.pack(">Bf", self.playerid, self.time)
+        packetstr = struct.pack(">B", self.playerid)
 
         return packetstr
 
     def unpack(self, packetstr):
-        self.playerid, self.time = struct.unpack_from(">Bf", packetstr)
+        self.playerid = struct.unpack_from(">B", packetstr)[0]
 
-        return struct.calcsize(">Bf")
+        return struct.calcsize(">B")
 
 @serverevent
 class ServerEventFireSecondary(object):
@@ -267,14 +261,13 @@ class ServerEventFireSecondary(object):
 
     def __init__(self, playerid):
         self.playerid = playerid
-        self.time = time
 
     def pack(self):
-        packetstr = struct.pack(">Bf", self.playerid, self.time)
+        packetstr = struct.pack(">B", self.playerid)
 
         return packetstr
 
     def unpack(self, packetstr):
-        self.playerid, self.time = struct.unpack_from(">Bf", packetstr)
+        self.playerid = struct.unpack_from(">B", packetstr)[0]
 
-        return struct.calcsize(">Bf")
+        return struct.calcsize(">B")
