@@ -118,9 +118,8 @@ class Networker(object):
                 state = states[0].copy()
 
             else:
-                # We don't even have any old states, just take current_state and try to adapt it
+                # We don't even have any old states, just take current_state
                 state = game.current_state.copy()
-                state.update_all_objects(game, packet.time - state.time)
 
             # All old states before this packet are now useless, and all old states after it are wrong
             game.old_client_states = []
@@ -142,6 +141,7 @@ class Networker(object):
                 if abs(state.time - game.current_state.time) <= constants.PHYSICS_TIMESTEP:
                     state.update_all_objects(game, game.current_state.time - state.time)
                 game.current_state = state.copy()
+                game.current_state.update_all_objects(game, packet.time - game.current_state.time)
             # otherwise drop the packet
             else:
                 print("RECEIVED PACKET NOT FROM ACTUAL SERVER ADDRESS:\nActual Server Address:"+str(self.server_address)+"\nPacket Address:"+str(sender))
