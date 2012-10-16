@@ -23,8 +23,8 @@ def Server_Event_Hello(client, networker, game, state, event):
     client.start_game(player_id, state)
 
 def Server_Event_Player_Join(client, networker, game, state, event):
-    newplayer = engine.player.Player(game, state, event.id, event.name)
-
+    newplayer = engine.player.Player(game, state, event.id)
+    newplayer.name = event.name
 def Server_Event_Changeclass(client, networker, game, state, event):
     player = state.players[event.playerid]
     player.nextclass = function.convert_class(event.newclass)
