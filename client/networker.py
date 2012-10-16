@@ -141,7 +141,7 @@ class Networker(object):
                 if abs(state.time - game.current_state.time) <= constants.PHYSICS_TIMESTEP:
                     state.update_all_objects(game, game.current_state.time - state.time)
                 game.current_state = state.copy()
-                game.current_state.update_all_objects(game, packet.time - game.current_state.time)
+                #game.current_state.update_all_objects(game, game.current_state.time - packet.time)
             # otherwise drop the packet
             else:
                 print("RECEIVED PACKET NOT FROM ACTUAL SERVER ADDRESS:\nActual Server Address:"+str(self.server_address)+"\nPacket Address:"+str(sender))

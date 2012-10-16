@@ -27,7 +27,7 @@ class Player(object):
         self.team = constants.TEAM_RED
         self.character_id = None
         self.respawntimer = 0
-        self.name = "Test name"
+        self.name = "PLACE HOLDER NAME"
 
         self.issynced = True
 

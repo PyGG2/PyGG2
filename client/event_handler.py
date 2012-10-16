@@ -25,7 +25,6 @@ def Server_Event_Hello(client, networker, game, state, event):
 def Server_Event_Player_Join(client, networker, game, state, event):
     newplayer = engine.player.Player(game, state, event.id)
     newplayer.name = event.name
-
 def Server_Event_Changeclass(client, networker, game, state, event):
     player = state.players[event.playerid]
     player.nextclass = function.convert_class(event.newclass)
@@ -58,7 +57,6 @@ def Server_Full_Update(client, networker, game, state, event):
 
     for index in range(numof_players):
         player = engine.player.Player(game, state, index)
-        
         player.name, player_class, character_exists = struct.unpack_from(">32pBB", event.bytestr)
         player.nextclass = function.convert_class(player_class)
         event.bytestr = event.bytestr[34:]
