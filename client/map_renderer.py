@@ -16,9 +16,9 @@ class MapRenderer(object):
     
     def parallax_map (self, renderer, mapsprites):
         #the list passed to this function are the sprites between the foreground and background
-        speed_increment = 1.0/len(mapsprites)
+        speed_increment = 1.0/(len(mapsprites)+1)
         for iteration, background in enumerate(mapsprites):
-            multiplier = speed_increment * (iteration)
+            multiplier = speed_increment * (iteration+1)
             background.position = (-renderer.xview* multiplier, -renderer.yview * ((multiplier + 3.0)/4))
             renderer.window.draw(background)
     
