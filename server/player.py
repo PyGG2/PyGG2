@@ -27,7 +27,8 @@ class Player(object):
         networker.players[address] = self
 
         # and at last add to engine
-        engine.player.Player(game, game.current_state, self.id)
+        player = engine.player.Player(game, game.current_state, self.id)
+        player.name = name
 
     def update(self, networker, game, frametime):
         # Clear the acked stuff from the history
@@ -71,7 +72,7 @@ class Player(object):
 
         self.sequence = (self.sequence + 1) % 65535
 
-    def destroy(self, networker, game):
+    def destroy(self, networker, game, state):
         player = state.players[self.id]
         player.destroy(game, state)
         event = networking.event_serialize.ServerEventDisconnect(self.id)
