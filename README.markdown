@@ -8,7 +8,7 @@ Dependencies
 
 PyGG2 requires the following dependencies, in addition to Python 2.7:
 
-* [pySFML 2-cython](https://github.com/bastienleonard/pysfml2-cython)
+* [pySFML - Cython](https://github.com/bastienleonard/pysfml-cython)
 * [Python Imaging Library](http://pythonware.com/products/pil/)
 * PyGG2 bitmask extension (compile with `python make.py build`, with `gcc` in path)
 
