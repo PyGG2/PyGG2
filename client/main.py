@@ -8,13 +8,7 @@ import engine.game, engine.player
 import constants
 import networking
 import time
-def get_input(window):
-    return {
-        "up": sfml.Keyboard.is_key_pressed(sfml.Keyboard.W),
-        "down": sfml.Keyboard.is_key_pressed(sfml.Keyboard.S),
-        "left": sfml.Keyboard.is_key_pressed(sfml.Keyboard.A),
-        "right": sfml.Keyboard.is_key_pressed(sfml.Keyboard.D)
-    }
+import input_handler
 
 # handler for when client is in game
 class GameClientHandler(Handler):
@@ -56,10 +50,6 @@ class GameClientHandler(Handler):
     def start_game(self, player_id, state):
         # Only start the game once the networker has confirmed a connection with the server
 
-        # keep state of keys stored for one frame so we can detect down/up events
-        self.keys = get_input(self.window)
-        self.oldkeys = self.keys
-
         # TODO REMOVE THIS
         # create player
         self.our_player_id = engine.player.Player(self.game, state, player_id).id
@@ -67,6 +57,9 @@ class GameClientHandler(Handler):
 
         # create renderer object
         self.renderer = rendering.GameRenderer(self)
+
+        # create input handler
+        self.input_handler = input_handler.InputHandler()
 
         # Time tracking
         self.inputsender_accumulator = 0.0 # this counter will accumulate time to send input at a constant rate
@@ -108,24 +101,7 @@ class GameClientHandler(Handler):
                             print("VERTICAL OFFSET = " + str(self.game.vertical))
 
                 # handle input if window is focused
-                self.oldkeys = self.keys
-                self.keys = get_input(self.window)
                 if self.window_focused:
-                    leftmouse = sfml.Mouse.is_button_pressed(sfml.Mouse.LEFT)
-                    middlemouse = sfml.Mouse.is_button_pressed(sfml.Mouse.MIDDLE)
-                    rightmouse = sfml.Mouse.is_button_pressed(sfml.Mouse.RIGHT)
-
-                    mouse_x, mouse_y = sfml.Mouse.get_position(self.window)
-                    our_player = self.game.current_state.players[self.our_player_id]
-                    our_player.up = self.keys["up"]
-                    our_player.down = self.keys["down"]
-                    our_player.left = self.keys["left"]
-                    our_player.right = self.keys["right"]
-                    our_player.leftmouse = leftmouse
-                    our_player.middlemouse = middlemouse
-                    our_player.rightmouse = rightmouse
-                    our_player.aimdirection = function.point_direction(self.window.width / 2, self.window.height / 2, mouse_x, mouse_y)
-
                     if sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM1):
                         event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_SCOUT)
                         self.networker.events.append((self.networker.sequence, event))
@@ -162,6 +138,7 @@ class GameClientHandler(Handler):
                 self.fpscounter_accumulator += frame_time
 
                 self.networker.recieve(self.game, self)
+                self.input_handler.gather_input(self.window, self.game)
                 self.game.update(self.networker, frame_time)
                 self.renderer.render(self, self.game, frame_time)
 
