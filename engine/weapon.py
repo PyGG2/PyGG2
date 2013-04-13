@@ -213,8 +213,9 @@ class Revolver(Weapon):
             #else: Stab
 
     def fire_secondary(self, game, state):
-        state.entities[self.owner].cloaking = not state.entities[self.owner].cloaking# Any ideas how to add a good gradient?
-        print("Cloaking: ", owner.cloaking, "| is very unresponsive; print statement in weapon.py")
+        owner = state.entities[self.owner_id]
+        owner.cloaking = not owner.cloaking# Any ideas how to add a good gradient?
+        print("Cloaking: ", owner.cloaking, "| is very unresponsive because it doesn't check for pressing, just whether RMB is being held.")
 
 class Blade(Weapon):
     maxammo = 4
