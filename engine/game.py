@@ -25,7 +25,7 @@ class Game:
         self.old_server_states = []
 
         # map data
-        self.map = map.Map(self, "twodforttwo_remix")
+        self.map = map.Map(self, "montane")
 
         # game states
         self.current_state = gamestate.Gamestate()
