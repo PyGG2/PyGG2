@@ -134,21 +134,21 @@ class GameClientHandler(Handler):
                     #    self.window.fullscreen = not self.window.fullscreen
 
                 # update the game and render
-                frame_time = self.clock.tick()
-                frame_time = min(0.25, frame_time) # a limit of 0.25 seconds to prevent complete breakdown
+                frametime = self.clock.tick()
+                frametime = min(0.25, frametime) # a limit of 0.25 seconds to prevent complete breakdown
 
-                self.fpscounter_accumulator += frame_time
+                self.fpscounter_accumulator += frametime
 
                 self.networker.recieve(self.game, self)
                 self.input_handler.gather_input(self.window, self.game)
-                self.game.update(self.networker, frame_time)
-                self.renderer.render(self, self.game, frame_time)
+                self.game.update(self.networker, frametime)
+                self.renderer.render(self, self.game, frametime)
 
                 if self.network_update_timer >= constants.INPUT_SEND_FPS:
                     self.networker.update(self)
                     self.network_update_timer = 0
                 else:
-                    self.network_update_timer += frame_time
+                    self.network_update_timer += frametime
 
                 if self.fpscounter_accumulator > 1.0:
                     self.window.title = "PyGG2 - %d FPS" % (self.fpscounter_frames / self.fpscounter_accumulator)
@@ -158,9 +158,9 @@ class GameClientHandler(Handler):
                 self.window.display()
                 self.fpscounter_frames += 1
             else:
-                frame_time = self.clock.tick()
-                frame_time = min(0.25, frame_time)
-                self.timeout_accumulator += frame_time
+                frametime = self.clock.tick()
+                frametime = min(0.25, frametime)
+                self.timeout_accumulator += frametime
                 if not self.window.open:
                     self.window.close()
                     return (False)
@@ -176,7 +176,7 @@ class GameClientHandler(Handler):
                 if self.timeout_accumulator > constants.CONNECTION_TIMEOUT:
                     print("Unable to connect to " + str(self.server_ip) + " at port: " + str(self.server_port))
                     return (False) #exit
-                time.sleep(max(frame_time, 0.25)) # Slow down the execution rate
+                time.sleep(max(frametime, 0.25)) # Slow down the execution rate
                 
         self.cleanup()
 
