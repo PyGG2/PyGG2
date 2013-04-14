@@ -16,14 +16,14 @@ def Client_Event_Changeclass(networker, game, state, senderplayer, event):
     player.nextclass = newclass
 
     classchange_event = event_serialize.ServerEventChangeclass(senderplayer.id, event.newclass)
-    networker.sendbuffer.append(classchange_event)
+    game.sendbuffer.append(classchange_event)
 
     # Kill the character
     try:
         character = state.entities[player.character_id]
         character.die(game, state)
         death_event = event_serialize.ServerEventDie(player.id)
-        networker.sendbuffer.append(death_event)
+        game.sendbuffer.append(death_event)
     except KeyError:
         # Character is already dead, we don't need to do anything here
         pass
@@ -31,7 +31,7 @@ def Client_Event_Changeclass(networker, game, state, senderplayer, event):
     # Resurrect him with new class. FIXME: REMOVE THIS
     player.spawn(game, state)
     spawn_event = event_serialize.ServerEventSpawn(player.id, 2300, 50)
-    networker.sendbuffer.append(spawn_event)
+    game.sendbuffer.append(spawn_event)
 
 def Client_Event_Jump(networker, game, state, senderplayer, event):
     player = state.players[senderplayer.id]

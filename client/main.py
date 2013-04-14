@@ -106,28 +106,28 @@ class GameClientHandler(Handler):
                 if self.window_focused:
                     if sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM1):
                         event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_SCOUT)
-                        self.networker.events.append((self.networker.sequence, event))
+                        self.game.sendbuffer.append(event)
                     elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM2):
                         event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_PYRO)
-                        self.networker.events.append((self.networker.sequence, event))
+                        self.game.sendbuffer.append(event)
                     elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM3):
                         event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_SOLDIER)
-                        self.networker.events.append((self.networker.sequence, event))
+                        self.game.sendbuffer.append(event)
                     elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM4):
                         event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_HEAVY)
-                        self.networker.events.append((self.networker.sequence, event))
+                        self.game.sendbuffer.append(event)
                     elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM6):
                         event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_MEDIC)
-                        self.networker.events.append((self.networker.sequence, event))
+                        self.game.sendbuffer.append(event)
                     elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM7):
                         event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_ENGINEER)
-                        self.networker.events.append((self.networker.sequence, event))
+                        self.game.sendbuffer.append(event)
                     elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM8):
                         event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_SPY)
-                        self.networker.events.append((self.networker.sequence, event))
+                        self.game.sendbuffer.append(event)
                     elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.Q):
                         event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_QUOTE)
-                        self.networker.events.append((self.networker.sequence, event))
+                        self.game.sendbuffer.append(event)
 
                     # did we just release the F11 button? if yes, go fullscreen
                     #if sfml.Keyboard.is_key_pressed(sfml.Keyboard.F11):
