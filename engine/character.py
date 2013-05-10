@@ -191,7 +191,7 @@ class Character(entity.MovingObject):
         self.get_player(state).respawntimer = 1# in seconds
 
         # Then we have to destroy our weapon
-        state.entities[self.weapon].destroy(state)
+        state.entities[self.weapon_id].destroy(state)
         # TODO: destroy our sentry
         self.destroy(state)
 
@@ -209,7 +209,7 @@ class Character(entity.MovingObject):
         #byte |= self.sentry << 2
         packetstr += struct.pack(">B", byte)
 
-        packetstr += state.entities[self.weapon].serialize(state)
+        packetstr += state.entities[self.weapon_id].serialize(state)
 
         return packetstr
 
@@ -222,7 +222,7 @@ class Character(entity.MovingObject):
         self.can_doublejump = byte & (1 << 1)
         #self.sentry = byte & (1 << 2)
 
-        weapon_string_length = state.entities[self.weapon].deserialize(state, packetstr)
+        weapon_string_length = state.entities[self.weapon_id].deserialize(state, packetstr)
         return struct.calcsize(">IIiiB")+weapon_string_length
 
 class Scout(Character):
@@ -236,7 +236,7 @@ class Scout(Character):
         Character.__init__(self, game, state, player_id)
 
         self.hp = self.maxhp
-        self.weapon = weapon.Scattergun(game, state, self.id).id
+        self.weapon_id = weapon.Scattergun(game, state, self.id).id
         self.can_doublejump = True
 
     def jump(self, game, state):
@@ -257,7 +257,7 @@ class Pyro(Character):
         Character.__init__(self, game, state, player_id)
 
         self.hp = self.maxhp
-        self.weapon = weapon.Flamethrower(game, state, self.id).id
+        self.weapon_id = weapon.Flamethrower(game, state, self.id).id
 
 class Soldier(Character):
     # FIXME: width, height of soldier - rectangle collision
@@ -269,7 +269,7 @@ class Soldier(Character):
         Character.__init__(self, game, state, player_id)
 
         self.hp = self.maxhp
-        self.weapon = weapon.Rocketlauncher(game, state, self.id).id
+        self.weapon_id = weapon.Rocketlauncher(game, state, self.id).id
 
 class Demoman(Character):
     #TODO: this class
@@ -282,7 +282,7 @@ class Demoman(Character):
         Character.__init__(self, game, state, player_id)
 
         self.hp = self.maxhp
-        self.weapon = weapon.Minigun(game, state, self.id).id
+        self.weapon_id = weapon.Minigun(game, state, self.id).id
 
     def step(self, game, state, frametime):
         Character.step(self, game, state, frametime)
@@ -299,7 +299,7 @@ class Heavy(Character):
         Character.__init__(self, game, state, player_id)
 
         self.hp = self.maxhp
-        self.weapon = weapon.Minigun(game, state, self.id).id
+        self.weapon_id = weapon.Minigun(game, state, self.id).id
 
     def step(self, game, state, frametime):
         Character.step(self, game, state, frametime)
@@ -317,7 +317,7 @@ class Medic(Character):
         Character.__init__(self, game, state, player_id)
 
         self.hp = self.maxhp
-        self.weapon = weapon.Medigun(game, state, self.id).id
+        self.weapon_id = weapon.Medigun(game, state, self.id).id
 
 class Engineer(Character):
     # FIXME: width, height of engineer - rectangle collision
@@ -329,7 +329,7 @@ class Engineer(Character):
         Character.__init__(self, game, state, player_id)
 
         self.hp = self.maxhp
-        self.weapon = weapon.Shotgun(game, state, self.id).id
+        self.weapon_id = weapon.Shotgun(game, state, self.id).id
 
 class Spy(Character):
     # FIXME: width, height of spy - rectangle collision
@@ -341,7 +341,7 @@ class Spy(Character):
         Character.__init__(self, game, state, player_id)
 
         self.hp = self.maxhp
-        self.weapon = weapon.Revolver(game, state, self.id).id
+        self.weapon_id = weapon.Revolver(game, state, self.id).id
         self.cloaking = False
 
 class Sniper(Character):
@@ -355,7 +355,7 @@ class Sniper(Character):
         Character.__init__(self, game, state, player_id)
 
         self.hp = self.maxhp
-        self.weapon = weapon.Minigun(game, state, self.id).id
+        self.weapon_id = weapon.Minigun(game, state, self.id).id
 
 class Quote(Character):
     # width, height of scout - rectangle collision
@@ -368,7 +368,7 @@ class Quote(Character):
         Character.__init__(self, game, state, player_id)
 
         self.hp = self.maxhp
-        self.weapon = weapon.Blade(game, state, self.id).id
+        self.weapon_id = weapon.Blade(game, state, self.id).id
         self.can_doublejump = True
 
     def jump(self, game, state):
