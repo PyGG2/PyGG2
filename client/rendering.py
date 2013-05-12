@@ -135,12 +135,15 @@ class GameRenderer(object):
             client.spectator.y = self.interpolated_state.entities[focus_object_id].y
 
             if self.interpolated_state.entities[focus_object_id].just_spawned:
-                self.healthhud = None
+                self.ammohud = hud_renderer.create_ammo_renderer(self, game, self.interpolated_state, focus_object_id)
                 self.healthhud = hud_renderer.HealthRenderer(self, game, self.interpolated_state, focus_object_id)
                 self.interpolated_state.entities[focus_object_id].just_spawned = False
+            self.ammohud.render(self, game, self.interpolated_state, focus_object_id)
             self.healthhud.render(self, game, self.interpolated_state, focus_object_id)
 
         else:
+            if self.ammohud != None:
+                self.ammohud = None
             if self.healthhud != None:
                 self.healthhud = None
             player = self.interpolated_state.players[client.our_player_id]
