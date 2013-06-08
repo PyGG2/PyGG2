@@ -66,12 +66,12 @@ class Weapon(entity.Entity):
 
     def serialize(self, state):
         packetstr = ""
-        packetstr += struct.pack(">B", self.ammo)
+        packetstr += struct.pack(">Bf", self.ammo, self.reloadalarm)
         return packetstr
 
     def deserialize(self, state, packetstr):
-        self.ammo = struct.unpack_from(">B", packetstr)[0]
-        packetstr = packetstr[1:]
+        self.ammo, self.reloadalarm = struct.unpack_from(">Bf", packetstr)
+        packetstr = packetstr[5:]
         return 1
 
 class Scattergun(Weapon):
