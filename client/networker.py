@@ -113,7 +113,12 @@ class Networker(object):
                 # And then we interpolate
                 d_time = (packet.time - states[0].time) * (states[1].time - states[0].time)
                 if not(0 <= d_time <= 1):
-                    print("This should not happen!\nd_time:{0}\ntime:{1}\nstates[0].time:{2}\nstates[1].time:{3}\n\nold_client_states:{4}\n\n\n".format(d_time, packet.time, states[0].time, states[1].time, [i.time for i in game.old_client_states]))
+                    if abs(d_time) > 0.001:
+                        print("This should not happen!\nd_time:{0}\ntime:{1}\nstates[0].time:{2}\nstates[1].time:{3}\n\nold_client_states:{4}\n\n\n".format(d_time, packet.time, states[0].time, states[1].time, [i.time for i in game.old_client_states]))
+                    if d_time < 0:
+                        d_time = 0
+                    if d_time > 1:
+                        d_time = 1
                 states[0].interpolate(states[0], states[1], d_time)
                 state = states[0].copy()
 
