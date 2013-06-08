@@ -19,6 +19,7 @@ class Networker(object):
         self.sequence = 1
         self.server_acksequence = 0
         self.client_acksequence = 0
+        self.latency = 0
 
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind(("", 0))
@@ -140,10 +141,14 @@ class Networker(object):
                     # process the event
                     event_handler.eventhandlers[event.eventid](client, self, game, state, event)
 
+                # Calculate current latency
+                self.latency = game.current_state.time - packet.time
+                # Set the state to the actual packet time and add it to the buffer for rendering
                 state.update_all_objects(game, packet.time - state.time)
                 game.old_server_states.append(state.copy())
-                if abs(game.current_state.time - state.time) <= 0.2:
-                    state.update_all_objects(game, game.current_state.time - state.time)
+                game.old_client_states.append(state.copy())
+                # Update it to the current state time and then set it
+                state.update_all_objects(game, game.current_state.time - state.time)
                 game.current_state = state.copy()
             # otherwise drop the packet
             else:

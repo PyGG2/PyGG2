@@ -43,12 +43,17 @@ class Game:
         self.accumulator += frametime
 
         while self.accumulator >= constants.PHYSICS_TIMESTEP:
-            self.accumulator -= constants.PHYSICS_TIMESTEP
-
-            if not self.isserver:
+            if self.isserver:
+                self.accumulator -= constants.PHYSICS_TIMESTEP
+                self.current_state.update_all_objects(self, constants.PHYSICS_TIMESTEP)
+            else:
                 self.old_client_states.append(self.current_state.copy())
-
-            self.current_state.update_all_objects(self, constants.PHYSICS_TIMESTEP)
+                self.accumulator -= constants.PHYSICS_TIMESTEP
+                if networker.latency > 0:
+                    delay = min(networker.latency*(constants.PHYSICS_TIMESTEP/constants.NETWORK_UPDATE_RATE), constants.PHYSICS_TIMESTEP)
+                else:
+                    delay = max(networker.latency*(constants.PHYSICS_TIMESTEP/constants.NETWORK_UPDATE_RATE), -constants.PHYSICS_TIMESTEP)
+                self.current_state.update_all_objects(self, constants.PHYSICS_TIMESTEP - delay)
 
             for event in self.sendbuffer:
                 event.time = self.current_state.time
