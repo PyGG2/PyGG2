@@ -33,17 +33,7 @@ class Weapon(entity.Entity):
     def step(self, game, state, frametime):
         owner = state.entities[self.owner_id]
 
-        if self.refirealarm <= 0:
-            self.refirealarm = 0.0
-        else:
-            self.refirealarm -= frametime
-
-        if self.reloadalarm <= 0:
-            self.ammo = min(self.maxammo, self.ammo+1)
-            if self.ammo < self.maxammo:
-                self.reloadalarm = self.reloadtime
-        else:
-            self.reloadalarm -= frametime
+        self.reload(game, state, frametime)
 
         if game.isserver:
             if owner.get_player(state).leftmouse and self.refirealarm == 0:
@@ -55,6 +45,19 @@ class Weapon(entity.Entity):
                 self.fire_secondary(game, state)
                 event = event_serialize.ServerEventFireSecondary(owner.player_id)
                 game.sendbuffer.append(event)
+
+    def reload(self, game, state, frametime):
+        if self.refirealarm <= 0:
+            self.refirealarm = 0.0
+        else:
+            self.refirealarm -= frametime
+        
+        if self.reloadalarm <= 0:
+            self.ammo = min(self.maxammo, self.ammo+1)
+            if self.ammo < self.maxammo:
+                self.reloadalarm = self.reloadtime
+        else:
+            self.reloadalarm -= frametime
 
     # override this
     def fire_primary(self, game, state): pass
@@ -104,6 +107,7 @@ class Flamethrower(Weapon):
     maxammo = 200
     refiretime = 1/30
     reloadtime = 3/4
+    length = 40 # Flamethrower sprite length
 
     def fire_primary(self, game, state):
         projectile.Flame(game, state, self.id)
@@ -194,6 +198,17 @@ class Medigun(Weapon):
             self.refirealarm = self.refiretime
             self.reloadalarm = self.reloadtime
             self.ammo = max(0, self.ammo-1)
+    
+    def reload(self, game, state, frametime):
+        if self.refirealarm <= 0:
+            self.refirealarm = 0.0
+        else:
+            self.refirealarm -= frametime
+        
+        if self.reloadalarm <= 0:
+            self.ammo = self.maxammo
+        else:
+            self.reloadalarm -= frametime
 
 class Revolver(Weapon):
     maxammo = 6

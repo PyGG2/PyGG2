@@ -70,8 +70,7 @@ class HealthRenderer(HudRenderer):
         renderer.hud_overlay.append(self.health_text)
 
 
-class AmmoRenderer(HudRenderer):
-    
+class AmmoRenderer(HudRenderer):    
     def initialize(self, renderer, game, state, character_id, spritepath):
         character = state.entities[character_id]
         if character.team == constants.TEAM_RED:
@@ -98,16 +97,20 @@ class AmmoRenderer(HudRenderer):
 # TODO: Fine-tune the self.sprite_location constants everywhere
 class ScattergunAmmoRenderer(AmmoRenderer):
     def __init__(self, renderer, game, state, character_id):
-        self.sprite_location = (renderer.view_width - 120, renderer.view_height - 55)
         self.bar = DrawRectangle()
         self.background_bar = DrawRectangle()
+        self.sprite_location = (renderer.view_width - 120, renderer.view_height - 55)
         self.bar.location = (self.sprite_location[0] + 32, self.sprite_location[1] + 24)
         self.background_bar.size = (51, 8)
         self.initialize(renderer, game, state, character_id, "scattergunammos")
 
 class FlamethrowerAmmoRenderer(AmmoRenderer):
     def __init__(self, renderer, game, state, character_id):
-        self.sprite_location = (renderer.view_width - 70, renderer.view_height - 75)
+        self.bar = DrawRectangle()
+        self.background_bar = DrawRectangle()
+        self.sprite_location = (renderer.view_width - 120, renderer.view_height - 55)
+        self.bar.location = (self.sprite_location[0] + 32, self.sprite_location[1] + 24)
+        self.background_bar.size = (51, 8)
         self.initialize(renderer, game, state, character_id, "flamethrowerammos")
 
 class RocketlauncherAmmoRenderer(AmmoRenderer):
@@ -118,32 +121,56 @@ class RocketlauncherAmmoRenderer(AmmoRenderer):
 
 class MinigunAmmoRenderer(AmmoRenderer):
     def __init__(self, renderer, game, state, character_id):
-        self.sprite_location = (renderer.view_width - 70, renderer.view_height - 75)
+        self.bar = DrawRectangle()
+        self.background_bar = DrawRectangle()
+        self.sprite_location = (renderer.view_width - 120, renderer.view_height - 55)
+        self.bar.location = (self.sprite_location[0] + 32, self.sprite_location[1] + 24)
+        self.background_bar.size = (51, 8)
         self.initialize(renderer, game, state, character_id, "minigunammos")
 
 class MinegunAmmoRenderer(AmmoRenderer):
     def __init__(self, renderer, game, state, character_id):
-        self.sprite_location = (renderer.view_width - 70, renderer.view_height - 75)
+        self.bar = DrawRectangle()
+        self.background_bar = DrawRectangle()
+        self.sprite_location = (renderer.view_width - 120, renderer.view_height - 55)
+        self.bar.location = (self.sprite_location[0] + 32, self.sprite_location[1] + 24)
+        self.background_bar.size = (51, 8)
         self.initialize(renderer, game, state, character_id, "minegunammos")
 
 class NeedleAmmoRenderer(AmmoRenderer):
     def __init__(self, renderer, game, state, character_id):
-        self.sprite_location = (renderer.view_width - 70, renderer.view_height - 75)
+        self.bar = DrawRectangle()
+        self.background_bar = DrawRectangle()
+        self.sprite_location = (renderer.view_width - 120, renderer.view_height - 55)
+        self.bar.location = (self.sprite_location[0] + 32, self.sprite_location[1] + 24)
+        self.background_bar.size = (51, 8)
         self.initialize(renderer, game, state, character_id, "needleammos")
 
 class ShotgunAmmoRenderer(AmmoRenderer):
     def __init__(self, renderer, game, state, character_id):
-        self.sprite_location = (renderer.view_width - 70, renderer.view_height - 75)
+        self.bar = DrawRectangle()
+        self.background_bar = DrawRectangle()
+        self.sprite_location = (renderer.view_width - 120, renderer.view_height - 55)
+        self.bar.location = (self.sprite_location[0] + 32, self.sprite_location[1] + 24)
+        self.background_bar.size = (51, 8)
         self.initialize(renderer, game, state, character_id, "shotgunammos")
 
 class RevolverAmmoRenderer(AmmoRenderer):
     def __init__(self, renderer, game, state, character_id):
-        self.sprite_location = (renderer.view_width - 70, renderer.view_height - 75)
+        self.bar = DrawRectangle()
+        self.background_bar = DrawRectangle()
+        self.sprite_location = (renderer.view_width - 120, renderer.view_height - 55)
+        self.bar.location = (self.sprite_location[0] + 32, self.sprite_location[1] + 24)
+        self.background_bar.size = (51, 8)
         self.initialize(renderer, game, state, character_id, "revolverammos")
 
 class BladeAmmoRenderer(AmmoRenderer):
     def __init__(self, renderer, game, state, character_id):
-        self.sprite_location = (renderer.view_width - 70, renderer.view_height - 75)
+        self.bar = DrawRectangle()
+        self.background_bar = DrawRectangle()
+        self.sprite_location = (renderer.view_width - 120, renderer.view_height - 55)
+        self.bar.location = (self.sprite_location[0] + 32, self.sprite_location[1] + 24)
+        self.background_bar.size = (51, 8)
         self.initialize(renderer, game, state, character_id, "bladeammos")
 
 
