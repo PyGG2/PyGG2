@@ -53,6 +53,7 @@ def Server_Snapshot_Update(client, networker, game, state, event):
             pass
 
 def Server_Full_Update(client, networker, game, state, event):
+    game.current_state.time = struct.unpack_from(">f", event.bytestr)[0]
     numof_players = struct.unpack_from(">B", event.bytestr)[0]
     event.bytestr = event.bytestr[1:]
 

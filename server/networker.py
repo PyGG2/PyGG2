@@ -60,7 +60,7 @@ class Networker(object):
         packetstr = ""
         state = game.current_state
     
-        packetstr += struct.pack(">B", len(state.players))
+        packetstr += struct.pack(">fB", state.time, len(state.players))
 
         for player_id, player_obj in state.players.items():
             try:
