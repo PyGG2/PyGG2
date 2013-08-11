@@ -9,17 +9,14 @@ import engine.weapon
 import constants
 
 class HudRenderer(object):
-    
     def render(self, renderer, game, state):
-
         self.hudsprite.position = self.sprite_location
-        self.hudsprite.scale = (2,2)
+        self.hudsprite.ratio = sfml.system.Vector2(2, 2)
         renderer.hud_sprites.append (self.hudsprite)
-        
+
+
 class HealthRenderer(HudRenderer):
-
     def __init__(self, renderer, game, state, character_id):
-
         self.sprite_location = (10, renderer.view_height - 75)
         character = state.entities[character_id]
         my_class_type = type(character)
@@ -42,7 +39,7 @@ class HealthRenderer(HudRenderer):
         
         character_maxhp = character.maxhp
         #always have at least 1 percent, can't divide by zero!
-        health_percentage = max(0.01,(character_hp / character_maxhp))
+        health_percentage = max(0.01, (character_hp / character_maxhp))
        
         self.health_text.text = str(character_hp)
         
@@ -193,7 +190,6 @@ def create_ammo_renderer(renderer, game, state, character_id):
 
 class DrawRectangle(object):
     def render(self, renderer, game, state):
-        
         rect = sfml.RectangleShape(self.size)
         rect.fill_color = self.color
         rect.position = (self.location)

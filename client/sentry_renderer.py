@@ -18,10 +18,10 @@ class BuildingSentryRenderer(object):
         sprite = self.sprites[min(int(sentry.animation_frame), 9)] # TODO, get rid of this min and figure out how to cap an image index
 
         if sentry.flip == True:
-            sprite.scale = (-1, 1)
+            sprite.ratio = sfml.system.Vector2(-1, 1)
             sprite.position = renderer.get_screen_coords(sentry.x + sprite_offset_flipped[0], sentry.y + sprite_offset_flipped[1])
         else:
-            sprite.scale(1, 1)
+            sprite.ratio = sfml.system.Vector2(1, 1)
             sprite.position = renderer.get_screen_coords(sentry.x + sprite_offset[0] , sentry.y + sprite_offset[1] )
 
 

@@ -12,7 +12,7 @@ class MapRenderer(object):
     def set_map(self, mapname):
         self.bgs = [sfml.Sprite(function.load_texture(("maps/"+ mapname[i] + ".png"))) for i in range(8)]
         for background in self.bgs:
-            background.scale(6, 6)
+            background.ratio = sfml.system.Vector2(6, 6)
     
     def parallax_map (self, renderer, mapsprites):
         #the list passed to this function are the sprites between the foreground and background
@@ -23,18 +23,17 @@ class MapRenderer(object):
             renderer.window.draw(background)
     
     def render(self, renderer, state):
-        
         #Background (Sky)
-        self.bgs[7].position = (-renderer.xview, -renderer.yview)
+        self.bgs[7].position = renderer.get_screen_coords(0, 0)
         renderer.window.draw(self.bgs[7])
         
         #Backgrounds in between
         parallaxed_maps = [self.bgs[i] for i in range(1, 7)]
         parallaxed_maps.reverse()
-        self.parallax_map (renderer,parallaxed_maps)
+        self.parallax_map(renderer,parallaxed_maps)
         
         #Foreground
-        self.bgs[0].position = (-renderer.xview, -renderer.yview)
+        self.bgs[0].position = renderer.get_screen_coords(0, 0)
         renderer.window.draw(self.bgs[0])
         
     

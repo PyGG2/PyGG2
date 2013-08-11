@@ -75,19 +75,17 @@ class GameClientHandler(Handler):
             self.networker.recieve(self.game, self)
             if self.networker.has_connected:
                 # check if user exited the game
-                if not self.window.open or running == False:
+                if not self.window.is_open or running == False:
                     self.window.close()
                     break
                 leftmouse = False
                 #main input handling loop
-                for event in self.window.iter_events():
-                    if event.type == sfml.Event.CLOSED: #Press the 'x' button
+                for event in self.window.events:
+                    if isinstance(event, sfml.CloseEvent):#Press the 'x' button
                         running = False
-                    elif event.type == sfml.Event.LOST_FOCUS:
-                        self.window_focused = False
-                    elif event.type == sfml.Event.GAINED_FOCUS:
-                        self.window_focused = True
-                    elif event.type == sfml.Event.KEY_PRESSED: #Key handler
+                    elif isinstance(event, sfml.FocusEvent):
+                        self.window_focused = event.gained
+                    elif isinstance(event, sfml.KeyEvent): #Key handler
                         if event.code == sfml.Keyboard.ESCAPE:
                             running = False
                         elif event.code == sfml.Keyboard.LEFT:
@@ -161,14 +159,14 @@ class GameClientHandler(Handler):
                 frametime = self.clock.tick()
                 frametime = min(0.25, frametime)
                 self.timeout_accumulator += frametime
-                if not self.window.open:
+                if not self.window.is_open:
                     self.window.close()
                     return (False)
                 # We still need to poll the window to keep it responding
-                for event in self.window.iter_events():
-                    if event.type == sfml.Event.CLOSED: #Press the 'x' button
+                for event in self.window.events:
+                    if isinstance(event, sfml.CloseEvent): #Press the 'x' button
                         return (False)
-                    elif event.type == sfml.Event.KEY_PRESSED: #Key handler
+                    elif isinstance(event, sfml.KeyEvent): #Key handler
                         if event.code == sfml.Keyboard.ESCAPE:
                             return (False)
                 self.window.title = "PyGG2 - Not Connected %dsecs" % (self.timeout_accumulator)

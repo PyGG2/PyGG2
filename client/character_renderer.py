@@ -22,10 +22,10 @@ class ClassRenderer(object):
         sprite = self.sprites[anim_frame]
         
         if character.flip:
-            sprite.scale = (-1, 1)
+            sprite.ratio = sfml.system.Vector2(-1, 1)
             sprite.origin = self.spriteoffset_flipped
         else:
-            sprite.scale = (1, 1)
+            sprite.ratio = sfml.system.Vector2(1, 1)
             sprite.origin = self.spriteoffset
 
         sprite.position = renderer.get_screen_coords(character.x, character.y)

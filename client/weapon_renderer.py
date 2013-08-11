@@ -18,11 +18,11 @@ class WeaponRenderer(object):
             sprite = self.weaponsprite
 
         if owner.flip:
-            sprite.scale = (1, -1)
+            sprite.ratio = sfml.system.Vector2(1, -1)
             sprite.position = renderer.get_screen_coords(owner.x + self.weaponoffset_flipped[0], owner.y + self.weaponoffset_flipped[1])
             weapon_rotate = self.weapon_rotate_flipped[0] , self.weapon_rotate_flipped[1]
         else:
-            sprite.scale = (1, 1)
+            sprite.ratio = sfml.system.Vector2(1, 1)
             sprite.position = renderer.get_screen_coords(owner.x + self.weaponoffset[0] , owner.y + self.weaponoffset[1] )
             weapon_rotate = self.weapon_rotate_point[0] , self.weapon_rotate_point[1]
 
