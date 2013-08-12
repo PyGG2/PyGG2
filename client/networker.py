@@ -147,8 +147,12 @@ class Networker(object):
                 state.update_all_objects(game, packet.time - state.time)
                 game.old_server_states.append(state.copy())
                 game.old_client_states.append(state.copy())
-                # Update it to the current state time and then set it
-                state.update_all_objects(game, game.current_state.time - state.time)
+                if (abs(self.latency) <= constants.MAX_TIME_DESYNC):
+                    # Update it to the current state time and then set it
+                    state.update_all_objects(game, game.current_state.time - state.time)
+                else:
+                    # Otherwise just let the client jump and correct itself
+                    pass
                 game.current_state = state.copy()
             # otherwise drop the packet
             else:
