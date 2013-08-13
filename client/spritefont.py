@@ -6,11 +6,11 @@ import sfml
 class SpriteFont(object):
     def __init__(self, bold=False):
         if bold:
-            self.texture = sfml.Texture.load_from_file('sprites/fontbold.png')
+            self.texture = sfml.Texture.from_file('sprites/fontbold.png')
             self.cw = 9
             self.ch = 13
         else:
-            self.texture = sfml.Texture.load_from_file('sprites/font.png')
+            self.texture = sfml.Texture.from_file('sprites/font.png')
             self.cw = 7
             self.ch = 13
         self.chars = []
