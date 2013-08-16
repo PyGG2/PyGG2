@@ -49,6 +49,7 @@ class Player(object):
             self.time_since_update %= constants.NETWORK_UPDATE_RATE
             self.send_packet(networker, game)
 
+
     def send_packet(self, networker, game):
         packet = networking.packet.Packet("server")
         packet.sequence = self.sequence
@@ -71,6 +72,29 @@ class Player(object):
             print("SERIOUS ERROR, NUMBER OF BYTES SENT != PACKET SIZE")
 
         self.sequence = (self.sequence + 1) % 65535
+    
+    
+    def send_fullupdate(self, networker, game, events):
+        packet = networking.packet.Packet("server")
+        packet.sequence = self.sequence
+        packet.acksequence = self.server_acksequence
+        packet.time = game.current_state.time
+
+        for event in events:
+            packet.events.append((0, event))
+        snapshot = networker.generate_snapshot_update(game.current_state)
+        packet.events.append((0, snapshot))
+    
+        data = ""
+        data += packet.pack()# TODO: Compression would be here
+
+        numbytes = networker.socket.sendto(data, self.address)
+        if len(data) != numbytes:
+            # TODO sane error handling
+            print("SERIOUS ERROR, NUMBER OF BYTES SENT != PACKET SIZE")
+
+        self.sequence = (self.sequence + 1) % 65535
+
 
     def destroy(self, networker, game, state):
         player = state.players[self.id]
