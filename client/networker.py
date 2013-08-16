@@ -92,7 +92,6 @@ class Networker(object):
             if (packet.events[0])[1].eventid == constants.EVENT_HELLO:
                 # Hello event, full update and snapshot update
                 for time, event in packet.events:
-                    print("Event type: {0}".format(event.eventid), len(packet.events))
                     event_handler.eventhandlers[event.eventid](client, self, game, game.current_state, event)
             else:
                 # Try to get a template state that's as close to the received one as possible.
