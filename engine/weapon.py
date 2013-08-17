@@ -75,7 +75,7 @@ class Weapon(entity.Entity):
     def deserialize(self, state, packetstr):
         self.ammo, self.reloadalarm = struct.unpack_from(">Bf", packetstr)
         packetstr = packetstr[5:]
-        return 1
+        return 5
 
 class Scattergun(Weapon):
     maxammo = 6
