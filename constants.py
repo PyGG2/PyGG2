@@ -8,7 +8,7 @@ GAME_HEIGHT = 600
 PHYSICS_TIMESTEP = 1/60 # always update physics in these steps
 
 GAME_VERSION_NUMBER = 25000
-GAME_VERSION_STRING = "2.5b"
+GAME_VERSION_STRING = "2.7b"
 GAME_URL = "http://www.ganggarrison.com/forums/index.php?topic=29530.0"
 
 # Server
@@ -25,7 +25,7 @@ NETWORK_UPDATE_RATE = 1/40 # the server sends state info to the client at this r
 CLIENT_TIMEOUT = 300
 CONNECTION_TIMEOUT = 10
 INTERP_BUFFER_LENGTH =  1/20 # The additional lag the client trades for visual smoothness
-MAX_TIME_DESYNC = 1/50 # The maximum amount of time the client is allowed to lag behind server packets before getting corrected
+MAX_TIME_DESYNC = NETWORK_UPDATE_RATE*2 # The maximum amount of time the client is allowed to lag behind server packets before getting corrected
 
 # Lobby
 LOBBY_HOST = "ganggarrison.com"
