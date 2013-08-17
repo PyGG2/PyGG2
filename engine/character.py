@@ -223,7 +223,7 @@ class Character(entity.MovingObject):
         #self.sentry = byte & (1 << 2)
 
         weapon_string_length = state.entities[self.weapon_id].deserialize(state, packetstr)
-        return struct.calcsize(">IIiiB")+weapon_string_length
+        return struct.calcsize(">ffffB")+weapon_string_length
 
 class Scout(Character):
     # width, height of scout - rectangle collision
