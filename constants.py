@@ -14,6 +14,10 @@ GAME_URL = "http://www.ganggarrison.com/forums/index.php?topic=29530.0"
 # Server
 SERVER_MAX_FPS = 1/100
 
+# Rendering
+#VSYNC_ENABLED = True
+VSYNC_ENABLED = False
+
 # Networking
 INPUT_SEND_FPS = 1/30 # we send input to the server at this rate
 MAX_PACKET_SIZE = 2048
