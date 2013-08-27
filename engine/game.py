@@ -30,6 +30,9 @@ class Game:
         # game states
         self.current_state = gamestate.Gamestate()
 
+        # A second time counter to make a smooth rendering possible
+        self.rendering_time = 0.0
+
         # This is a hack to allow game objects to append stuff to the networking event queue without having to pass networker around
         self.sendbuffer = []
 
@@ -39,7 +42,9 @@ class Game:
         #DEBUGTOOL
         self.horizontal = 0
         self.vertical = 0
+
     def update(self, networker, frametime):
+        self.rendering_time += frametime + frametime*(self.current_state.time+self.accumulator - self.rendering_time)*constants.INTERP_SLIDING_WINDOW
         self.accumulator += frametime
 
         while self.accumulator >= constants.PHYSICS_TIMESTEP:

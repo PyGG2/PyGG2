@@ -149,6 +149,7 @@ class Networker(object):
     
                     # Calculate current latency
                     self.latency = game.current_state.time - packet.time
+                    print(abs(self.latency)*1000, "<", constants.MAX_TIME_DESYNC*1000)
                     # Set the state to the actual packet time and add it to the buffer for rendering
                     state.update_all_objects(game, packet.time - state.time)
                     game.old_server_states.append(state.copy())

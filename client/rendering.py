@@ -96,7 +96,7 @@ class GameRenderer(object):
             states.append(newest_state)
 
         # Target time is the time of the state we would like
-        target_time = game.current_state.time + game.accumulator - constants.INTERP_BUFFER_LENGTH
+        target_time = game.rendering_time - constants.INTERP_BUFFER_LENGTH
         if target_time < 0:
             # We're not even supposed to be rendering yet
             # Exit

@@ -55,6 +55,8 @@ def Server_Snapshot_Update(client, networker, game, state, event):
 def Server_Full_Update(client, networker, game, state, event):
     numof_players = struct.unpack_from(">B", event.bytestr)[0]
     event.bytestr = event.bytestr[1:]
+    # FIXME: Unclean mixing
+    game.rendering_time = event.time
 
     for index in range(numof_players):
         player = engine.player.Player(game, state, index)
