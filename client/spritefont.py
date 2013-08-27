@@ -25,7 +25,6 @@ class SpriteFont(object):
         return (len(string) * self.cw, self.ch)
             
     def renderString(self, string, window, x, y):
-
         for i, char in enumerate(string):
             char = ord(char)
             if char > 255: # too big to be in font
