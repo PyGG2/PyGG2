@@ -2,14 +2,17 @@ import sfml
 import json
 import os.path
 
+import constants
+
 # manages client, switches handlers
 class ClientManager(object):
     def __init__(self, handler):
         # set display mode
         self.window = sfml.RenderWindow(sfml.VideoMode(800, 600), title = "PyGG2 - Not Connected")
-       
+        
         self.load_config()
         self.window.framerate_limit = self.config.setdefault('framerate_limit', 80) #prevent 100% cpu usage
+        self.window.vertical_synchronization = constants.VSYNC_ENABLED
         self.quitting = False
         self.newhandler = None
         self.newhandler_args = []
@@ -28,7 +31,7 @@ class ClientManager(object):
         with open('client_cfg.json', 'w') as fp:
             json.dump(self.config, fp, indent=4)
 
-    def run(self):
+    def run(self):  
         while self.handler.step() and not self.quitting:
             if self.newhandler:
                 self.handler.clearup()

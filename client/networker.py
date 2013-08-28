@@ -19,6 +19,7 @@ class Networker(object):
         self.sequence = 1
         self.server_acksequence = 0
         self.client_acksequence = 0
+        self.latency = 0
 
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind(("", 0))
@@ -87,65 +88,83 @@ class Networker(object):
                 # No need to even consider this packet
                 return
 
-            # Try to get a template state that's as close to the received one as possible.
-            state = None
-            if len(game.old_client_states) > 0 and game.current_state.time > packet.time:
-                if packet.time < game.old_client_states[0].time:
-                    # This packet is extremely old
-                    # This shouldn't actually ever happen
-                    print("Packet received that is not in game.old_client_states!\nPacket time: {0}\ngame.old_client_states: {1}".format(packet.time, [i.time for i in game.old_client_states]))
-                    state = game.old_client_states[0].copy()
+            # First check whether it's a hello packet, if yes handle it differently
+            if (packet.events[0])[1].eventid == constants.EVENT_HELLO:
+                # Hello event, full update and snapshot update
+                for time, event in packet.events:
+                    event_handler.eventhandlers[event.eventid](client, self, game, game.current_state, event)
+            else:
+                # Try to get a template state that's as close to the received one as possible.
+                state = None
+                if len(game.old_client_states) > 0 and game.current_state.time > packet.time:
+                    if packet.time < game.old_client_states[0].time:
+                        # This packet is extremely old
+                        # This shouldn't actually ever happen
+                        print("Packet received that is not in game.old_client_states!\nPacket time: {0}\ngame.old_client_states: {1}".format(packet.time, [i.time for i in game.old_client_states]))
+                        state = game.old_client_states[0].copy()
+                        state.update_all_objects(game, packet.time - state.time)
+    
+                    # "states" just contains all the states that we can interpolate from
+                    # That includes the old_client_states and current_state
+                    states = game.old_client_states[:]
+                    states.append(game.current_state.copy())
+    
+                    # Now we sort it as a function of it's closeness to time
+                    states.sort(key=lambda x: abs(packet.time - x.time))
+    
+                    # The two first elements of this list will necessarily be those around time
+                    # So now we cut off everything except the first two
+                    states = states[:2]
+                    # And then we sort those normally
+                    states.sort(key=lambda x: x.time)
+                    # And then we interpolate
+                    d_time = (packet.time - states[0].time) * (states[1].time - states[0].time)
+                    if not(0 <= d_time <= 1):
+                        if abs(d_time) > 0.001:
+                            print("This should not happen!\nd_time:{0}\ntime:{1}\nstates[0].time:{2}\nstates[1].time:{3}\n\nold_client_states:{4}\n\n\n".format(d_time, packet.time, states[0].time, states[1].time, [i.time for i in game.old_client_states]))
+                        if d_time < 0:
+                            d_time = 0
+                        if d_time > 1:
+                            d_time = 1
+                    states[0].interpolate(states[0], states[1], d_time)
+                    state = states[0].copy()
+    
+                else:
+                    # We don't even have any old states, just take current_state
+                    state = game.current_state.copy()
+    
+                # All old states before this packet are now useless, and all old states after it are wrong
+                game.old_client_states = []
+    
+                # only accept the packet if the sender is the server
+                if sender == self.server_address:
+                    for seq, event in packet.events:
+                        if seq <= self.client_acksequence:
+                            # Event has already been processed before, discard
+                            continue
+                        # First modify state to correspond to the time of the event
+                        state.update_all_objects(game, event.time - state.time)
+                        # process the event
+                        event_handler.eventhandlers[event.eventid](client, self, game, state, event)
+    
+                    # Calculate current latency
+                    self.latency = game.current_state.time - packet.time
+                    print(abs(self.latency)*1000, "<", constants.MAX_TIME_DESYNC*1000, "Rendering delta: ", game.rendering_time - game.current_state.time)
+                    # Set the state to the actual packet time and add it to the buffer for rendering
                     state.update_all_objects(game, packet.time - state.time)
-
-                # "states" just contains all the states that we can interpolate from
-                # That includes the old_client_states and current_state
-                states = game.old_client_states[:]
-                states.append(game.current_state.copy())
-
-                # Now we sort it as a function of it's closeness to time
-                states.sort(key=lambda x: abs(packet.time - x.time))
-
-                # The two first elements of this list will necessarily be those around time
-                # So now we cut off everything except the first two
-                states = states[:2]
-                # And then we sort those normally
-                states.sort(key=lambda x: x.time)
-                # And then we interpolate
-                d_time = (packet.time - states[0].time) * (states[1].time - states[0].time)
-                if not(0 <= d_time <= 1):
-                    print("This should not happen!\nd_time:{0}\ntime:{1}\nstates[0].time:{2}\nstates[1].time:{3}\n\nold_client_states:{4}\n\n\n".format(d_time, packet.time, states[0].time, states[1].time, [i.time for i in game.old_client_states]))
-                states[0].interpolate(states[0], states[1], d_time)
-                state = states[0].copy()
-
-            else:
-                # We don't even have any old states, just take current_state
-                state = game.current_state.copy()
-
-            # All old states before this packet are now useless, and all old states after it are wrong
-            game.old_client_states = []
-
-            # only accept the packet if the sender is the server
-            if sender == self.server_address:
-                for seq, event in packet.events:
-                    if seq <= self.client_acksequence:
-                        # Event has already been processed before, discard
-                        continue
-                    # First modify state to correspond to the time of the event
-                    state.update_all_objects(game, event.time - state.time)
-                    # process the event
-                    event_handler.eventhandlers[event.eventid](client, self, game, state, event)
-
-                state.update_all_objects(game, packet.time - state.time)
-                game.old_server_states.append(state.copy())
-                # If the time difference is small, extrapolate state to game.current_state.time for the sake of smoothness
-                if abs(state.time - game.current_state.time) <= constants.PHYSICS_TIMESTEP:
-                    state.update_all_objects(game, game.current_state.time - state.time)
-                game.current_state = state.copy()
-                #game.current_state.update_all_objects(game, game.current_state.time - packet.time)
-            # otherwise drop the packet
-            else:
-                print("RECEIVED PACKET NOT FROM ACTUAL SERVER ADDRESS:\nActual Server Address:"+str(self.server_address)+"\nPacket Address:"+str(sender))
-                continue
+                    game.old_server_states.append(state.copy())
+                    game.old_client_states.append(state.copy())
+                    if (abs(self.latency) <= constants.MAX_TIME_DESYNC):
+                        # Update it to the current state time and then set it
+                        state.update_all_objects(game, game.current_state.time - state.time)
+                    else:
+                        # Otherwise just let the client jump and correct itself
+                        pass
+                    game.current_state = state.copy()
+                # otherwise drop the packet
+                else:
+                    print("RECEIVED PACKET NOT FROM ACTUAL SERVER ADDRESS:\nActual Server Address:"+str(self.server_address)+"\nPacket Address:"+str(sender))
+                    continue
 
             # ack the packet
             self.client_acksequence = packet.sequence

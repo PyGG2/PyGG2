@@ -14,6 +14,7 @@ class Gamestate(object):
     def update_all_objects(self, game, frametime):
         # time is synced with 4 bytes, so to force looping one would have to host for a straight two years...
         self.time += frametime
+        self.time = round(self.time, 6)
 
         for entity in self.entities.values(): entity.beginstep(game, self, frametime)
         for player in self.players.values(): player.step(game, self, frametime)
@@ -39,6 +40,7 @@ class Gamestate(object):
     def interpolate(self, prev_state, next_state, alpha):
         if not(0 <= alpha <= 1):
             print("Error: alpha={} while interpolating two states".format(alpha))
+            alpha = min(1, max(alpha, 0))
         
         self.next_entity_id = next_state.next_entity_id
         self.time = prev_state.time + (next_state.time - prev_state.time) * alpha

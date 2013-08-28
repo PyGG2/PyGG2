@@ -1,3 +1,5 @@
+from __future__ import division, print_function
+
 import precision_timer
 import sfml
 
@@ -8,13 +10,7 @@ import engine.game, engine.player
 import constants
 import networking
 import time
-def get_input(window):
-    return {
-        "up": sfml.Keyboard.is_key_pressed(sfml.Keyboard.W),
-        "down": sfml.Keyboard.is_key_pressed(sfml.Keyboard.S),
-        "left": sfml.Keyboard.is_key_pressed(sfml.Keyboard.A),
-        "right": sfml.Keyboard.is_key_pressed(sfml.Keyboard.D)
-    }
+import input_handler
 
 # handler for when client is in game
 class GameClientHandler(Handler):
@@ -56,10 +52,6 @@ class GameClientHandler(Handler):
     def start_game(self, player_id, state):
         # Only start the game once the networker has confirmed a connection with the server
 
-        # keep state of keys stored for one frame so we can detect down/up events
-        self.keys = get_input(self.window)
-        self.oldkeys = self.keys
-
         # TODO REMOVE THIS
         # create player
         self.our_player_id = engine.player.Player(self.game, state, player_id).id
@@ -67,6 +59,9 @@ class GameClientHandler(Handler):
 
         # create renderer object
         self.renderer = rendering.GameRenderer(self)
+
+        # create input handler
+        self.input_handler = input_handler.InputHandler()
 
         # Time tracking
         self.inputsender_accumulator = 0.0 # this counter will accumulate time to send input at a constant rate
@@ -80,19 +75,17 @@ class GameClientHandler(Handler):
             self.networker.recieve(self.game, self)
             if self.networker.has_connected:
                 # check if user exited the game
-                if not self.window.open or running == False:
+                if not self.window.is_open or running == False:
                     self.window.close()
                     break
                 leftmouse = False
                 #main input handling loop
-                for event in self.window.iter_events():
-                    if event.type == sfml.Event.CLOSED: #Press the 'x' button
+                for event in self.window.events:
+                    if isinstance(event, sfml.CloseEvent):#Press the 'x' button
                         running = False
-                    elif event.type == sfml.Event.LOST_FOCUS:
-                        self.window_focused = False
-                    elif event.type == sfml.Event.GAINED_FOCUS:
-                        self.window_focused = True
-                    elif event.type == sfml.Event.KEY_PRESSED: #Key handler
+                    elif isinstance(event, sfml.FocusEvent):
+                        self.window_focused = event.gained
+                    elif isinstance(event, sfml.KeyEvent): #Key handler
                         if event.code == sfml.Keyboard.ESCAPE:
                             running = False
                         elif event.code == sfml.Keyboard.LEFT:
@@ -108,68 +101,52 @@ class GameClientHandler(Handler):
                             print("VERTICAL OFFSET = " + str(self.game.vertical))
 
                 # handle input if window is focused
-                self.oldkeys = self.keys
-                self.keys = get_input(self.window)
                 if self.window_focused:
-                    leftmouse = sfml.Mouse.is_button_pressed(sfml.Mouse.LEFT)
-                    middlemouse = sfml.Mouse.is_button_pressed(sfml.Mouse.MIDDLE)
-                    rightmouse = sfml.Mouse.is_button_pressed(sfml.Mouse.RIGHT)
-
-                    mouse_x, mouse_y = sfml.Mouse.get_position(self.window)
-                    our_player = self.game.current_state.players[self.our_player_id]
-                    our_player.up = self.keys["up"]
-                    our_player.down = self.keys["down"]
-                    our_player.left = self.keys["left"]
-                    our_player.right = self.keys["right"]
-                    our_player.leftmouse = leftmouse
-                    our_player.middlemouse = middlemouse
-                    our_player.rightmouse = rightmouse
-                    our_player.aimdirection = function.point_direction(self.window.width / 2, self.window.height / 2, mouse_x, mouse_y)
-
                     if sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM1):
                         event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_SCOUT)
-                        self.networker.events.append((self.networker.sequence, event))
+                        self.game.sendbuffer.append(event)
                     elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM2):
                         event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_PYRO)
-                        self.networker.events.append((self.networker.sequence, event))
+                        self.game.sendbuffer.append(event)
                     elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM3):
                         event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_SOLDIER)
-                        self.networker.events.append((self.networker.sequence, event))
+                        self.game.sendbuffer.append(event)
                     elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM4):
                         event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_HEAVY)
-                        self.networker.events.append((self.networker.sequence, event))
+                        self.game.sendbuffer.append(event)
                     elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM6):
                         event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_MEDIC)
-                        self.networker.events.append((self.networker.sequence, event))
+                        self.game.sendbuffer.append(event)
                     elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM7):
                         event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_ENGINEER)
-                        self.networker.events.append((self.networker.sequence, event))
+                        self.game.sendbuffer.append(event)
                     elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM8):
                         event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_SPY)
-                        self.networker.events.append((self.networker.sequence, event))
+                        self.game.sendbuffer.append(event)
                     elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.Q):
                         event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_QUOTE)
-                        self.networker.events.append((self.networker.sequence, event))
+                        self.game.sendbuffer.append(event)
 
                     # did we just release the F11 button? if yes, go fullscreen
                     #if sfml.Keyboard.is_key_pressed(sfml.Keyboard.F11):
                     #    self.window.fullscreen = not self.window.fullscreen
 
                 # update the game and render
-                frame_time = self.clock.tick()
-                frame_time = min(0.25, frame_time) # a limit of 0.25 seconds to prevent complete breakdown
+                frametime = self.clock.tick()
+                frametime = min(0.25, frametime) # a limit of 0.25 seconds to prevent complete breakdown
 
-                self.fpscounter_accumulator += frame_time
+                self.fpscounter_accumulator += frametime
 
                 self.networker.recieve(self.game, self)
-                self.game.update(self.networker, frame_time)
-                self.renderer.render(self, self.game, frame_time)
+                self.input_handler.gather_input(self.window, self.game)
+                self.game.update(self.networker, frametime)
+                self.renderer.render(self, self.game, frametime)
 
                 if self.network_update_timer >= constants.INPUT_SEND_FPS:
                     self.networker.update(self)
                     self.network_update_timer = 0
                 else:
-                    self.network_update_timer += frame_time
+                    self.network_update_timer += frametime
 
                 if self.fpscounter_accumulator > 1.0:
                     self.window.title = "PyGG2 - %d FPS" % (self.fpscounter_frames / self.fpscounter_accumulator)
@@ -179,17 +156,17 @@ class GameClientHandler(Handler):
                 self.window.display()
                 self.fpscounter_frames += 1
             else:
-                frame_time = self.clock.tick()
-                frame_time = min(0.25, frame_time)
-                self.timeout_accumulator += frame_time
-                if not self.window.open:
+                frametime = self.clock.tick()
+                frametime = min(0.25, frametime)
+                self.timeout_accumulator += frametime
+                if not self.window.is_open:
                     self.window.close()
                     return (False)
                 # We still need to poll the window to keep it responding
-                for event in self.window.iter_events():
-                    if event.type == sfml.Event.CLOSED: #Press the 'x' button
+                for event in self.window.events:
+                    if isinstance(event, sfml.CloseEvent): #Press the 'x' button
                         return (False)
-                    elif event.type == sfml.Event.KEY_PRESSED: #Key handler
+                    elif isinstance(event, sfml.KeyEvent): #Key handler
                         if event.code == sfml.Keyboard.ESCAPE:
                             return (False)
                 self.window.title = "PyGG2 - Not Connected %dsecs" % (self.timeout_accumulator)
@@ -197,7 +174,7 @@ class GameClientHandler(Handler):
                 if self.timeout_accumulator > constants.CONNECTION_TIMEOUT:
                     print("Unable to connect to " + str(self.server_ip) + " at port: " + str(self.server_port))
                     return (False) #exit
-                time.sleep(max(frame_time, 0.25)) # Slow down the execution rate
+                time.sleep(max(frametime, 0.25)) # Slow down the execution rate
                 
         self.cleanup()
 

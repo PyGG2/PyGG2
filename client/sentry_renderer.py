@@ -18,10 +18,10 @@ class BuildingSentryRenderer(object):
         sprite = self.sprites[min(int(sentry.animation_frame), 9)] # TODO, get rid of this min and figure out how to cap an image index
 
         if sentry.flip == True:
-            sprite.scale = (-1, 1)
+            sprite.ratio = sfml.system.Vector2(-1, 1)
             sprite.position = renderer.get_screen_coords(sentry.x + sprite_offset_flipped[0], sentry.y + sprite_offset_flipped[1])
         else:
-            sprite.scale(1, 1)
+            sprite.ratio = sfml.system.Vector2(1, 1)
             sprite.position = renderer.get_screen_coords(sentry.x + sprite_offset[0] , sentry.y + sprite_offset[1] )
 
 
@@ -59,30 +59,30 @@ class SentryRenderer(object):
         turretsprite_rotate_flipped = (16,8)
 
         if sentry.flip == True:
-            basesprite.scale = (-1, 1)
+            basesprite.ratio = (-1, 1)
             basesprite.position = renderer.get_screen_coords(sentry.x + basesprite_flipped[0], sentry.y + basesprite_flipped[1])
         else:
-            basesprite.scale = (1, 1)
+            basesprite.ratio = (1, 1)
             basesprite.position = renderer.get_screen_coords(sentry.x + basesprite_offset[0], sentry.y + basesprite_offset[1])
 
         if sentry.rotating == False:
             if sentry.turret_flip == sentry.flip:
                 if sentry.flip == False:
-                    turretsprite.scale = (1-2*sentry.flip, -1)# x == -1 if sentry.flip, == 1 if not
+                    turretsprite.ratio = (1-2*sentry.flip, -1)# x == -1 if sentry.flip, == 1 if not
                     turretsprite.position = renderer.get_screen_coords(sentry.x + turretsprite_offset[0],sentry.y + turretsprite_offset[1])
                     turretsprite_rotate = (turretsprite_rotate_point[0] , turretsprite_rotate_point[1])
                 else:
-                    turretsprite.scale = (1-2*sentry.flip, 1)# x == -1 if sentry.flip, == 1 if not
+                    turretsprite.ratio = (1-2*sentry.flip, 1)# x == -1 if sentry.flip, == 1 if not
                     turretsprite.position = renderer.get_screen_coords(sentry.x + turretsprite_flipped[0],sentry.y + turretsprite_flipped[1])
                     turretsprite_rotate = (turretsprite_rotate_flipped[0] , turretsprite_rotate_flipped[1])
             else:
                 # if the sentry head is facing the opposite direction to its original position
                 if sentry.flip == False:
-                    turretsprite.scale = (1-2*sentry.flip, -1)# x == -1 if sentry.flip, == 1 if not
+                    turretsprite.ratio = (1-2*sentry.flip, -1)# x == -1 if sentry.flip, == 1 if not
                     turretsprite.position = renderer.get_screen_coords(sentry.x + turretsprite_flipped[0],sentry.y + turretsprite_flipped[1])
                     turretsprite_rotate = (turretsprite_rotate_flipped[0] , turretsprite_rotate_flipped[1])
                 else:
-                    turretsprite.scale = (1-2*sentry.flip, 1)# x == -1 if sentry.flip, == 1 if not
+                    turretsprite.ratio = (1-2*sentry.flip, 1)# x == -1 if sentry.flip, == 1 if not
                     turretsprite.position = renderer.get_screen_coords(sentry.x + turretsprite_offset[0],sentry.y + turretsprite_offset[1])
                     turretsprite_rotate = (turretsprite_rotate_point[0] , turretsprite_rotate_point[1])
             #if the sentry is not rotating, put in the anchor
@@ -91,7 +91,7 @@ class SentryRenderer(object):
         else:
             #sentry is rotating, ignore anchor
             #TODO: make animation play backwards
-            turretsprite.scale = (1-2*sentry.flip, 1)# x == -1 if sentry.flip, == 1 if not
+            turretsprite.ratio = (1-2*sentry.flip, 1)# x == -1 if sentry.flip, == 1 if not
             turretsprite.position = renderer.get_screen_coords(sentry.x,sentry.y)
 
         #debugpoint = renderer.get_screen_coords(sentry.x + game.horizontal, sentry.y +  game.vertical)

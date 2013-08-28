@@ -30,8 +30,17 @@ class GameRenderer(object):
         self.view_width = constants.GAME_WIDTH
         self.view_height = constants.GAME_HEIGHT
     
-
-        self.maprenderer = map_renderer.MapRenderer(self, "twodforttwo_remix")
+        mapList = [
+            "montane/montane0",
+            "montane/montane1",
+            "montane/montane2",
+            "montane/montane3",
+            "montane/montane4",
+            "montane/montane5",
+            "montane/montane6",
+            "montane/montane7",
+        ]
+        self.maprenderer = map_renderer.MapRenderer(self, mapList)
         self.healthhud = None
         self.overlayblits = []
 
@@ -87,7 +96,7 @@ class GameRenderer(object):
             states.append(newest_state)
 
         # Target time is the time of the state we would like
-        target_time = game.current_state.time + game.accumulator - constants.INTERP_BUFFER_LENGTH
+        target_time = game.rendering_time - constants.INTERP_BUFFER_LENGTH
         if target_time < 0:
             # We're not even supposed to be rendering yet
             # Exit
@@ -126,12 +135,15 @@ class GameRenderer(object):
             client.spectator.y = self.interpolated_state.entities[focus_object_id].y
 
             if self.interpolated_state.entities[focus_object_id].just_spawned:
-                self.healthhud = None
+                self.ammohud = hud_renderer.create_ammo_renderer(self, game, self.interpolated_state, focus_object_id)
                 self.healthhud = hud_renderer.HealthRenderer(self, game, self.interpolated_state, focus_object_id)
                 self.interpolated_state.entities[focus_object_id].just_spawned = False
+            self.ammohud.render(self, game, self.interpolated_state, focus_object_id)
             self.healthhud.render(self, game, self.interpolated_state, focus_object_id)
 
         else:
+            if self.ammohud != None:
+                self.ammohud = None
             if self.healthhud != None:
                 self.healthhud = None
             player = self.interpolated_state.players[client.our_player_id]

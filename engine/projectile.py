@@ -265,8 +265,8 @@ class Flame(entity.MovingObject):
         srcwep = state.entities[sourceweapon_id]
         srcchar = state.entities[srcwep.owner_id]
 
-        self.x = srcchar.x
-        self.y = srcchar.y
+        self.x = srcchar.x + srcwep.length * math.cos(srcwep.direction*math.pi/180)
+        self.y = srcchar.y - srcwep.length * math.sin(srcwep.direction*math.pi/180)
 
         self.direction = (srcwep.direction + (10-random.randint(0, 20))) % 360
 

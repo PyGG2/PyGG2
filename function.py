@@ -68,20 +68,18 @@ def load_mask(filename, give_orig=False):
     if give_orig: return bitmask
     else: return bitmask.copy()
 
+
 textures = {}
 def load_texture(filename):
     if filename in textures:
         return textures[filename]
-    # first try to load the sprite from the sprite folder
-    # this allows users to override sprites, and makes testing/developing easier
-    try:
-        texture = sfml.Texture.load_from_file("sprites/" + filename)
-    except:
-        print ("SPRITE sprites/{} NOT FOUND".format(filename))
 
+    # Attempt to load the texture from files
+    texture = sfml.Texture.from_file("sprites/" + filename)
     textures[filename] = texture
 
     return texture
+
 
 def convert_class(class_object):
         # Try converting the class to it's constant first

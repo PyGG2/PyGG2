@@ -5,19 +5,18 @@ import math
 import function
 import spritefont
 import sfml
+import engine.weapon
+import constants
 
 class HudRenderer(object):
-    
     def render(self, renderer, game, state):
-
         self.hudsprite.position = self.sprite_location
-        self.hudsprite.scale = (2,2)
+        self.hudsprite.ratio = sfml.system.Vector2(2, 2)
         renderer.hud_sprites.append (self.hudsprite)
-        
+
+
 class HealthRenderer(HudRenderer):
-
     def __init__(self, renderer, game, state, character_id):
-
         self.sprite_location = (10, renderer.view_height - 75)
         character = state.entities[character_id]
         my_class_type = type(character)
@@ -40,7 +39,7 @@ class HealthRenderer(HudRenderer):
         
         character_maxhp = character.maxhp
         #always have at least 1 percent, can't divide by zero!
-        health_percentage = max(0.01,(character_hp / character_maxhp))
+        health_percentage = max(0.01, (character_hp / character_maxhp))
        
         self.health_text.text = str(character_hp)
         
@@ -67,9 +66,130 @@ class HealthRenderer(HudRenderer):
         renderer.hud_overlay.append(self.health_box)
         renderer.hud_overlay.append(self.health_text)
 
+
+class AmmoRenderer(HudRenderer):    
+    def initialize(self, renderer, game, state, character_id, spritepath):
+        character = state.entities[character_id]
+        if character.team == constants.TEAM_RED:
+            team = "0"
+        else:
+            team = "1"
+        self.hudsprite = sfml.Sprite(function.load_texture("huds/ammo/"+spritepath+"/"+team+".png"))
+        self.background_bar.location = self.bar.location
+        self.background_bar.color = sfml.Color(0, 0, 0, 255)
+        self.bar.color = sfml.Color(217, 217, 183, 255)
+    
+    def render(self, renderer, game, state, character_id):
+        #super(AmmoRenderer, self).render(renderer, game, state)
+        
+        character = state.entities[character_id]
+        weapon = state.entities[character.weapon_id]
+        
+        scalar = 1 - weapon.reloadalarm/weapon.reloadtime
+        self.bar.size = (int(scalar * self.background_bar.size[0]), self.background_bar.size[1])
+        #print(self.bar.location, self.bar.size)
+        renderer.hud_overlay.append(self.background_bar)
+        renderer.hud_overlay.append(self.bar)
+    
+# TODO: Fine-tune the self.sprite_location constants everywhere
+class ScattergunAmmoRenderer(AmmoRenderer):
+    def __init__(self, renderer, game, state, character_id):
+        self.bar = DrawRectangle()
+        self.background_bar = DrawRectangle()
+        self.sprite_location = (renderer.view_width - 120, renderer.view_height - 55)
+        self.bar.location = (self.sprite_location[0] + 32, self.sprite_location[1] + 24)
+        self.background_bar.size = (51, 8)
+        self.initialize(renderer, game, state, character_id, "scattergunammos")
+
+class FlamethrowerAmmoRenderer(AmmoRenderer):
+    def __init__(self, renderer, game, state, character_id):
+        self.bar = DrawRectangle()
+        self.background_bar = DrawRectangle()
+        self.sprite_location = (renderer.view_width - 120, renderer.view_height - 55)
+        self.bar.location = (self.sprite_location[0] + 32, self.sprite_location[1] + 24)
+        self.background_bar.size = (51, 8)
+        self.initialize(renderer, game, state, character_id, "flamethrowerammos")
+
+class RocketlauncherAmmoRenderer(AmmoRenderer):
+    def __init__(self, renderer, game, state, character_id):
+        # TODO
+        self.sprite_location = (renderer.view_width - 70, renderer.view_height - 75)
+        self.initialize(renderer, game, state, character_id, "flamethrowerammos")
+
+class MinigunAmmoRenderer(AmmoRenderer):
+    def __init__(self, renderer, game, state, character_id):
+        self.bar = DrawRectangle()
+        self.background_bar = DrawRectangle()
+        self.sprite_location = (renderer.view_width - 120, renderer.view_height - 55)
+        self.bar.location = (self.sprite_location[0] + 32, self.sprite_location[1] + 24)
+        self.background_bar.size = (51, 8)
+        self.initialize(renderer, game, state, character_id, "minigunammos")
+
+class MinegunAmmoRenderer(AmmoRenderer):
+    def __init__(self, renderer, game, state, character_id):
+        self.bar = DrawRectangle()
+        self.background_bar = DrawRectangle()
+        self.sprite_location = (renderer.view_width - 120, renderer.view_height - 55)
+        self.bar.location = (self.sprite_location[0] + 32, self.sprite_location[1] + 24)
+        self.background_bar.size = (51, 8)
+        self.initialize(renderer, game, state, character_id, "minegunammos")
+
+class NeedleAmmoRenderer(AmmoRenderer):
+    def __init__(self, renderer, game, state, character_id):
+        self.bar = DrawRectangle()
+        self.background_bar = DrawRectangle()
+        self.sprite_location = (renderer.view_width - 120, renderer.view_height - 55)
+        self.bar.location = (self.sprite_location[0] + 32, self.sprite_location[1] + 24)
+        self.background_bar.size = (51, 8)
+        self.initialize(renderer, game, state, character_id, "needleammos")
+
+class ShotgunAmmoRenderer(AmmoRenderer):
+    def __init__(self, renderer, game, state, character_id):
+        self.bar = DrawRectangle()
+        self.background_bar = DrawRectangle()
+        self.sprite_location = (renderer.view_width - 120, renderer.view_height - 55)
+        self.bar.location = (self.sprite_location[0] + 32, self.sprite_location[1] + 24)
+        self.background_bar.size = (51, 8)
+        self.initialize(renderer, game, state, character_id, "shotgunammos")
+
+class RevolverAmmoRenderer(AmmoRenderer):
+    def __init__(self, renderer, game, state, character_id):
+        self.bar = DrawRectangle()
+        self.background_bar = DrawRectangle()
+        self.sprite_location = (renderer.view_width - 120, renderer.view_height - 55)
+        self.bar.location = (self.sprite_location[0] + 32, self.sprite_location[1] + 24)
+        self.background_bar.size = (51, 8)
+        self.initialize(renderer, game, state, character_id, "revolverammos")
+
+class BladeAmmoRenderer(AmmoRenderer):
+    def __init__(self, renderer, game, state, character_id):
+        self.bar = DrawRectangle()
+        self.background_bar = DrawRectangle()
+        self.sprite_location = (renderer.view_width - 120, renderer.view_height - 55)
+        self.bar.location = (self.sprite_location[0] + 32, self.sprite_location[1] + 24)
+        self.background_bar.size = (51, 8)
+        self.initialize(renderer, game, state, character_id, "bladeammos")
+
+
+def create_ammo_renderer(renderer, game, state, character_id):
+    renderers = {
+        engine.weapon.Scattergun: ScattergunAmmoRenderer,
+        engine.weapon.Flamethrower: FlamethrowerAmmoRenderer,
+        engine.weapon.Rocketlauncher: RocketlauncherAmmoRenderer,
+        engine.weapon.Minigun: MinigunAmmoRenderer,
+        #engine.weapon.Minegun: MinegunAmmoRenderer,
+        engine.weapon.Medigun: NeedleAmmoRenderer,
+        engine.weapon.Shotgun: ShotgunAmmoRenderer,
+        engine.weapon.Revolver: RevolverAmmoRenderer,
+        engine.weapon.Blade: BladeAmmoRenderer,
+    }
+    character = state.entities[character_id]
+    weapon = state.entities[character.weapon_id]
+    return renderers[type(weapon)](renderer, game, state, character_id)
+
+
 class DrawRectangle(object):
     def render(self, renderer, game, state):
-        
         rect = sfml.RectangleShape(self.size)
         rect.fill_color = self.color
         rect.position = (self.location)
@@ -84,4 +204,3 @@ class HealthText(object):
         tx = self.health_location[0] + (self.health_size[0] - tw)/2
         ty = self.health_location[1] + (self.health_size[1] - th)/2
         self.font.renderString(self.text, renderer.window, tx, ty, )
-

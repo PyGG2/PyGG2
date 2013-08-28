@@ -25,6 +25,7 @@ def Server_Event_Hello(client, networker, game, state, event):
 def Server_Event_Player_Join(client, networker, game, state, event):
     newplayer = engine.player.Player(game, state, event.id)
     newplayer.name = event.name
+    
 def Server_Event_Changeclass(client, networker, game, state, event):
     player = state.players[event.playerid]
     player.nextclass = function.convert_class(event.newclass)
@@ -54,6 +55,8 @@ def Server_Snapshot_Update(client, networker, game, state, event):
 def Server_Full_Update(client, networker, game, state, event):
     numof_players = struct.unpack_from(">B", event.bytestr)[0]
     event.bytestr = event.bytestr[1:]
+    # FIXME: Unclean mixing
+    game.rendering_time = event.time
 
     for index in range(numof_players):
         player = engine.player.Player(game, state, index)
@@ -73,7 +76,7 @@ def Server_Event_Fire_Primary(client, networker, game, state, event):
     player = state.players[event.playerid]
     try:
         character = state.entities[player.character_id]
-        weapon = state.entities[character.weapon]
+        weapon = state.entities[character.weapon_id]
         weapon.fire_primary(game, state)
     except IndexError:
         # character is dead or something. Shouldn't happen, so print something
@@ -83,7 +86,7 @@ def Server_Event_Fire_Secondary(client, networker, game, state, event):
     player = state.players[event.playerid]
     try:
         character = state.entities[player.character_id]
-        weapon = state.entities[character.weapon]
+        weapon = state.entities[character.weapon_id]
         weapon.fire_secondary(game, state)
     except IndexError:
         # character is dead or something. Shouldn't happen, so print something

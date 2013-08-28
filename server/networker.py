@@ -56,7 +56,7 @@ class Networker(object):
         return event
 
 
-    def generate_full_update(self, game):
+    def service_new_player(self, server, game, newplayer):
         packetstr = ""
         state = game.current_state
     
@@ -75,17 +75,11 @@ class Networker(object):
 
             packetstr += struct.pack(">32pBB", player_obj.name, current_class, character_exists)
 
-        event = networking.event_serialize.ServerEventFullUpdate(packetstr)
-        event.time = state.time
-        return event
-
-
-    def service_new_player(self, server, game, newplayer):
         hello_event = networking.event_serialize.ServerEventHello(server.name, newplayer.id,  server.game.maxplayers, server.game.map.mapname, constants.GAME_VERSION_NUMBER)
-        newplayer.events.append((newplayer.sequence, hello_event))
-
-        update = self.generate_full_update(game)
-        newplayer.events.append((newplayer.sequence, update))
+        events  = [hello_event, networking.event_serialize.ServerEventFullUpdate(packetstr)]
+        events[1].time = state.time
+        
+        newplayer.send_fullupdate(self, game, events)
 
     def recieve(self, server, game):
         # recieve all packets

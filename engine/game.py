@@ -25,10 +25,13 @@ class Game:
         self.old_server_states = []
 
         # map data
-        self.map = map.Map(self, "twodforttwo_remix")
+        self.map = map.Map(self, "montane")
 
         # game states
         self.current_state = gamestate.Gamestate()
+
+        # A second time counter to make a smooth rendering possible
+        self.rendering_time = 0.0
 
         # This is a hack to allow game objects to append stuff to the networking event queue without having to pass networker around
         self.sendbuffer = []
@@ -39,16 +42,19 @@ class Game:
         #DEBUGTOOL
         self.horizontal = 0
         self.vertical = 0
+
     def update(self, networker, frametime):
+        self.rendering_time += frametime + frametime*(self.current_state.time+self.accumulator - self.rendering_time)*constants.INTERP_SLIDING_WINDOW
         self.accumulator += frametime
 
         while self.accumulator >= constants.PHYSICS_TIMESTEP:
-            self.accumulator -= constants.PHYSICS_TIMESTEP
-
-            if not self.isserver:
+            if self.isserver:
+                self.accumulator -= constants.PHYSICS_TIMESTEP
+                self.current_state.update_all_objects(self, constants.PHYSICS_TIMESTEP)
+            else:
                 self.old_client_states.append(self.current_state.copy())
-
-            self.current_state.update_all_objects(self, constants.PHYSICS_TIMESTEP)
+                self.accumulator -= constants.PHYSICS_TIMESTEP
+                self.current_state.update_all_objects(self, constants.PHYSICS_TIMESTEP)
 
             for event in self.sendbuffer:
                 event.time = self.current_state.time
