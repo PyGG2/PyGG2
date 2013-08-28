@@ -18,7 +18,20 @@ def remove(patterns):
         try: os.remove(filename)
         except: pass
 
-if len(sys.argv) == 1: sys.exit()
+def printUsage():
+    print("Usage:")
+    print("    python make.py <command>")
+    print("Commands:")
+    print("    build - builds PyGG2's extensions")
+    print("    clean - cleans up Python bytecode files and build remains")
+    print("    testclient - runs PyGG2 in client mode, skipping the menu")
+    print("    menuclient - runs PyGG2 in client mode, going to the main menu")
+    print("    testserver - runs PyGG2 in server mode")
+    print("    testserver - runs PyGG2 in server mode and launched PyGG2 in client mode, connecting on loopback")
+
+if len(sys.argv) == 1:
+    printUsage()
+    sys.exit()
 
 if sys.argv[1] == "build":
     if len(sys.argv) > 2 and sys.argv[2] == "dist":
@@ -40,8 +53,6 @@ if sys.argv[1] == "build":
             subprocess.call("gcc -O3 -c -o mask_extension/bitmask.o mask_extension/bitmask.c", shell=True)
             subprocess.call("gcc -I%s -O3 -c -o mask_extension/_mask.o mask_extension/_mask.c" % includes, shell=True)
             subprocess.call("gcc -shared -o mask_extension/_mask.pyd mask_extension/bitmask.o mask_extension/_mask.o -L%s -lpython27" % libs, shell=True)
-
-
 elif sys.argv[1] == "clean":
     patterns = [
         "*~",
@@ -68,3 +79,6 @@ elif sys.argv[1] == "testserver":
 elif sys.argv[1] == "test":
     subprocess.Popen([sys.executable, 'make.py', 'testclient'])
     subprocess.Popen([sys.executable, 'make.py', 'testserver']).wait()
+else:
+    print("Error: Unrecognised command '%s'" % sys.argv[1])
+    printUsage()
