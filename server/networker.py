@@ -108,6 +108,9 @@ class Networker(object):
                         continue
                     try:
                         event_handler.eventhandlers[event.eventid](self, game, game.current_state, self.players[sender], event)
+                        if event.eventid == constants.EVENT_PLAYER_DISCONNECT:
+                            # Player disconnected, any further events are useless
+                            break
                     except KeyError:
                         # Invalid event; ignore
                         print("WARNING: Client sent invalid event:", type(event), event.eventid)
