@@ -11,6 +11,9 @@ GAME_VERSION_NUMBER = 25000
 GAME_VERSION_STRING = "2.7b"
 GAME_URL = "http://www.ganggarrison.com/forums/index.php?topic=29530.0"
 
+# Sprites
+SPRITE_FOLDER = "sprites/"
+
 # Server
 SERVER_MAX_FPS = 1/100
 

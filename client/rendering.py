@@ -29,18 +29,8 @@ class GameRenderer(object):
 
         self.view_width = constants.GAME_WIDTH
         self.view_height = constants.GAME_HEIGHT
-    
-        mapList = [
-            "montane/montane0",
-            "montane/montane1",
-            "montane/montane2",
-            "montane/montane3",
-            "montane/montane4",
-            "montane/montane5",
-            "montane/montane6",
-            "montane/montane7",
-        ]
-        self.maprenderer = map_renderer.MapRenderer(self, mapList)
+
+        self.maprenderer = map_renderer.MapRenderer(self, client.game.map.mapname)
         self.healthhud = None
         self.overlayblits = []
 

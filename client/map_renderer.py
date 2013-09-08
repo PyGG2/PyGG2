@@ -2,6 +2,8 @@
 
 from __future__ import division, print_function
 
+import os
+
 import sfml
 import function
 
@@ -10,7 +12,14 @@ class MapRenderer(object):
         self.set_map(mapname)
 
     def set_map(self, mapname):
-        self.bgs = [sfml.Sprite(function.load_texture(("maps/"+ mapname[i] + ".png"))) for i in range(8)]
+        # Get all the layers of the background
+        self.bgs = []
+        layer_list = os.listdir("maps/"+mapname+"/background")
+        layer_list.sort()
+        for layer in layer_list:
+            self.bgs.append(sfml.Sprite(function.load_texture("maps/"+mapname+"/background/"+layer)))
+        
+        # Scale all maps 6x
         for background in self.bgs:
             background.ratio = sfml.system.Vector2(6, 6)
     
@@ -24,16 +33,14 @@ class MapRenderer(object):
     
     def render(self, renderer, state):
         #Background (Sky)
-        self.bgs[7].position = renderer.get_screen_coords(0, 0)
-        renderer.window.draw(self.bgs[7])
-        
-        #Backgrounds in between
-        parallaxed_maps = [self.bgs[i] for i in range(1, 7)]
-        parallaxed_maps.reverse()
-        self.parallax_map(renderer,parallaxed_maps)
-        
-        #Foreground
         self.bgs[0].position = renderer.get_screen_coords(0, 0)
         renderer.window.draw(self.bgs[0])
         
+        #Backgrounds in between
+        parallaxed_maps = self.bgs[1:-1]
+        self.parallax_map(renderer,parallaxed_maps)
+        
+        #Foreground
+        self.bgs[len(self.bgs)-1].position = renderer.get_screen_coords(0, 0)
+        renderer.window.draw(self.bgs[len(self.bgs)-1])
     

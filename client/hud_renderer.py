@@ -22,7 +22,7 @@ class HealthRenderer(HudRenderer):
         my_class_type = type(character)
         my_class_number = str(function.convert_class(my_class_type))
        
-        self.hudsprite = sfml.Sprite(function.load_texture("huds/characterhud/"+ my_class_number + ".png"))
+        self.hudsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "huds/characterhud/"+ my_class_number + ".png"))
 
         self.health_box_background = None
         self.health_box = None
@@ -74,7 +74,7 @@ class AmmoRenderer(HudRenderer):
             team = "0"
         else:
             team = "1"
-        self.hudsprite = sfml.Sprite(function.load_texture("huds/ammo/"+spritepath+"/"+team+".png"))
+        self.hudsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "huds/ammo/"+spritepath+"/"+team+".png"))
         self.background_bar.location = self.bar.location
         self.background_bar.color = sfml.Color(0, 0, 0, 255)
         self.bar.color = sfml.Color(217, 217, 183, 255)

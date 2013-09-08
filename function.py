@@ -14,13 +14,8 @@ try:
     import sfml
 except: pass
 
-import zipfile
-import cStringIO
 import os.path
 import sys
-
-spritesfolder = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "sprites/")
-spriteszip = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "sprites.zip")
 
 def sign(x):
     # Returns the sign of the number given
@@ -53,15 +48,7 @@ def load_mask(filename, give_orig=False):
         if give_orig: return masks[filename]
         else: return masks[filename].copy()
 
-    # first try to load the sprite from the sprite folder, fall back to our zipped sprites
-    # this allows users to override sprites, and makes testing/developing easier
-    try:
-        bitmask = mask.from_image(spritesfolder +  filename + ".png")
-    except:
-        sprites = zipfile.ZipFile(spriteszip, "r")
-        spritefile = cStringIO.StringIO(sprites.open("sprites/" + filename + ".png", "r").read())
-        bitmask = mask.from_image(spritefile)
-        spritefile.close()
+    bitmask = mask.from_image(filename)
 
     masks[filename] = bitmask
 
@@ -75,7 +62,7 @@ def load_texture(filename):
         return textures[filename]
 
     # Attempt to load the texture from files
-    texture = sfml.Texture.from_file("sprites/" + filename)
+    texture = sfml.Texture.from_file(filename)
     textures[filename] = texture
 
     return texture

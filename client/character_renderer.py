@@ -1,5 +1,6 @@
 from __future__ import division, print_function
 
+import constants
 import math
 import sfml
 import function
@@ -47,7 +48,7 @@ class ClassRenderer(object):
 class ScoutRenderer(ClassRenderer):
     def __init__(self):
         self.depth = 0
-        self.sprites = [sfml.Sprite(function.load_texture(("characters/scoutreds/%i.png" % i))) for i in range(4)]
+        self.sprites = [sfml.Sprite(function.load_texture((constants.SPRITE_FOLDER + "characters/scoutreds/%i.png" % i))) for i in range(4)]
 
         self.spriteoffset = (24, 30)
         self.spriteoffset_flipped = (35, 30)
@@ -55,7 +56,7 @@ class ScoutRenderer(ClassRenderer):
 class PyroRenderer(ClassRenderer):
     def __init__(self):
         self.depth = 0
-        self.sprites = [sfml.Sprite(function.load_texture(("characters/pyroreds/%s.png" % i))) for i in range(4)]
+        self.sprites = [sfml.Sprite(function.load_texture((constants.SPRITE_FOLDER + "characters/pyroreds/%s.png" % i))) for i in range(4)]
 
         self.spriteoffset = (24, 30)
         self.spriteoffset_flipped = (35, 30)
@@ -63,7 +64,7 @@ class PyroRenderer(ClassRenderer):
 class SoldierRenderer(ClassRenderer):
     def __init__(self):
         self.depth = 0
-        self.sprites = [sfml.Sprite(function.load_texture(("characters/soldierreds/%s.png" % i))) for i in range(4)]
+        self.sprites = [sfml.Sprite(function.load_texture((constants.SPRITE_FOLDER + "characters/soldierreds/%s.png" % i))) for i in range(4)]
 
         self.spriteoffset = (24, 30)
         self.spriteoffset_flipped = (35, 30)
@@ -71,7 +72,7 @@ class SoldierRenderer(ClassRenderer):
 class HeavyRenderer(ClassRenderer):
     def __init__(self):
         self.depth = 0
-        self.sprites = [sfml.Sprite(function.load_texture(("characters/heavyreds/%s.png" % i))) for i in range(4)]
+        self.sprites = [sfml.Sprite(function.load_texture((constants.SPRITE_FOLDER + "characters/heavyreds/%s.png" % i))) for i in range(4)]
 
         self.spriteoffset = (14, 30)
         self.spriteoffset_flipped = (26, 30)
@@ -79,7 +80,7 @@ class HeavyRenderer(ClassRenderer):
 class MedicRenderer(ClassRenderer):
     def __init__(self):
         self.depth = 0
-        self.sprites = [sfml.Sprite(function.load_texture(("characters/medicreds/%s.png" % i))) for i in range(4)]
+        self.sprites = [sfml.Sprite(function.load_texture((constants.SPRITE_FOLDER + "characters/medicreds/%s.png" % i))) for i in range(4)]
 
         self.spriteoffset = (23, 30)
         self.spriteoffset_flipped = (36, 30)
@@ -87,7 +88,7 @@ class MedicRenderer(ClassRenderer):
 class EngineerRenderer(ClassRenderer):
     def __init__(self):
         self.depth = 0
-        self.sprites = [sfml.Sprite(function.load_texture(("characters/engineerreds/%s.png" % i))) for i in range(4)]
+        self.sprites = [sfml.Sprite(function.load_texture((constants.SPRITE_FOLDER + "characters/engineerreds/%s.png" % i))) for i in range(4)]
 
         self.spriteoffset = (26, 30)
         self.spriteoffset_flipped = (36, 30)
@@ -95,7 +96,7 @@ class EngineerRenderer(ClassRenderer):
 class SpyRenderer(ClassRenderer):
     def __init__(self):
         self.depth = 0
-        self.sprites = [sfml.Sprite(function.load_texture(("characters/spyreds/%s.png" % i))) for i in range(4)]
+        self.sprites = [sfml.Sprite(function.load_texture((constants.SPRITE_FOLDER + "characters/spyreds/%s.png" % i))) for i in range(4)]
 
         self.spriteoffset = (22, 30)
         self.spriteoffset_flipped = (33, 30)
@@ -108,7 +109,7 @@ class SpyRenderer(ClassRenderer):
 class QuoteRenderer(ClassRenderer):
     def __init__(self):
         self.depth = 0
-        self.sprites = [sfml.Sprite(function.load_texture(("characters/quotereds/%s.png" % i))) for i in range(4)]
+        self.sprites = [sfml.Sprite(function.load_texture((constants.SPRITE_FOLDER + "characters/quotereds/%s.png" % i))) for i in range(4)]
 
         self.spriteoffset = (16, -1)
         self.spriteoffset_flipped = (16, -1)

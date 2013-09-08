@@ -53,7 +53,7 @@ class Shot(entity.MovingObject):
         if angle in self.shot_hitmasks:
             mask = self.shot_hitmasks[angle]
         else:
-            mask = function.load_mask("projectiles/shots/0").rotate(angle)
+            mask = function.load_mask(constants.SPRITE_FOLDER + "projectiles/shots/0.png").rotate(angle)
             self.shot_hitmasks[angle] = mask
 
         # FIXME: "and self.flight_time > constants.PHYSICS_TIMESTEP" is an extremely hacky way to prevent negative time collisions. Is there a better method?
@@ -120,7 +120,7 @@ class Needle(entity.MovingObject):
         if angle in self.shot_hitmasks:
             mask = self.shot_hitmasks[angle]
         else:
-            mask = function.load_mask("projectiles/needles/0").rotate(angle)
+            mask = function.load_mask(constants.SPRITE_FOLDER + "projectiles/needles/0.png").rotate(angle)
             self.shot_hitmasks[angle] = mask
 
         # FIXME: "and self.flight_time > constants.PHYSICS_TIMESTEP" is an extremely hacky way to prevent negative time collisions. Is there a better method?
@@ -236,7 +236,7 @@ class Rocket(entity.MovingObject):
         if angle in self.rocket_hitmasks:
             mask = self.rocket_hitmasks[angle]
         else:
-            mask = function.load_mask("projectiles/rockets/0").rotate(angle)
+            mask = function.load_mask(constants.SPRITE_FOLDER + "projectiles/rockets/0.png").rotate(angle)
             self.rocket_hitmasks[angle] = mask
 
         # FIXME: "and self.flight_time > constants.PHYSICS_TIMESTEP" is an extremely hacky way to prevent negative time collisions. Is there a better method?
@@ -289,7 +289,7 @@ class Flame(entity.MovingObject):
         if angle in self.flame_hitmasks:
             mask = self.flame_hitmasks[angle]
         else:
-            mask = function.load_mask("projectiles/flames/0").rotate(angle)
+            mask = function.load_mask(constants.SPRITE_FOLDER + "projectiles/flames/0.png").rotate(angle)
             self.flame_hitmasks[angle] = mask
 
         # FIXME: "and self.flight_time > constants.PHYSICS_TIMESTEP" is an extremely hacky way to prevent negative time collisions. Is there a better method?
@@ -345,7 +345,7 @@ class Blade(entity.MovingObject):
         if angle in self.shot_hitmasks:
             mask = self.shot_hitmasks[angle]
         else:
-            mask = function.load_mask("projectiles/needles/0").rotate(angle)
+            mask = function.load_mask(constants.SPRITE_FOLDER + "projectiles/needles/0.png").rotate(angle)
             self.shot_hitmasks[angle] = mask
 
         # FIXME: "and self.flight_time > constants.PHYSICS_TIMESTEP" is an extremely hacky way to prevent negative time collisions. Is there a better method?

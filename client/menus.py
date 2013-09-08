@@ -117,7 +117,7 @@ class MainMenuHandler(MenuHandler):
     def __init__(self, window, manager):
         super(MainMenuHandler, self).__init__(window, manager)
 
-        self.menubg = sfml.Sprite(function.load_texture("gameelements/menubackgrounds/%s.png" % random.randint(0,2)))
+        self.menubg = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "gameelements/menubackgrounds/%s.png" % random.randint(0,2)))
         self.menubg.x = 200
         self.color = tuple(self.manager.config.setdefault('menu_color', [0.7, 0.25, 0]))
         self.color = sfml.Color(self.color[0] * 255, self.color[1] * 255, self.color[2] * 255)
@@ -153,7 +153,7 @@ class LobbyHandler(MenuHandler):
             ('', None)
         ]
 
-        self.menubg = sfml.Sprite(function.load_texture("gameelements/menubackgrounds/0.png"))
+        self.menubg = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "gameelements/menubackgrounds/0.png"))
         self.menubg.x = 200
         self.menubg.x = 200
         self.color = tuple(self.manager.config.setdefault('menu_color', [0.7, 0.25, 0]))
