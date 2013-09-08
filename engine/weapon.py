@@ -126,7 +126,7 @@ class Rocketlauncher(Weapon):
             self.ammo = max(0, self.ammo-1)
 
 class Minigun(Weapon):
-    maxammo = 200
+    maxammo = 8
     refiretime = 1/15
     reloadtime = 1/2
     shotdamage = 8
@@ -142,6 +142,26 @@ class Minigun(Weapon):
             projectile.Shot(game, state, self.id, self.shotdamage, direction, speed)
 
             self.refirealarm = self.refiretime
+
+class Minegun(Weapon):
+    maxammo = 200
+    refiretime = 13/15
+    reloadtime = 1/2
+    maxmines = 8
+    
+    def __init__(self, game, state, owner_id):
+        super(Minegun, self).__init__(game, state, owner_id)
+        self.mines = []
+
+    def fire_primary(self, game, state):
+        if self.ammo > 0 and len(self.mines) < self.maxmines:
+            owner = state.entities[self.owner_id]
+            self.mines.append(projectile.Mine(game, state, self.id))
+            self.refirealarm = self.refiretime
+    
+    def fire_secondary(self, game, state):
+        while len(self.mines) > 0:
+            self.mines[0].destroy(game, state)
 
 class Shotgun(Weapon):
     maxammo = 4

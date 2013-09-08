@@ -271,24 +271,6 @@ class Soldier(Character):
         self.hp = self.maxhp
         self.weapon_id = weapon.Rocketlauncher(game, state, self.id).id
 
-class Demoman(Character):
-    #TODO: this class
-    # FIXME: width, height of heavy - rectangle collision
-    collision_mask = mask.Mask(12, 33, True)
-    max_speed = 144
-    maxhp = 200
-
-    def __init__(self, game, state, player_id):
-        Character.__init__(self, game, state, player_id)
-
-        self.hp = self.maxhp
-        self.weapon_id = weapon.Minigun(game, state, self.id).id
-
-    def step(self, game, state, frametime):
-        Character.step(self, game, state, frametime)
-        if self.get_player(state).leftmouse:
-            self.hspeed = min(54, max(-54, self.hspeed))
-
 class Heavy(Character):
     # FIXME: width, height of heavy - rectangle collision
     collision_mask = mask.Mask(12, 33, True)
@@ -305,6 +287,18 @@ class Heavy(Character):
         Character.step(self, game, state, frametime)
         if self.get_player(state).leftmouse:
             self.hspeed = min(54, max(-54, self.hspeed))
+
+class Demoman(Character):
+    # FIXME: width, height of heavy - rectangle collision
+    collision_mask = mask.Mask(12, 33, True)
+    max_speed = 180
+    maxhp = 200
+
+    def __init__(self, game, state, player_id):
+        Character.__init__(self, game, state, player_id)
+
+        self.hp = self.maxhp
+        self.weapon_id = weapon.Minegun(game, state, self.id).id
 
 class Medic(Character):
     # FIXME: width, height of Medic - rectangle collision

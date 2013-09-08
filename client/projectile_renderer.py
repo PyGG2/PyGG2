@@ -70,6 +70,22 @@ class RocketRenderer(object):
 
         renderer.window.draw(sprite)
 
+class MineRenderer(object):
+    def __init__(self):
+        self.depth = 1
+        self.minesprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "projectiles/mines/1.png"))
+
+    def render(self, renderer, game, state, mine):
+        if mine.flight_time < 0:
+            return
+
+        sprite = self.minesprite
+        sprite.rotation = 360 - mine.direction
+
+        sprite.position = renderer.get_screen_coords(mine.x, mine.y)
+
+        renderer.window.draw(sprite)
+
 class NeedleRenderer(object):
     def __init__(self):
         self.depth = 1

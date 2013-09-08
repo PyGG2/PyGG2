@@ -177,7 +177,7 @@ def create_ammo_renderer(renderer, game, state, character_id):
         engine.weapon.Flamethrower: FlamethrowerAmmoRenderer,
         engine.weapon.Rocketlauncher: RocketlauncherAmmoRenderer,
         engine.weapon.Minigun: MinigunAmmoRenderer,
-        #engine.weapon.Minegun: MinegunAmmoRenderer,
+        engine.weapon.Minegun: MinegunAmmoRenderer,
         engine.weapon.Medigun: NeedleAmmoRenderer,
         engine.weapon.Shotgun: ShotgunAmmoRenderer,
         engine.weapon.Revolver: RevolverAmmoRenderer,

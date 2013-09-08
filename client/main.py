@@ -114,6 +114,9 @@ class GameClientHandler(Handler):
                     elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM4):
                         event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_HEAVY)
                         self.game.sendbuffer.append(event)
+                    elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM5):
+                        event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_DEMOMAN)
+                        self.game.sendbuffer.append(event)
                     elif sfml.Keyboard.is_key_pressed(sfml.Keyboard.NUM6):
                         event = networking.event_serialize.ClientEventChangeclass(constants.CLASS_MEDIC)
                         self.game.sendbuffer.append(event)

@@ -77,6 +77,14 @@ class HeavyRenderer(ClassRenderer):
         self.spriteoffset = (14, 30)
         self.spriteoffset_flipped = (26, 30)
 
+class DemomanRenderer(ClassRenderer):
+    def __init__(self):
+        self.depth = 0
+        self.sprites = [sfml.Sprite(function.load_texture((constants.SPRITE_FOLDER + "characters/demomanreds/%s.png" % i))) for i in range(4)]
+
+        self.spriteoffset = (24, 30)
+        self.spriteoffset_flipped = (35, 30)
+
 class MedicRenderer(ClassRenderer):
     def __init__(self):
         self.depth = 0

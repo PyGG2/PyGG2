@@ -76,6 +76,18 @@ class MinigunRenderer(WeaponRenderer):
         self.weaponsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/miniguns/0.png"))
         self.firingsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/miniguns/2.png"))
 
+class MinegunRenderer(WeaponRenderer):
+    #TODO: fix these to actually align correctly
+    weapon_rotate_point = (7, 3) # where is the handle of the gun, where to rotate around
+    weapon_rotate_flipped = (7,6)
+    weaponoffset = (5, 14) # where the character should carry it's gun
+    weaponoffset_flipped = (6, 14)
+
+    def __init__(self):
+        self.depth = 1
+        self.weaponsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/mineguns/0.png"))
+        self.firingsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/mineguns/2.png"))
+
 class MedigunRenderer(WeaponRenderer):
     #TODO: fix these to actually align correctly
     weapon_rotate_point = (7, 3) # where is the handle of the gun, where to rotate around
