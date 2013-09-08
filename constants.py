@@ -27,7 +27,7 @@ MAX_PACKET_SIZE = 2048
 NETWORK_UPDATE_RATE = 1/40 # the server sends state info to the client at this rate
 CLIENT_TIMEOUT = 300
 CONNECTION_TIMEOUT = 10
-INTERP_BUFFER_LENGTH =  1/20 # The additional lag the client trades for visual smoothness
+INTERP_BUFFER_LENGTH =  1/10 # The additional lag the client trades for visual smoothness
 INTERP_SLIDING_WINDOW = 1/20 # The fraction at which rendering will speed/slow down to meet jitter
 MAX_TIME_DESYNC = NETWORK_UPDATE_RATE*2 # The maximum amount of time the client is allowed to lag behind server packets before getting corrected
 
