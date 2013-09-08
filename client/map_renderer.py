@@ -41,6 +41,6 @@ class MapRenderer(object):
         self.parallax_map(renderer,parallaxed_maps)
         
         #Foreground
-        self.bgs[len(self.bgs)-1].position = renderer.get_screen_coords(0, 0)
-        renderer.window.draw(self.bgs[len(self.bgs)-1])
+        self.bgs[-1].position = renderer.get_screen_coords(0, 0)
+        renderer.window.draw(self.bgs[-1])
     
