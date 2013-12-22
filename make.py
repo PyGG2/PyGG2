@@ -27,7 +27,7 @@ def printUsage():
     print("    testclient - runs PyGG2 in client mode, skipping the menu")
     print("    menuclient - runs PyGG2 in client mode, going to the main menu")
     print("    testserver - runs PyGG2 in server mode")
-    print("    testserver - runs PyGG2 in server mode and launched PyGG2 in client mode, connecting on loopback")
+    print("    test - runs PyGG2 in server mode and launched PyGG2 in client mode, connecting on loopback")
 
 if len(sys.argv) == 1:
     printUsage()

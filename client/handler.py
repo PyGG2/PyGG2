@@ -12,7 +12,7 @@ class ClientManager(object):
         
         self.load_config()
         self.window.framerate_limit = self.config.setdefault('framerate_limit', 80) #prevent 100% cpu usage
-        self.window.vertical_synchronization = constants.VSYNC_ENABLED
+        #self.window.vertical_synchronization = constants.VSYNC_ENABLED
         self.quitting = False
         self.newhandler = None
         self.newhandler_args = []
