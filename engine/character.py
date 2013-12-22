@@ -127,15 +127,15 @@ class Character(entity.MovingObject):
         self.x += self.hspeed * frametime
         # if we are in a wall now, we must move back
 
-        if game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y)))):
+        if state.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y)))):
             # but if we just walked onto a one-unit wall it's ok
             # but we had to be on the ground
-            if onground and not game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y - 6)))):
-                while game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y)))):
+            if onground and not state.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y - 6)))):
+                while state.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y)))):
                     self.y -= 1
             # but sometimes we are so fast we will need to take two stairs at the same time
-            elif onground and not game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y - 12)))) and game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x - 6 * function.sign(self.hspeed))), int(round(self.y)))):
-                while game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y)))):
+            elif onground and not state.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y - 12)))) and state.map.collision_mask.overlap(self.collision_mask, (int(round(self.x - 6 * function.sign(self.hspeed))), int(round(self.y)))):
+                while state.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y)))):
                     self.y -= 1
             else:
                 if self.hspeed < 0:
@@ -143,7 +143,7 @@ class Character(entity.MovingObject):
                 else:
                     self.x = math.ceil(self.x)
                 # and if one pixel wasn't enough
-                while game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y)))):
+                while state.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y)))):
                     self.x -= function.sign(self.hspeed) * function.sign(frametime)
 
                 self.hspeed = 0
@@ -151,10 +151,10 @@ class Character(entity.MovingObject):
         # same stuff, but now vertically
         self.y += self.vspeed * frametime
 
-        if game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y)))):
+        if state.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y)))):
             self.y = float(round(self.y))
 
-            while game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y)))):
+            while state.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y)))):
                 self.y -= function.sign(self.vspeed) * function.sign(frametime)
 
             self.vspeed = 0
@@ -164,7 +164,7 @@ class Character(entity.MovingObject):
 
     def onground(self, game, state):
         # are we on the ground? About one third of an unit from the ground is enough to qualify for this
-        return game.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y + 1))))
+        return state.map.collision_mask.overlap(self.collision_mask, (int(round(self.x)), int(round(self.y + 1))))
 
     def interpolate(self, prev_obj, next_obj, alpha):
         super(Character, self).interpolate(prev_obj, next_obj, alpha)

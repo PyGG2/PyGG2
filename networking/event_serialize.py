@@ -271,3 +271,22 @@ class ServerEventFireSecondary(object):
         self.playerid = struct.unpack_from(">B", packetstr)[0]
 
         return struct.calcsize(">B")
+
+@serverevent
+class ServerChangeMap(object):
+    eventid = constants.EVENT_CHANGE_MAP
+
+    def __init__(self, mapname):
+        self.mapname = mapname
+
+    def pack(self):
+        s = bytes(self.mapname)
+        packetstr =  struct.pack(">B%ds" % len(s), len(s), s)
+
+        return packetstr
+
+    def unpack(self, packetstr):
+        length = struct.unpack_from(">B", packetstr)[0]
+        self.mapname = str(struct.unpack_from(">B%ds" % length, packetstr)[1])
+
+        return struct.calcsize(">B{0}s".format(length))

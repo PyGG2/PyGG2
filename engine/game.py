@@ -25,7 +25,8 @@ class Game:
         self.old_server_states = []
 
         # map data
-        self.map = map.Map(self, "montane")
+        self.map_rotation = []
+        self.change_map = True
 
         # game states
         self.current_state = gamestate.Gamestate()

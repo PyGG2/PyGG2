@@ -92,6 +92,10 @@ def Server_Event_Fire_Secondary(client, networker, game, state, event):
         # character is dead or something. Shouldn't happen, so print something
         print("Error: Firing event called for dead or non-existent character!")
 
+def Server_Event_Change_Map(client, networker, game, state, event):
+    state.map = engine.map.Map(game, event.mapname)
+
+
 # Gather the functions together to easily be called by the event ID
 eventhandlers = {}
 eventhandlers[constants.EVENT_HELLO] = Server_Event_Hello
@@ -104,3 +108,4 @@ eventhandlers[constants.FULL_UPDATE] = Server_Full_Update
 eventhandlers[constants.EVENT_PLAYER_DISCONNECT] = Server_Event_Disconnect
 eventhandlers[constants.EVENT_FIRE_PRIMARY] = Server_Event_Fire_Primary
 eventhandlers[constants.EVENT_FIRE_SECONDARY] = Server_Event_Fire_Secondary
+eventhandlers[constants.EVENT_CHANGE_MAP] = Server_Event_Change_Map

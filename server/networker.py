@@ -75,8 +75,9 @@ class Networker(object):
 
             packetstr += struct.pack(">32pBB", player_obj.name, current_class, character_exists)
 
-        hello_event = networking.event_serialize.ServerEventHello(server.name, newplayer.id,  server.game.maxplayers, server.game.map.mapname, constants.GAME_VERSION_NUMBER)
-        events  = [hello_event, networking.event_serialize.ServerEventFullUpdate(packetstr)]
+        hello_event = networking.event_serialize.ServerEventHello(server.name, newplayer.id,  server.game.maxplayers, state.map.mapname, constants.GAME_VERSION_NUMBER)
+        map_event = networking.event_serialize.ServerChangeMap(state.map.mapname)
+        events  = [hello_event, map_event, networking.event_serialize.ServerEventFullUpdate(packetstr)]
         events[1].time = state.time
         
         newplayer.send_fullupdate(self, game, events)

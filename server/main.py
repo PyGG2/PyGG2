@@ -26,12 +26,23 @@ class Server(object):
         self.port = self.config.setdefault('port', 8190)
         self.name = str(self.config.setdefault('name', 'Development Server'))
         self.password = str(self.config.setdefault('password', ''))
+        self.map_rotation = str(self.config.setdefault('Map rotation file', 'DefaultRotation.maps'))
         self.ID = uuid.uuid4()
 
         # create game engine object
         self.game = engine.game.Game()
         self.game.servername = self.name
         self.game.isserver = True
+        
+        # load maps
+        try:
+            file = open(self.map_rotation, 'r')
+        except IOError:
+            print("No map rotation file named {0} found! Exiting.".format(self.map_rotation))
+            sys.exit(1)
+        # ignore any line starting with a #
+        self.game.map_rotation =  [line.rstrip() for line in file.readlines() if not line.startswith("#")]
+        file.close()
 
         # create packet handler
         self.networker = networker.Networker(self.port)

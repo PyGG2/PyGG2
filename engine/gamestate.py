@@ -2,6 +2,9 @@
 
 from __future__ import division, print_function
 
+import map
+import networking.event_serialize
+
 # the main physics class
 # contains the complete game state
 class Gamestate(object):
@@ -10,11 +13,22 @@ class Gamestate(object):
         self.players = {}
         self.next_entity_id = 0
         self.time = 0.0
+        self.map = None
 
     def update_all_objects(self, game, frametime):
         # time is synced with 4 bytes, so to force looping one would have to host for a straight two years...
         self.time += frametime
         self.time = round(self.time, 6)
+
+        if game.change_map and game.isserver:
+            next_map = game.map_rotation.pop()
+            print(next_map)
+            self.map = map.Map(game, next_map)
+            game.map_rotation.append(next_map)
+            
+            game.sendbuffer.append(networking.event_serialize.ServerChangeMap(next_map))
+            
+            game.change_map = False
 
         for entity in self.entities.values(): entity.beginstep(game, self, frametime)
         for player in self.players.values(): player.step(game, self, frametime)
@@ -49,10 +63,12 @@ class Gamestate(object):
             # Give previous state priority for binary choice (like entity existence)
             self.entities = {id:entity.copy() for id, entity in prev_state.entities.items()}
             self.players = {id:player.copy() for id, player in prev_state.players.items()}
+            self.map = prev_state.map
         else:
             # Copy from next_state
             self.entities = {id:entity.copy() for id, entity in next_state.entities.items()}
             self.players = {id:player.copy() for id, player in next_state.players.items()}
+            self.map = next_state.map
 
         for id, entity in self.entities.items():
             if id in prev_state.entities and id in next_state.entities:
@@ -69,5 +85,6 @@ class Gamestate(object):
         new.players = {id:player.copy() for id, player in self.players.items()}
         new.next_entity_id = self.next_entity_id
         new.time = self.time
+        new.map = self.map
 
         return new

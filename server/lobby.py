@@ -13,7 +13,9 @@ class Lobby(object):
 
     def __init__(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.timer = 0
+        # FIXME: This script needs to wait for the server to initialize everything properly before sending stuff (like map name)
+        # I'm just adding an initial delay for now, but this is a terrible way to do it and should be replaced
+        self.timer = 5
 
     def update(self, server, frametime):
         if self.timer <= 0:
@@ -61,7 +63,7 @@ class Lobby(object):
         # The server name
         packet += struct.pack(">B4sH"+str(len(server.name))+"s", 4, "name", len(server.name), server.name)
         # The current map
-        packet += struct.pack(">B3sH"+str(len(server.game.map.mapname))+"s", 3, "map", len(server.game.map.mapname), server.game.map.mapname)
+        packet += struct.pack(">B3sH"+str(len(server.game.current_state.map.mapname))+"s", 3, "map", len(server.game.current_state.map.mapname), server.game.current_state.map.mapname)
 
         # The game/mod compatibility protocol
         packet += struct.pack(">B11sH", 11, "protocol_id", 16)
