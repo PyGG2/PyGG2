@@ -35,20 +35,19 @@ class Gamestate(object):
         for entity in self.entities.values(): entity.step(game, self, frametime)
         for entity in self.entities.values(): entity.endstep(game, self, frametime)
 
-
-    def update_synced_objects(self, game, frametime):
-        for entity in self.entities.values():
-            if entity.issynced:
-                entity.beginstep(game, self, frametime)
-        for player in self.players.values():
-            if entity.issynced:
-                player.step(game, self, frametime)
-        for entity in self.entities.values():
-            if entity.issynced:
-                entity.step(game, self, frametime)
-        for entity in self.entities.values():
-            if entity.issynced:
-                entity.endstep(game, self, frametime)
+    #def update_synced_objects(self, game, frametime):
+    #    for entity in self.entities.values():
+    #        if entity.issynced:
+    #            entity.beginstep(game, self, frametime)
+    #    for player in self.players.values():
+    #        if entity.issynced:
+    #            player.step(game, self, frametime)
+    #    for entity in self.entities.values():
+    #        if entity.issynced:
+    #            entity.step(game, self, frametime)
+    #    for entity in self.entities.values():
+    #        if entity.issynced:
+    #            entity.endstep(game, self, frametime)
 
 
     def interpolate(self, prev_state, next_state, alpha):
