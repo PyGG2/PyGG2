@@ -139,7 +139,7 @@ class GameClientHandler(Handler):
                 frametime = min(0.25, frametime) # a limit of 0.25 seconds to prevent complete breakdown
 
                 self.fpscounter_accumulator += frametime
-
+                
                 self.networker.recieve(self.game, self)
                 self.input_handler.gather_input(self.window, self.game)
                 self.game.update(self.networker, frametime)

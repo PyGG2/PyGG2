@@ -83,7 +83,7 @@ class GameRenderer(object):
             # Add current state to the states if there isn't already a server state which is new enough
             states.append(game.current_state.copy())
         if game.current_state.time + constants.PHYSICS_TIMESTEP > states[-1].time:
-            # Also make a uber-new state for  the game.accumulator
+            # Also make a uber-new state for the game.accumulator
             newest_state = game.current_state.copy()
             newest_state.update_all_objects(game, constants.PHYSICS_TIMESTEP)
             states.append(newest_state)
