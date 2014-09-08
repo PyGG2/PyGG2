@@ -63,13 +63,8 @@ class Player(object):
         snapshot = networker.generate_snapshot_update(game.current_state)
         packet.events.insert(0, (self.sequence, snapshot))
 
-        data = ""
-        data += packet.pack()# TODO: Compression would be here
-
-        numbytes = networker.socket.sendto(data, self.address)
-        if len(data) != numbytes:
-            # TODO sane error handling
-            print("SERIOUS ERROR, NUMBER OF BYTES SENT != PACKET SIZE")
+        packetbuffer = packet.pack()# TODO: Compression would be here
+        networker.socket.sendto(packetbuffer.data, self.address)
 
         self.sequence = (self.sequence + 1) % 65535
     
@@ -85,13 +80,8 @@ class Player(object):
         snapshot = networker.generate_snapshot_update(game.current_state)
         packet.events.append((0, snapshot))
     
-        data = ""
-        data += packet.pack()# TODO: Compression would be here
-
-        numbytes = networker.socket.sendto(data, self.address)
-        if len(data) != numbytes:
-            # TODO sane error handling
-            print("SERIOUS ERROR, NUMBER OF BYTES SENT != PACKET SIZE")
+        packetbuffer = packet.pack()# TODO: Compression would be here
+        networker.socket.sendto(packetbuffer.data, self.address)
 
         self.sequence = (self.sequence + 1) % 65535
 

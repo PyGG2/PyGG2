@@ -3,7 +3,6 @@
 from __future__ import division, print_function
 
 import math
-import struct
 
 import function
 import entity
@@ -198,32 +197,28 @@ class Character(entity.MovingObject):
     def get_player(self, state):
         return state.players[self.player_id]
 
-    def serialize(self, state):
-        packetstr = ""
-        packetstr += struct.pack(">ffff", self.x, self.y, self.hspeed, self.vspeed)
+    def serialize(self, state, packetbuffer):
+        packetbuffer.write("ffff", (self.x, self.y, self.hspeed, self.vspeed))
 
         # Serialize intel, doublejump, etc... in one byte. Should we merge this with the input serialization in Player? Move the input ser. here?
         byte = 0
         byte |= self.intel << 0
         byte |= self.can_doublejump << 1
         #byte |= self.sentry << 2
-        packetstr += struct.pack(">B", byte)
+        packetbuffer.write("B", byte)
 
-        packetstr += state.entities[self.weapon_id].serialize(state)
+        state.entities[self.weapon_id].serialize(state, packetbuffer)
 
-        return packetstr
+        return packetbuffer
 
-    def deserialize(self, state, packetstr):
-        self.x, self.y, self.hspeed, self.vspeed = struct.unpack_from(">ffff", packetstr)
-        packetstr = packetstr[struct.calcsize("ffff"):]
-        byte = struct.unpack_from(">B", packetstr)[0]
-        packetstr = packetstr[1:]
+    def deserialize(self, state, packetbuffer):
+        self.x, self.y, self.hspeed, self.vspeed = packetbuffer.read("ffff")
+        byte = packetbuffer.read("B")
         self.intel = byte & (1 << 0)
         self.can_doublejump = byte & (1 << 1)
         #self.sentry = byte & (1 << 2)
 
-        weapon_string_length = state.entities[self.weapon_id].deserialize(state, packetstr)
-        return struct.calcsize(">ffffB")+weapon_string_length
+        state.entities[self.weapon_id].deserialize(state, packetbuffer)
 
 class Scout(Character):
     # width, height of scout - rectangle collision

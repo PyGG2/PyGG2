@@ -4,7 +4,6 @@ from __future__ import division, print_function
 import sys
 sys.path.append("../")
 
-import struct
 import engine.map
 import engine.player
 import function, constants
@@ -41,28 +40,25 @@ def Server_Event_Spawn(client, networker, game, state, event):
 
 def Server_Snapshot_Update(client, networker, game, state, event):
     for player in state.players.values():
-        length = player.deserialize_input(event.bytestr)
-        event.bytestr = event.bytestr[length:]
+        player.deserialize_input(event.internalbuffer)
         
         try:
             character = state.entities[player.character_id]
-            length = character.deserialize(state, event.bytestr)
-            event.bytestr = event.bytestr[length:]
+            character.deserialize(state, event.internalbuffer)
         except KeyError:
             # Character is dead
             pass
 
 def Server_Full_Update(client, networker, game, state, event):
-    numof_players = struct.unpack_from(">B", event.bytestr)[0]
-    event.bytestr = event.bytestr[1:]
+    numof_players = event.internalbuffer.read("B")
     # FIXME: Unclean mixing
+    # Full update is going to roll over everything anyway, might as well start anew
     game.rendering_time = event.time
 
     for index in range(numof_players):
         player = engine.player.Player(game, state, index)
-        player.name, player_class, character_exists = struct.unpack_from(">32pBB", event.bytestr)
+        player.name, player_class, character_exists = event.internalbuffer.read("32pBB")
         player.nextclass = function.convert_class(player_class)
-        event.bytestr = event.bytestr[34:]
         
         if character_exists:
             player.spawn(game, state)

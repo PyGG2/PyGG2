@@ -6,9 +6,9 @@ from __future__ import division, print_function
 import sys
 sys.path.append("../")
 
-import struct
 import event_serialize
 import constants
+import databuffer
 
 class Packet(object):
     def __init__(self, sender):
@@ -19,37 +19,35 @@ class Packet(object):
         self.sender = sender
 
     def pack(self):
-        packetstr = ""
-
-        packetstr += struct.pack(">HHf", self.sequence, self.acksequence, self.time)
+        packetbuffer = databuffer.Buffer()
+        packetbuffer.write("HHf", (self.sequence, self.acksequence, self.time))
 
         for seq, event in self.events:
-            packetstr += struct.pack(">H", seq)
-            packetstr += struct.pack(">B", event.eventid)
-            packetstr += struct.pack(">f", event.time)
-            packetstr += event.pack()
+            packetbuffer.write("H", seq)
+            packetbuffer.write("B", event.eventid)
+            packetbuffer.write("f", event.time)
+            event.pack(packetbuffer)
+        
+        return packetbuffer
 
-        return packetstr
-
-    def unpack(self, packetstr):
+    def unpack(self, data):
+        packetbuffer = databuffer.Buffer()
+        packetbuffer.data = data
+        
         self.events = []
         statedata = []
 
-        self.sequence, self.acksequence, self.time = struct.unpack_from(">HHf", packetstr)
-        packetstr = packetstr[struct.calcsize(">HHf"):]
+        self.sequence, self.acksequence, self.time = packetbuffer.read("HHf")
 
-        while packetstr:
-            sequence, eventid, time = struct.unpack_from(">HBf", packetstr)
-            packetstr = packetstr[struct.calcsize(">HBf"):]
+        while not packetbuffer.is_empty():
+            sequence, eventid, time = packetbuffer.read("HBf")
 
             if self.sender == "client":
                 packet_event = object.__new__(event_serialize.clientevents[eventid])
             else:
                 packet_event = object.__new__(event_serialize.serverevents[eventid])
 
-            eventsize = packet_event.unpack(packetstr)
-            packetstr = packetstr[eventsize:]
-
+            packet_event.unpack(packetbuffer)
             packet_event.time = time
 
             # Separate states and events

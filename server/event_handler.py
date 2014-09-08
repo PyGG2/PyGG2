@@ -40,7 +40,7 @@ def Client_Event_Jump(networker, game, state, senderplayer, event):
 
 def Client_Inputstate(networker, game, state, senderplayer, event):
     player = state.players[senderplayer.id]
-    player.deserialize_input(event.bytestr)
+    player.deserialize_input(event.internalbuffer)
 
 def Client_Event_Disconnect(networker, game, state, senderplayer, event):
     player = state.players[senderplayer.id]

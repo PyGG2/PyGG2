@@ -2,7 +2,6 @@ from __future__ import division, print_function
 
 import constants
 import character
-import struct
 import function
 from networking import event_serialize
 
@@ -82,7 +81,7 @@ class Player(object):
         self.respawntimer = prev_obj.respawntimer + (next_obj.respawntimer - prev_obj.respawntimer)*alpha
         self.aimdirection = function.interpolate_angle(prev_obj.aimdirection, next_obj.aimdirection, alpha)
 
-    def serialize_input(self):
+    def serialize_input(self, packetbuffer):
         keybyte = 0
 
         keybyte |= self.left << 0
@@ -92,13 +91,10 @@ class Player(object):
         keybyte |= self.rightmouse << 4
 
         aim = int(round((self.aimdirection % 360) / 360 * 65535))
+        packetbuffer.write("BH", (keybyte, aim))
 
-        bytestr = struct.pack(">BH", keybyte, aim)
-
-        return bytestr
-
-    def deserialize_input(self, bytestr):
-        keybyte, aim = struct.unpack_from(">BH", bytestr)
+    def deserialize_input(self, packetbuffer):
+        keybyte, aim = packetbuffer.read("BH")
 
         self.left = (keybyte & (1 << 0) > 0)
         self.right = (keybyte & (1 << 1) > 0)
@@ -107,5 +103,3 @@ class Player(object):
         self.rightmouse = (keybyte & (1 << 4) > 0)
 
         self.aimdirection = aim * 360 / 65535
-
-        return 3 # length of >BH

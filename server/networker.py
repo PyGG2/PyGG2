@@ -4,10 +4,10 @@ import sys
 sys.path.append("../")
 
 import socket
-import struct
 import constants
 import function
 import networking.packet
+import networking.databuffer
 import networking.event_serialize
 import event_handler
 import player
@@ -39,28 +39,28 @@ class Networker(object):
 
 
     def generate_snapshot_update(self, state):
-        packetstr = ""
+        snapshotbuffer = networking.databuffer.Buffer()
 
         for playerid, player_obj in state.players.items():
-            packetstr += player_obj.serialize_input()
+            player_obj.serialize_input(snapshotbuffer)
             try:
                 character = state.entities[player_obj.character_id]
-                packetstr += character.serialize(state)
+                character.serialize(state, snapshotbuffer)
             except KeyError:
                 # Character is dead
                 pass
 
-        event = networking.event_serialize.ServerEventSnapshotUpdate(packetstr)
+        event = networking.event_serialize.ServerEventSnapshotUpdate(snapshotbuffer)
         event.time = state.time
 
         return event
 
 
     def service_new_player(self, server, game, newplayer):
-        packetstr = ""
+        statebuffer = networking.databuffer.Buffer()
         state = game.current_state
     
-        packetstr += struct.pack(">B", len(state.players))
+        statebuffer.write("B", len(state.players))
 
         for player_id, player_obj in state.players.items():
             try:
@@ -73,11 +73,11 @@ class Networker(object):
                 current_class = function.convert_class(player_obj.nextclass)
                 character_exists = False
 
-            packetstr += struct.pack(">32pBB", player_obj.name, current_class, character_exists)
+            statebuffer.write("32pBB", (player_obj.name, current_class, character_exists))
 
         hello_event = networking.event_serialize.ServerEventHello(server.name, newplayer.id,  server.game.maxplayers, state.map.mapname, constants.GAME_VERSION_NUMBER)
         map_event = networking.event_serialize.ServerChangeMap(state.map.mapname)
-        events  = [hello_event, map_event, networking.event_serialize.ServerEventFullUpdate(packetstr)]
+        events  = [hello_event, map_event, networking.event_serialize.ServerEventFullUpdate(statebuffer)]
         events[1].time = state.time
         
         newplayer.send_fullupdate(self, game, events)

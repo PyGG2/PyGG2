@@ -3,7 +3,6 @@
 from __future__ import division, print_function
 
 import math
-import struct
 import random
 
 import function
@@ -67,15 +66,11 @@ class Weapon(entity.Entity):
         self.refirealarm = (1 - alpha) * prev_obj.refirealarm + alpha * next_obj.refirealarm
         self.direction = function.interpolate_angle(prev_obj.direction, next_obj.direction, alpha)
 
-    def serialize(self, state):
-        packetstr = ""
-        packetstr += struct.pack(">Bf", self.ammo, self.reloadalarm)
-        return packetstr
+    def serialize(self, state, packetbuffer):
+        packetbuffer.write("Bf", (self.ammo, self.reloadalarm))
 
-    def deserialize(self, state, packetstr):
-        self.ammo, self.reloadalarm = struct.unpack_from(">Bf", packetstr)
-        packetstr = packetstr[5:]
-        return 5
+    def deserialize(self, state, packetbuffer):
+        self.ammo, self.reloadalarm = packetbuffer.read("Bf")
 
 class Scattergun(Weapon):
     maxammo = 6

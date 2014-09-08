@@ -4,6 +4,7 @@ import struct
 import sfml
 
 import function
+import networking.databuffer
 import networking.event_serialize
 
 class InputHandler(object):
@@ -40,12 +41,13 @@ class InputHandler(object):
         mouse_x, mouse_y = sfml.window.Mouse.get_position(window)
         self.aimdirection = function.point_direction(window.width / 2, window.height / 2, mouse_x, mouse_y)
         
-        bytestr = self.serialize_input()
-        event = networking.event_serialize.ClientEventInputstate(bytestr)
+        inputbuffer = networking.databuffer.Buffer()
+        self.serialize_input(inputbuffer)
+        event = networking.event_serialize.ClientEventInputstate(inputbuffer)
         game.sendbuffer.append(event)
 
 
-    def serialize_input(self):
+    def serialize_input(self, packetbuffer):
         keybyte = 0
         
         keybyte |= self.left << 0
@@ -56,6 +58,4 @@ class InputHandler(object):
         
         aim = int(round((self.aimdirection % 360) / 360 * 65535))
         
-        bytestr = struct.pack(">BH", keybyte, aim)
-        
-        return bytestr
+        packetbuffer.write("BH", (keybyte, aim))

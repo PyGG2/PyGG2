@@ -5,6 +5,7 @@ import sys
 sys.path.append("../")
 
 import socket
+
 import constants
 import networking.packet
 import networking.event_serialize
@@ -38,10 +39,7 @@ class Networker(object):
         packet.events.append((self.sequence, event))
         data = packet.pack()
 
-        numbytes = self.socket.sendto(data, self.server_address)
-        if len(data) != numbytes:
-            # TODO sane error handling
-            print("SERIOUS ERROR, NUMBER OF BYTES SENT != PACKET SIZE AT HELLO")
+        self.socket.sendto(data.data, self.server_address)
 
     def recieve(self, game, client):
         # If we haven't received confirmation that we're connected yet, see if we should try again:
@@ -59,10 +57,7 @@ class Networker(object):
                 packet.events.append((self.sequence, event))
                 data = packet.pack()
 
-                numbytes = self.socket.sendto(data, self.server_address)
-                if len(data) != numbytes:
-                    # TODO sane error handling
-                    print("SERIOUS ERROR, NUMBER OF BYTES SENT != PACKET SIZE AT HELLO")
+                self.socket.sendto(data, self.server_address)
 
 
         while True:
@@ -184,8 +179,9 @@ class Networker(object):
 
     def generate_inputdata(self, client):
         our_player = client.game.current_state.players[client.our_player_id]
-        packetstr = our_player.serialize_input()
-        event = networking.event_serialize.ClientEventInputstate(packetstr)
+        inputbuffer = networking.databuffer.Buffer()
+        our_player.serialize_input(inputbuffer)
+        event = networking.event_serialize.ClientEventInputstate(inputbuffer)
         return event
 
 
@@ -207,12 +203,8 @@ class Networker(object):
             # Prepend the input data if we're not disconnecting
             packet.events.insert(0, (self.sequence, self.generate_inputdata(client)))
 
-        packetstr = ""
-        packetstr += packet.pack()
+        packetbuffer = packet.pack()
 
-        numbytes = self.socket.sendto(packetstr, self.server_address)
-        if len(packetstr) != numbytes:
-            # TODO sane error handling
-            print("SERIOUS ERROR, NUMBER OF BYTES SENT != PACKET SIZE")
+        self.socket.sendto(packetbuffer.data, self.server_address)
 
         self.sequence = (self.sequence + 1) % 65535
