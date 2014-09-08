@@ -152,7 +152,7 @@ class GameClientHandler(Handler):
                     self.network_update_timer += frametime
 
                 if self.fpscounter_accumulator > 1.0:
-                    self.window.title = "PyGG2 - %d FPS" % (self.fpscounter_frames / self.fpscounter_accumulator)
+                    #self.window.title = "PyGG2 - %d FPS" % (self.fpscounter_frames / self.fpscounter_accumulator)
                     self.fpscounter_accumulator = 0.0
                     self.fpscounter_frames = 0
 
@@ -172,7 +172,8 @@ class GameClientHandler(Handler):
                     elif isinstance(event, sfml.window.KeyEvent): #Key handler
                         if event.code == sfml.window.Keyboard.ESCAPE:
                             return (False)
-                self.window.title = "PyGG2 - Not Connected %dsecs" % (self.timeout_accumulator)
+                # TODO: writing to title currently crashes pysfml - will get fixed very soon
+                #self.window.title = "PyGG2 - Not Connected %dsecs" % (self.timeout_accumulator)
                 #Finally, if the server is not reachable, end everything.
                 if self.timeout_accumulator > constants.CONNECTION_TIMEOUT:
                     print("Unable to connect to " + str(self.server_ip) + " at port: " + str(self.server_port))
