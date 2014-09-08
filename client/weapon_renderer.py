@@ -40,8 +40,8 @@ class ScattergunRenderer(WeaponRenderer):
 
     def __init__(self):
         self.depth = 1
-        self.weaponsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/scatterguns/0.png"))
-        self.firingsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/scatterguns/2.png"))
+        self.weaponsprite = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/scatterguns/0.png"))
+        self.firingsprite = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/scatterguns/2.png"))
 
 class FlamethrowerRenderer(WeaponRenderer):
     weapon_rotate_point = (8, 2) #Where is the handle of the gun, where to rotate around
@@ -51,8 +51,8 @@ class FlamethrowerRenderer(WeaponRenderer):
 
     def __init__(self):
         self.depth = 1
-        self.weaponsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/flamethrowers/0.png"))
-        self.firingsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/flamethrowers/2.png"))
+        self.weaponsprite = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/flamethrowers/0.png"))
+        self.firingsprite = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/flamethrowers/2.png"))
 
 class RocketlauncherRenderer(WeaponRenderer):
     weapon_rotate_point = (10, 6) # where is the handle of the gun, where to rotate around
@@ -62,8 +62,8 @@ class RocketlauncherRenderer(WeaponRenderer):
 
     def __init__(self):
         self.depth = 1
-        self.weaponsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/rocketlaunchers/0.png"))
-        self.firingsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/rocketlaunchers/2.png"))
+        self.weaponsprite = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/rocketlaunchers/0.png"))
+        self.firingsprite = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/rocketlaunchers/2.png"))
 
 class MinigunRenderer(WeaponRenderer):
     weapon_rotate_point = (14, 3) # where is the handle of the gun, where to rotate around
@@ -73,8 +73,8 @@ class MinigunRenderer(WeaponRenderer):
 
     def __init__(self):
         self.depth = 1
-        self.weaponsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/miniguns/0.png"))
-        self.firingsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/miniguns/2.png"))
+        self.weaponsprite = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/miniguns/0.png"))
+        self.firingsprite = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/miniguns/2.png"))
 
 class MinegunRenderer(WeaponRenderer):
     #TODO: fix these to actually align correctly
@@ -85,8 +85,8 @@ class MinegunRenderer(WeaponRenderer):
 
     def __init__(self):
         self.depth = 1
-        self.weaponsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/mineguns/0.png"))
-        self.firingsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/mineguns/2.png"))
+        self.weaponsprite = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/mineguns/0.png"))
+        self.firingsprite = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/mineguns/2.png"))
 
 class MedigunRenderer(WeaponRenderer):
     #TODO: fix these to actually align correctly
@@ -97,8 +97,8 @@ class MedigunRenderer(WeaponRenderer):
 
     def __init__(self):
         self.depth = 1
-        self.weaponsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/mediguns/0.png"))
-        self.firingsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/mediguns/0.png"))
+        self.weaponsprite = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/mediguns/0.png"))
+        self.firingsprite = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/mediguns/0.png"))
 
 
 class ShotgunRenderer(WeaponRenderer):
@@ -109,8 +109,8 @@ class ShotgunRenderer(WeaponRenderer):
 
     def __init__(self):
         self.depth = 1
-        self.weaponsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/shotguns/0.png"))
-        self.firingsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/shotguns/2.png"))
+        self.weaponsprite = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/shotguns/0.png"))
+        self.firingsprite = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/shotguns/2.png"))
 
 class RevolverRenderer(WeaponRenderer):
     weapon_rotate_point = (-1, 6) # where is the handle of the gun, where to rotate around
@@ -120,8 +120,8 @@ class RevolverRenderer(WeaponRenderer):
 
     def __init__(self):
         self.depth = 1
-        self.weaponsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/revolver2s/0.png"))
-        self.firingsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/revolver2s/2.png"))
+        self.weaponsprite = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/revolver2s/0.png"))
+        self.firingsprite = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/revolver2s/2.png"))
 
     def render(self, renderer, game, state, weapon):
         if not state.entities[weapon.owner_id].cloaking:#FIXME: or player.team == out team
@@ -137,5 +137,5 @@ class BladeRenderer(WeaponRenderer):
 
     def __init__(self):
         self.depth = 1
-        self.weaponsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/blades/0.png"))
-        self.firingsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/blades/2.png"))
+        self.weaponsprite = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/blades/0.png"))
+        self.firingsprite = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "weapons/blades/2.png"))

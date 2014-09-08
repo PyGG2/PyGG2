@@ -11,7 +11,7 @@ import constants
 class BuildingSentryRenderer(object):
     def __init__(self):
         self.depth = -1
-        self.sprites = [sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "ingameelements/sentryred/{0}.png".format(i))) for i in range(10)]
+        self.sprites = [sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "ingameelements/sentryred/{0}.png".format(i))) for i in range(10)]
 
     def render(self, renderer, game, state, sentry):
         sprite_offset_flipped = (-12,-20)
@@ -38,9 +38,9 @@ class BuildingSentryRenderer(object):
 class SentryRenderer(object):
     def __init__(self):
         self.depth = -1
-        self.base = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "ingameelements/sentryred/11.png"))
-        self.turrets = [sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "ingameelements/sentryturrets/{0}.png".format(i))) for i in range(3)]
-        self.turning = [sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "ingameelements/turretrotates/{0}.png".format(i))) for i in range(5)]
+        self.base = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "ingameelements/sentryred/11.png"))
+        self.turrets = [sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "ingameelements/sentryturrets/{0}.png".format(i))) for i in range(3)]
+        self.turning = [sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "ingameelements/turretrotates/{0}.png".format(i))) for i in range(5)]
 
     def render(self, renderer, game, state, sentry):
         basesprite_offset = (-8,-20)

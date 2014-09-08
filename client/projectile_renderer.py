@@ -10,7 +10,7 @@ import constants
 class ShotRenderer(object):
     def __init__(self):
         self.depth = 1
-        self.shotsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "projectiles/shots/0.png"))
+        self.shotsprite = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "projectiles/shots/0.png"))
 
     def render(self, renderer, game, state, shot):
         if shot.flight_time < 0:
@@ -31,7 +31,7 @@ class FlameRenderer(object):
     def __init__(self):
         self.depth = 1
         self.currentindex = -1
-        self.flamesprite = [sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "projectiles/flames/{}.png".format(i))) for i in range(3)]
+        self.flamesprite = [sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "projectiles/flames/{}.png".format(i))) for i in range(3)]
 
     def render(self, renderer, game, state, flame):
         if flame.flight_time < 0:
@@ -55,7 +55,7 @@ class FlameRenderer(object):
 class RocketRenderer(object):
     def __init__(self):
         self.depth = 1
-        self.rocketsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "projectiles/rockets/0.png"))
+        self.rocketsprite = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "projectiles/rockets/0.png"))
 
     def render(self, renderer, game, state, rocket):
         if rocket.flight_time < 0:
@@ -73,7 +73,7 @@ class RocketRenderer(object):
 class MineRenderer(object):
     def __init__(self):
         self.depth = 1
-        self.minesprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "projectiles/mines/1.png"))
+        self.minesprite = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "projectiles/mines/1.png"))
 
     def render(self, renderer, game, state, mine):
         if mine.flight_time < 0:
@@ -89,7 +89,7 @@ class MineRenderer(object):
 class NeedleRenderer(object):
     def __init__(self):
         self.depth = 1
-        self.needlesprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "projectiles/needles/0.png"))
+        self.needlesprite = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "projectiles/needles/0.png"))
 
     def render(self, renderer, game, state, needle):
         if needle.flight_time < 0:
@@ -108,7 +108,7 @@ class NeedleRenderer(object):
 class BladeRenderer(object):
     def __init__(self):
         self.depth = 1
-        self.bladesprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "projectiles/bladeprojectiles/0.png"))
+        self.bladesprite = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "projectiles/bladeprojectiles/0.png"))
 
     def render(self, renderer, game, state, blade):
         if blade.flight_time < 0:

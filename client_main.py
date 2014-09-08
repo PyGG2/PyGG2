@@ -4,8 +4,6 @@ from client.handler import ClientManager
 from client.main import GameClientHandler
 from client.menus import MainMenuHandler
 
-import sfml
-
 # DEBUG ONLY
 import cProfile
 import pstats

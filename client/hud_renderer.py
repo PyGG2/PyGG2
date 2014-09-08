@@ -22,7 +22,7 @@ class HealthRenderer(HudRenderer):
         my_class_type = type(character)
         my_class_number = str(function.convert_class(my_class_type))
        
-        self.hudsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "huds/characterhud/"+ my_class_number + ".png"))
+        self.hudsprite = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "huds/characterhud/"+ my_class_number + ".png"))
 
         self.health_box_background = None
         self.health_box = None
@@ -47,7 +47,7 @@ class HealthRenderer(HudRenderer):
         self.health_box_background = DrawRectangle() 
         self.health_box_background.location = (52, (renderer.view_height - 53))
         self.health_box_background.size = (40, 39)
-        self.health_box_background.color = (sfml.Color.BLACK)
+        self.health_box_background.color = (sfml.graphics.Color.BLACK)
         renderer.hud_overlay.append(self.health_box_background)
         
         #The Green Health
@@ -58,11 +58,11 @@ class HealthRenderer(HudRenderer):
         if health_percentage > 0.5:
             exponent = 2 # The higher this will be, the quicker will the change happen, and the flatter will the curve be
             # Color it green-yellow
-            self.health_box.color = sfml.Color(((1 - 2*(health_percentage-0.5))**exponent)*220, 220, 0, 255)
+            self.health_box.color = sfml.graphics.Color(((1 - 2*(health_percentage-0.5))**exponent)*220, 220, 0, 255)
         else:
             exponent = 3 # The higher this will be, the quicker will the change happen, and the flatter will the curve be
             # Color it yellow-red
-            self.health_box.color = sfml.Color(255, ((2*health_percentage)**exponent)*255, 0, 255)
+            self.health_box.color = sfml.graphics.Color(255, ((2*health_percentage)**exponent)*255, 0, 255)
         renderer.hud_overlay.append(self.health_box)
         renderer.hud_overlay.append(self.health_text)
 
@@ -74,10 +74,10 @@ class AmmoRenderer(HudRenderer):
             team = "0"
         else:
             team = "1"
-        self.hudsprite = sfml.Sprite(function.load_texture(constants.SPRITE_FOLDER + "huds/ammo/"+spritepath+"/"+team+".png"))
+        self.hudsprite = sfml.graphics.Sprite(function.load_texture(constants.SPRITE_FOLDER + "huds/ammo/"+spritepath+"/"+team+".png"))
         self.background_bar.location = self.bar.location
-        self.background_bar.color = sfml.Color(0, 0, 0, 255)
-        self.bar.color = sfml.Color(217, 217, 183, 255)
+        self.background_bar.color = sfml.graphics.Color(0, 0, 0, 255)
+        self.bar.color = sfml.graphics.Color(217, 217, 183, 255)
     
     def render(self, renderer, game, state, character_id):
         #super(AmmoRenderer, self).render(renderer, game, state)
@@ -190,7 +190,7 @@ def create_ammo_renderer(renderer, game, state, character_id):
 
 class DrawRectangle(object):
     def render(self, renderer, game, state):
-        rect = sfml.RectangleShape(self.size)
+        rect = sfml.graphics.RectangleShape(self.size)
         rect.fill_color = self.color
         rect.position = (self.location)
         renderer.window.draw(rect)

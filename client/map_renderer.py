@@ -17,7 +17,7 @@ class MapRenderer(object):
         layer_list = os.listdir("maps/"+mapname+"/background")
         layer_list.sort()
         for layer in layer_list:
-            self.bgs.append(sfml.Sprite(function.load_texture("maps/"+mapname+"/background/"+layer)))
+            self.bgs.append(sfml.graphics.Sprite(function.load_texture("maps/"+mapname+"/background/"+layer)))
         
         # Scale all maps 6x
         for background in self.bgs:

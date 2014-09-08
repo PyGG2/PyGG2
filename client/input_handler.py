@@ -22,10 +22,10 @@ class InputHandler(object):
     
     def gather_input(self, window, game):
         self.keys = {
-                "up": sfml.Keyboard.is_key_pressed(sfml.Keyboard.W),
-                "down": sfml.Keyboard.is_key_pressed(sfml.Keyboard.S),
-                "left": sfml.Keyboard.is_key_pressed(sfml.Keyboard.A),
-                "right": sfml.Keyboard.is_key_pressed(sfml.Keyboard.D)
+                "up": sfml.window.Keyboard.is_key_pressed(sfml.window.Keyboard.W),
+                "down": sfml.window.Keyboard.is_key_pressed(sfml.window.Keyboard.S),
+                "left": sfml.window.Keyboard.is_key_pressed(sfml.window.Keyboard.A),
+                "right": sfml.window.Keyboard.is_key_pressed(sfml.window.Keyboard.D)
             }
         
         self.up = self.keys["up"]
@@ -33,11 +33,11 @@ class InputHandler(object):
         self.left = self.keys["left"]
         self.right = self.keys["right"]
         
-        self.leftmouse = sfml.Mouse.is_button_pressed(sfml.Mouse.LEFT)
-        self.middlemouse = sfml.Mouse.is_button_pressed(sfml.Mouse.MIDDLE)
-        self.rightmouse = sfml.Mouse.is_button_pressed(sfml.Mouse.RIGHT)
+        self.leftmouse = sfml.window.Mouse.is_button_pressed(sfml.window.Mouse.LEFT)
+        self.middlemouse = sfml.window.Mouse.is_button_pressed(sfml.window.Mouse.MIDDLE)
+        self.rightmouse = sfml.window.Mouse.is_button_pressed(sfml.window.Mouse.RIGHT)
         
-        mouse_x, mouse_y = sfml.Mouse.get_position(window)
+        mouse_x, mouse_y = sfml.window.Mouse.get_position(window)
         self.aimdirection = function.point_direction(window.width / 2, window.height / 2, mouse_x, mouse_y)
         
         bytestr = self.serialize_input()
