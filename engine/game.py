@@ -45,8 +45,6 @@ class Game:
         self.vertical = 0
 
     def update(self, networker, frametime):
-        if abs(self.rendering_time - self.current_state.time) > 0.5:
-            self.rendering_time = self.current_state.time - constants.PHYSICS_TIMESTEP
         self.rendering_time += frametime + frametime*(self.current_state.time+self.accumulator - self.rendering_time)*constants.INTERP_SLIDING_WINDOW
         self.accumulator += frametime
 

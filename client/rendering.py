@@ -102,10 +102,10 @@ class GameRenderer(object):
             # Take the oldest one and move it back in time
             self.interpolated_state = states[0].copy()
             self.interpolated_state.update_all_objects(game, target_time - self.interpolated_state.time)
-        elif states[-1].time < target_time:
-            # Even our most current state isn't "up-to-date" enough
-            # We can't do better than use it
-            self.interpolated_state = states[-1].copy()
+        #elif states[-1].time < target_time:
+        #    # Even our most current state isn't "up-to-date" enough
+        #    # We can't do better than use it
+        #    self.interpolated_state = states[-1].copy()
         else:
             # Now we need to find the two states that bracket target_time
             # Easier to do this by looping over index
