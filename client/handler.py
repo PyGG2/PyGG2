@@ -1,4 +1,4 @@
-import sfml
+import sfml.graphics
 import json
 import os.path
 

@@ -62,7 +62,7 @@ def load_texture(filename):
         return textures[filename]
 
     # Attempt to load the texture from files
-    texture = sfml.Texture.from_file(filename)
+    texture = sfml.graphics.Texture.from_file(filename)
     textures[filename] = texture
 
     return texture
