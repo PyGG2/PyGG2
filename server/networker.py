@@ -78,7 +78,8 @@ class Networker(object):
         hello_event = networking.event_serialize.ServerEventHello(server.name, newplayer.id,  server.game.maxplayers, state.map.mapname, constants.GAME_VERSION_NUMBER)
         map_event = networking.event_serialize.ServerChangeMap(state.map.mapname)
         events  = [hello_event, map_event, networking.event_serialize.ServerEventFullUpdate(statebuffer)]
-        events[1].time = state.time
+        for event in events:
+            event.time = state.time
         
         newplayer.send_fullupdate(self, game, events)
 
