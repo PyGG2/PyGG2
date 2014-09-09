@@ -9,13 +9,18 @@ import engine.weapon
 import constants
 
 class HudRenderer(object):
+    hud_sprite_istop = False
     def render(self, renderer, game, state):
         self.hudsprite.position = self.sprite_location
         self.hudsprite.ratio = sfml.system.Vector2(2, 2)
-        renderer.hud_sprites.append (self.hudsprite)
+        if self.hud_sprite_istop:
+            renderer.hud_sprites_top.append (self.hudsprite)
+        else:
+            renderer.hud_sprites_low.append (self.hudsprite)
 
 
 class HealthRenderer(HudRenderer):
+    hud_sprite_istop = True    
     def __init__(self, renderer, game, state, character_id):
         self.sprite_location = (10, renderer.view_height - 75)
         character = state.entities[character_id]
@@ -67,7 +72,8 @@ class HealthRenderer(HudRenderer):
         renderer.hud_overlay.append(self.health_text)
 
 
-class AmmoRenderer(HudRenderer):    
+class AmmoRenderer(HudRenderer):
+    hud_sprite_istop = False    
     def initialize(self, renderer, game, state, character_id, spritepath):
         character = state.entities[character_id]
         if character.team == constants.TEAM_RED:
@@ -80,14 +86,14 @@ class AmmoRenderer(HudRenderer):
         self.bar.color = sfml.graphics.Color(217, 217, 183, 255)
     
     def render(self, renderer, game, state, character_id):
-        #super(AmmoRenderer, self).render(renderer, game, state)
+        super(AmmoRenderer, self).render(renderer, game, state)
         
         character = state.entities[character_id]
         weapon = state.entities[character.weapon_id]
         
         scalar = 1 - weapon.reloadalarm/weapon.reloadtime
         self.bar.size = (int(scalar * self.background_bar.size[0]), self.background_bar.size[1])
-        #print(self.bar.location, self.bar.size)
+        
         renderer.hud_overlay.append(self.background_bar)
         renderer.hud_overlay.append(self.bar)
     

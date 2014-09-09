@@ -65,14 +65,16 @@ class GameRenderer(object):
 
         self.world_sprites = []
         self.hud_overlay = []
-        self.hud_sprites = []
+        self.hud_sprites_low = []
+        self.hud_sprites_top = []
 
         self.rendering_stack = []
 
     def render(self, client, game, frametime):    
         # reset spritegroups
         self.world_sprites = []
-        self.hud_sprites = []
+        self.hud_sprites_low = []
+        self.hud_sprites_top = []
         self.hud_overlay = []
 
         self.window = client.window
@@ -167,11 +169,14 @@ class GameRenderer(object):
         for entity in self.rendering_stack:
             self.renderers[type(entity)].render(self, game, self.interpolated_state, entity)
 
-        # draw health bars
-        for self.overlay in self.hud_overlay: #Call the render of all the objects
+        # draw lower hud sprites
+        for hud_sprite in self.hud_sprites_low:
+            self.window.draw(hud_sprite)
+        # draw overlays and bars
+        for self.overlay in self.hud_overlay:
             self.overlay.render(self, game, self.interpolated_state)
-        # draw hud sprites
-        for hud_sprite in self.hud_sprites:
+        # draw higher hud sprites
+        for hud_sprite in self.hud_sprites_top:
             self.window.draw(hud_sprite)
 
     def get_screen_coords(self, x, y):
